@@ -1,0 +1,17 @@
+# Local staging, extracted archives and temporary inspection outputs
+work/
+*.zip
+*.7z
+*.rar
+
+# Local secrets and deployment state
+.env
+.env.*
+!.env.example
+.dev.vars
+node_modules/
+
+# Local editor and OS files
+.DS_Store
+Thumbs.db
+.vscode/
