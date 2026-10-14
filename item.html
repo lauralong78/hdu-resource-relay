@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://laqliecldqfjfhsooyey.supabase.co blob:; connect-src 'self' https://laqliecldqfjfhsooyey.supabase.co; font-src 'self';" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>商品详情 — 大学生信息资源共享平台</title>
+  <style>
+    :root {
+      --bg:      oklch(98% 0.004 240);
+      --surface: oklch(100% 0 0);
+      --fg:      oklch(20% 0.02 240);
+      --muted:   oklch(50% 0.018 240);
+      --border:  oklch(90% 0.006 240);
+      --accent:  oklch(56% 0.12 170);
+      --accent-dark: oklch(42% 0.10 170);
+      --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+      --font-body:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+      --radius-card: 14px;
+      --radius-sm: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .top-nav .logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--accent-dark);
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+    .top-nav .logo span { color: var(--accent); }
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .back-btn:hover { color: var(--fg); }
+    .back-btn svg { width: 18px; height: 18px; }
+    .nav-guide {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-dark);
+      text-decoration: none;
+      padding: 8px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      transition: all 0.15s;
+    }
+    .nav-guide:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+    .detail-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px 24px 60px;
+    }
+    .image-scroller {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 10px;
+      scrollbar-width: none;
+    }
+    .image-scroller::-webkit-scrollbar { display: none; }
+    .image-scroller .slide {
+      flex-shrink: 0;
+      width: 100%;
+      max-width: 500px;
+      aspect-ratio: 4/3;
+      border-radius: 12px;
+      overflow: hidden;
+      scroll-snap-align: start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .image-scroller .slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .image-scroller .slide.no-img {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .info-card {
+      background: var(--surface);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 20px 22px;
+      margin-top: 18px;
+    }
+    .info-card .title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .info-card .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .info-card .price {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent-dark);
+      letter-spacing: -0.02em;
+    }
+    .info-card .original-price {
+      font-size: 16px;
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+    .info-card .negotiable-badge {
+      font-size: 12px;
+      font-weight: 600;
+      color: oklch(50% 0.06 80);
+      background: oklch(94% 0.02 80 / 0.4);
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .tag-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .tag-row .tag {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: oklch(94% 0.02 240);
+      color: var(--muted);
+    }
+    .tag-row .tag.condition { background: oklch(94% 0.02 170 / 0.3); color: oklch(40% 0.1 170); }
+    .tag-row .tag.reason { background: oklch(90% 0.02 40 / 0.15); color: oklch(40% 0.06 40); }
+    .meta-block {
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .meta-block .meta-item { display: flex; align-items: center; gap: 4px; }
+    .desc-card {
+      background: var(--surface);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 20px 22px;
+      margin-top: 12px;
+    }
+    .desc-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .desc-card p {
+      font-size: 15px;
+      color: var(--fg);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .carousel-dots .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .carousel-dots .dot.active {
+      background: var(--accent);
+      transform: scale(1.3);
+    }
+    .action-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .action-row .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: var(--font-body);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--fg);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s, transform 0.1s;
+    }
+    .action-row .btn:hover { background: var(--bg); }
+    .action-row .btn:active { transform: scale(0.97); }
+    .action-row .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .action-row .btn-primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .action-row .btn-primary:hover { background: var(--accent-dark); }
+    .action-row .btn-danger {
+      color: oklch(45% 0.15 22);
+      border-color: oklch(45% 0.15 22 / 0.2);
+    }
+    .action-row .btn-danger:hover { background: oklch(96% 0.02 22); }
+    .not-found {
+      text-align: center;
+      padding: 80px 24px;
+      color: var(--muted);
+    }
+    .not-found .icon-wrap { margin-bottom: 12px; opacity: 0.35; }
+    .not-found h2 { font-size: 20px; font-weight: 600; color: var(--fg); margin-bottom: 8px; }
+    .not-found p { font-size: 14px; }
+    .loading-state {
+      text-align: center;
+      padding: 80px 24px;
+      color: var(--muted);
+    }
+    @media (max-width: 700px) {
+      .top-nav { padding: 12px 16px; }
+      .detail-container { padding: 16px 16px 48px; }
+      .info-card { padding: 16px 18px; }
+      .action-row .btn { flex: 1; justify-content: center; min-width: 100px; }
+    }
+    .overlay { position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:1000; }
+    .overlay.show { display:flex; }
+    .req { color:#e74c3c; }
+    .report-evidence-img { width:72px;height:72px;border-radius:8px;object-fit:cover;position:relative; }
+    .report-evidence-wrap { position:relative; }
+    .report-evidence-wrap .remove-img-btn { position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#e74c3c;color:#fff;border:0;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center; }
+  </style>
+</head>
+<body>
+  <nav class="top-nav" data-od-id="detail-top-nav">
+    <a href="index.html" id="back-link" class="back-btn" data-od-id="back-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      返回
+    </a>
+    <a href="index.html" class="logo">杭电信息<span>资源共享平台</span></a>
+    <a href="guide.html" class="nav-guide">新生指南</a>
+  </nav>
+
+  <!-- 举报弹窗 -->
+  <div class="overlay" id="report-overlay">
+    <div style="background:var(--surface);border-radius:14px;padding:24px;width:90%;max-width:420px;max-height:90vh;overflow-y:auto;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 style="font-size:18px;font-weight:600;">举报商品</h3>
+        <button id="report-cancel" style="background:none;border:none;font-size:24px;color:var(--muted);cursor:pointer;line-height:1;">&times;</button>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:14px;font-weight:500;margin-bottom:4px;">举报原因 <span class="req">*</span></label>
+        <select id="report-reason" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font-body);background:var(--surface);">
+          <option value="">请选择</option>
+          <option value="虚假信息">虚假信息</option>
+          <option value="诈骗行为">诈骗行为</option>
+          <option value="违禁品">违禁品</option>
+          <option value="色情低俗">色情低俗</option>
+          <option value="侵权">侵权</option>
+          <option value="其他">其他</option>
+        </select>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:14px;font-weight:500;margin-bottom:4px;">详细描述</label>
+        <textarea id="report-detail" rows="3" placeholder="请补充更多细节…" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font-body);resize:vertical;"></textarea>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:14px;font-weight:500;margin-bottom:4px;">您的姓名 <span class="req">*</span></label>
+        <input type="text" id="report-name" placeholder="请输入真实姓名" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font-body);" />
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:14px;font-weight:500;margin-bottom:4px;">联系方式 <span class="req">*</span></label>
+        <input type="text" id="report-contact" placeholder="手机号 / QQ / 微信" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font-body);" />
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:14px;font-weight:500;margin-bottom:4px;">证据截图（最多3张）</label>
+        <div id="report-upload-grid" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+      </div>
+      <input type="file" id="report-file-input" accept="image/*" multiple style="display:none;">
+      <button id="report-submit" class="btn btn-primary" style="width:100%;padding:12px;border-radius:10px;font-size:15px;font-weight:600;border:none;background:var(--accent);color:white;cursor:pointer;">提交举报</button>
+    </div>
+  </div>
+
+  <div class="detail-container" id="detail-container">
+    <div id="loading-state" class="loading-state">
+      <p>加载中…</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4/dist/fp.min.js"></script>
+  <script>
+    // 如果从管理后台跳转过来，返回按钮指向 admin.html
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      if (params.get('ref') === 'admin') {
+        document.getElementById('back-link').href = 'admin.html';
+      }
+    })();
+  </script>
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://laqliecldqfjfhsooyey.supabase.co';
+      var SUPABASE_KEY = 'sb_publishable_qi2Q0YL4AttETlna_wXqRA_aNovSxCG';
+      // ===== 安全函数 =====
+      function esc(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+      }
+
+      async function supabaseRequest(method, path, body) {
+        var headers = {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json'
+        };
+        if (method === 'POST' || method === 'PATCH') {
+          headers['Prefer'] = 'return=representation';
+        }
+        if (['POST', 'PUT', 'DELETE', 'PATCH'].indexOf(method) !== -1) {
+          headers['x-device-token'] = getDeviceToken();
+        }
+        var options = { method: method, headers: headers };
+        if (body) { options.body = JSON.stringify(body); }
+        // 写操作统一走 /api/* worker 代理（校验 device_token 签名 + service_role 权限），读取仍直连 Supabase
+        var base = ['POST', 'PUT', 'DELETE', 'PATCH'].indexOf(method) !== -1 ? '/api' : SUPABASE_URL;
+        var res = await fetch(base + path, options);
+        if (!res.ok) throw new Error('API error: ' + res.status);
+        var text = await res.text();
+        return text ? JSON.parse(text) : [];
+      }
+      var fpPromise = null;
+      try { fpPromise = FingerprintJS.load(); } catch (_) {}
+
+      function getDeviceToken() {
+        var token = localStorage.getItem('device_token');
+        if (!token) { token = crypto.randomUUID(); localStorage.setItem('device_token', token); }
+        return token;
+      }
+      // 签名 token 形如 "uuid.签名"，user_id 只取 uuid 部分（Supabase uuid 列）
+      function getUserId() {
+        var t = getDeviceToken();
+        var i = t.indexOf('.');
+        return i === -1 ? t : t.substring(0, i);
+      }
+      // 启动时从 Worker 获取签名 token，替换旧版 UUID
+      async function upgradeDeviceToken() {
+        var token = localStorage.getItem('device_token');
+        if (token && token.includes('.')) return;
+        try {
+          // 用现有 uuid 请求签名，避免身份漂移导致"我的发布"不同步
+          var q = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token) ? ('?uuid=' + encodeURIComponent(token)) : '';
+          var r = await fetch('/api/device-token' + q);
+          if (r.ok) {
+            var data = await r.json();
+            if (data && data.token) localStorage.setItem('device_token', data.token);
+          }
+        } catch (e) { /* Worker 不可用时保留旧 token */ }
+      }
+
+      async function getDeviceFingerprint() {
+        try {
+          if (fpPromise) {
+            var fp = await fpPromise;
+            var result = await fp.get();
+            return result.visitorId;
+          }
+        } catch (_) {}
+        return 'fp_fallback_' + getDeviceToken();
+      }
+
+      var container = document.getElementById('detail-container');
+      var p = new URLSearchParams(window.location.search);
+      var itemId = p.get('id') ? parseInt(p.get('id'), 10) : null;
+
+      async function getItems() {
+        try {
+          var result = await supabaseRequest('GET', '/rest/v1/items?select=id,name,price,description,category,campus,contact,image,is_negotiable,user_id&order=created_at.desc');
+          return (result || []).map(function (item) {
+            var rawDesc = item.description || '{}';
+            var descMeta = {};
+            try { descMeta = JSON.parse(rawDesc); } catch (_) {}
+            return {
+              id: item.id,
+              title: item.name || '',
+              name: item.name || '',
+              price: item.price,
+              category: item.category,
+              campus: item.campus,
+              description: descMeta.description || '',
+              _rawDescription: rawDesc,
+              subcategory: descMeta.subcategory || '',
+              condition: descMeta.condition || '',
+              reason: descMeta.reason || '',
+              originalPrice: descMeta.originalPrice || null,
+              image: item.image,
+              images: (function () {
+                try { var parsed = JSON.parse(item.image); return Array.isArray(parsed) ? parsed : []; } catch (_) { return []; }
+              })(),
+              negotiable: item.is_negotiable,
+              is_negotiable: item.is_negotiable,
+              user_id: item.user_id,
+              contact: item.contact || '',
+              views: descMeta.viewCount || 0,
+              activityTimeStart: descMeta.activity_time_start || '',
+              activityTimeEnd: descMeta.activity_time_end || '',
+              time: ''
+            };
+          });
+        } catch (e) {
+          throw new Error('加载商品列表失败: ' + (e.message || '未知错误'));
+        }
+      }
+
+      function getFavs() {
+        try { return JSON.parse(localStorage.getItem('fav_items') || '[]'); }
+        catch (_) { return []; }
+      }
+      function setFavs(arr) {
+        localStorage.setItem('fav_items', JSON.stringify(arr));
+      }
+
+      async function init() {
+        if (!itemId) { showNotFound('无效的商品链接'); return; }
+        var items = await getItems();
+        var item = items.find(function (i) { return i.id === itemId; });
+        if (!item) { showNotFound('商品不存在或已下架'); return; }
+        incrementViews(item);
+        renderDetail(item);
+      }
+
+      async function incrementViews(item) {
+        var descMeta = {};
+        try { descMeta = JSON.parse(item._rawDescription || item.description || '{}'); } catch (_) {}
+        descMeta.viewCount = (descMeta.viewCount || 0) + 1;
+        try {
+          await supabaseRequest('PATCH', '/rest/v1/items?id=eq.' + item.id, { description: JSON.stringify(descMeta) });
+        } catch (_) {}
+        item.views = descMeta.viewCount;
+      }
+
+      function renderDetail(item) {
+        var isOwner = item.user_id === getUserId();
+        var favs = getFavs();
+        var isFavd = favs.indexOf(item.id) !== -1;
+        var imgs = item.images || (item.image ? [item.image] : []);
+        var rtDescMeta = {};
+        try { rtDescMeta = JSON.parse(item._rawDescription || item.description || '{}'); } catch (_) {}
+        var slidesHtml;
+        if (imgs.length > 0) {
+          slidesHtml = imgs.map(function (src) {
+            return '<div class="slide"><img src="' + src + '" alt="' + item.title + '" /></div>';
+          }).join('');
+        } else {
+          slidesHtml = '<div class="slide no-img">暂无图片</div>';
+        }
+        var conditionTag = item.condition ? '<span class="tag condition">' + item.condition + '</span>' : '';
+        var reasonTag = item.reason ? '<span class="tag reason">出闲置理由：' + item.reason + '</span>' : '';
+        var originalPriceHtml = item.originalPrice ? '<span class="original-price">¥' + item.originalPrice + '</span>' : '';
+        var negotiableHtml = item.negotiable !== false ? '<span class="negotiable-badge">可议价</span>' : '';
+
+        var actionHtml = '<div class="action-row">' +
+          '<button class="btn ' + (isFavd ? 'btn-primary' : '') + '" id="fav-btn" data-od-id="fav-btn">' +
+            (isFavd
+              ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+              : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>') +
+            (isFavd ? ' 已收藏' : ' 收藏') +
+          '</button>';
+        if (isOwner) {
+          actionHtml +=
+            '<a class="btn" href="publish.html?id=' + item.id + '" data-od-id="edit-btn">编辑</a>' +
+            '<button class="btn" id="sold-btn" data-od-id="sold-btn" style="border-color:var(--success);color:var(--success);">已成交</button>' +
+            '<button class="btn btn-danger" id="del-btn" data-od-id="del-btn">删除</button>';
+        }
+        actionHtml += '</div>';
+
+        container.innerHTML =
+          '<div class="image-scroller" data-od-id="image-scroller">' + slidesHtml + '</div>' +
+          '<div class="carousel-dots" id="carousel-dots"></div>' +
+          '<div class="info-card" data-od-id="info-card">' +
+            '<div class="title">' + esc(item.title) + '</div>' +
+            '<div class="price-row"><span class="price">¥' + esc(item.price) + '</span>' + originalPriceHtml + negotiableHtml + '</div>' +
+            '<div class="tag-row">' + conditionTag + reasonTag + '</div>' +
+            '<div class="meta-block">' +
+              '<span class="meta-item">浏览 ' + (item.views || 0) + '</span>' +
+              '<span class="meta-item">' + esc((rtDescMeta.school ? rtDescMeta.school + ' · ' : '') + (item.campus || '')) + '</span>' +
+              '<span class="meta-item">' + esc(item.time || '') + '</span>' +
+            '</div>' +
+          '</div>' +
+          ((item.activityTimeStart && item.activityTimeEnd) ? '<div class="desc-card" style="background:#f0faf7;"><h3>活动时间</h3><p>' + esc(item.activityTimeStart) + ' 至 ' + esc(item.activityTimeEnd) + '</p></div>' : '') +
+          (item.description ? '<div class="desc-card"><h3>描述</h3><p>' + esc(item.description) + '</p></div>' : '') +
+          (item.contact ? '<div class="desc-card"><h3>联系方式</h3><p>' + esc(item.contact) + '</p></div>' : '') +
+          '<div class="desc-card" style="margin-top:12px;border:1px dashed #ddd;background:#fafafa;">' +
+            '<h3 style="display:flex;align-items:center;gap:6px;">' +
+              '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>遇到问题？' +
+            '</h3>' +
+            '<button class="btn btn-outline" id="report-btn" style="margin-top:8px;width:100%;">举报此商品</button>' +
+          '</div>' +
+          actionHtml;
+
+        var favBtn = document.getElementById('fav-btn');
+        if (favBtn) {
+          favBtn.addEventListener('click', function () {
+            var f = getFavs();
+            var idx = f.indexOf(item.id);
+            if (idx === -1) { f.push(item.id); }
+            else { f.splice(idx, 1); }
+            setFavs(f);
+            var nowFavd = f.indexOf(item.id) !== -1;
+            favBtn.classList.toggle('btn-primary', nowFavd);
+            favBtn.innerHTML = (nowFavd
+              ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 已收藏'
+              : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 收藏');
+          });
+        }
+        var delBtn = document.getElementById('del-btn');
+        if (delBtn) {
+          delBtn.addEventListener('click', async function () {
+            if (!confirm('确定要删除「' + item.title + '」吗？此操作不可恢复。')) return;
+            try {
+              await supabaseRequest('DELETE', '/rest/v1/items?id=eq.' + item.id);
+            } catch (e) {
+              alert('删除失败: ' + (e.message || '未知错误'));
+              return;
+            }
+            window.location.href = 'index.html';
+          });
+        }
+
+        var soldBtn = document.getElementById('sold-btn');
+        if (soldBtn) {
+          soldBtn.addEventListener('click', async function () {
+            if (!confirm('确认标记为已成交？成交后商品将不再公开展示。')) return;
+            try {
+              var descObj = {};
+              try { descObj = JSON.parse(item.description || '{}'); } catch (_) {}
+              descObj.status = 'sold';
+              await supabaseRequest('PATCH', '/rest/v1/items?id=eq.' + item.id, { description: JSON.stringify(descObj) });
+              alert('已标记为成交！');
+              window.location.href = 'index.html';
+            } catch (e) {
+              alert('操作失败: ' + (e.message || '未知错误'));
+            }
+          });
+        }
+
+        // 轮播指示器
+        var scroller = document.querySelector('.image-scroller');
+        var dotsContainer = document.getElementById('carousel-dots');
+        if (scroller && dotsContainer && imgs.length > 1) {
+          var dotsHtml = '';
+          for (var d = 0; d < imgs.length; d++) {
+            dotsHtml += '<span class="dot' + (d === 0 ? ' active' : '') + '" data-index="' + d + '"></span>';
+          }
+          dotsContainer.innerHTML = dotsHtml;
+          scroller.addEventListener('scroll', function () {
+            var scrollLeft = scroller.scrollLeft;
+            var slideWidth = scroller.clientWidth;
+            var index = Math.round(scrollLeft / slideWidth);
+            var dots = dotsContainer.querySelectorAll('.dot');
+            for (var di = 0; di < dots.length; di++) {
+              dots[di].classList.toggle('active', di === index);
+            }
+          });
+          // 点击圆点跳转
+          dotsContainer.addEventListener('click', function (e) {
+            var dot = e.target.closest('.dot');
+            if (!dot) return;
+            var idx = parseInt(dot.getAttribute('data-index'));
+            scroller.scrollTo({ left: scroller.clientWidth * idx, behavior: 'smooth' });
+          });
+        } else if (dotsContainer) {
+          dotsContainer.innerHTML = '';
+        }
+      }
+
+      function showNotFound(msg) {
+        container.innerHTML =
+          '<div class="not-found">' +
+          '<div class="icon-wrap"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>' +
+          '<h2>找不到商品</h2>' +
+          '<p>' + msg + '</p>' +
+          '</div>';
+      }
+
+      // 举报功能
+      var reportEvidence = [];
+      var MAX_REPORT_EVIDENCE = 3;
+
+      document.body.addEventListener('click', function(e) {
+        if (e.target.closest('#report-btn')) {
+          document.getElementById('report-overlay').classList.add('show');
+        }
+      });
+
+      document.getElementById('report-cancel').addEventListener('click', function() {
+        document.getElementById('report-overlay').classList.remove('show');
+      });
+
+      document.getElementById('report-overlay').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('show');
+      });
+
+      document.body.addEventListener('click', function(e) {
+        if (e.target.closest('#report-upload-trigger')) {
+          document.getElementById('report-file-input').click();
+        }
+      });
+
+      document.getElementById('report-file-input').addEventListener('change', function() {
+        var files = this.files;
+        for (var i = 0; i < files.length && reportEvidence.length < MAX_REPORT_EVIDENCE; i++) {
+          if (files[i].size > 5 * 1024 * 1024) { continue; } // 跳过超过 5MB
+          reportEvidence.push(files[i]);
+        }
+        renderReportEvidence();
+        this.value = '';
+      });
+
+      function renderReportEvidence() {
+        var grid = document.getElementById('report-upload-grid');
+        var html = '';
+        for (var i = 0; i < reportEvidence.length; i++) {
+          var url = URL.createObjectURL(reportEvidence[i]);
+          html += '<div class="report-evidence-wrap">' +
+            '<img class="report-evidence-img" src="' + url + '" />' +
+            '<button class="remove-img-btn" data-idx="' + i + '">×</button></div>';
+        }
+        if (reportEvidence.length < MAX_REPORT_EVIDENCE) {
+          html += '<label id="report-upload-trigger" style="width:72px;height:72px;border:1px dashed #ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:28px;color:#ccc;">+</label>';
+        }
+        grid.innerHTML = html;
+        // Re-bind
+        var trigger = document.getElementById('report-upload-trigger');
+        if (trigger) trigger.addEventListener('click', function() { document.getElementById('report-file-input').click(); });
+        grid.querySelectorAll('.remove-img-btn').forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            reportEvidence.splice(parseInt(this.getAttribute('data-idx'), 10), 1);
+            renderReportEvidence();
+          });
+        });
+      }
+
+      document.getElementById('report-submit').addEventListener('click', async function() {
+        var reason = document.getElementById('report-reason').value;
+        var detail = document.getElementById('report-detail').value.trim();
+        var reporterName = document.getElementById('report-name').value.trim();
+        var reporterContact = document.getElementById('report-contact').value.trim();
+        if (!reason) { alert('请选择举报原因'); return; }
+        if (!reporterName) { alert('请填写您的姓名'); return; }
+        if (!reporterContact) { alert('请填写联系方式（手机号/QQ/微信）'); return; }
+        
+        var reporterId = await getDeviceFingerprint();
+
+        // 上传证据图片到 Supabase Storage，返回公开 URL
+        var evidenceUrls = [];
+        for (var i = 0; i < reportEvidence.length; i++) {
+          var file = reportEvidence[i];
+          try {
+            // 压缩后上传
+            var blob = await new Promise(function(resolve) {
+              var img = new Image();
+              img.onload = function() {
+                var canvas = document.createElement('canvas');
+                var maxW = 800;
+                var scale = img.width > maxW ? maxW / img.width : 1;
+                canvas.width = img.width * scale;
+                canvas.height = img.height * scale;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                canvas.toBlob(function(b) { resolve(b || file); }, 'image/jpeg', 0.7);
+              };
+              img.onerror = function() { resolve(file); };
+              img.src = URL.createObjectURL(file);
+            });
+            var filename = 'report-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.jpg';
+            var uploadRes = await fetch('/storage/v1/object/report-evidence/' + filename, {
+              method: 'POST',
+              headers: {
+                'Authorization': 'Bearer ' + SUPABASE_KEY,
+                'x-device-token': getDeviceToken()
+              },
+              body: blob
+            });
+            if (uploadRes.ok) {
+              evidenceUrls.push(SUPABASE_URL + '/storage/v1/object/public/report-evidence/' + filename);
+            }
+          } catch (_) {}
+        }
+        
+        try {
+          await supabaseRequest('POST', '/rest/v1/reports', {
+            item_id: itemId,
+            reason: reason + (detail ? ' - ' + detail : '') + ' | 举报人：' + reporterName + ' | 联系方式：' + reporterContact,
+            evidence: evidenceUrls.length > 0 ? JSON.stringify(evidenceUrls) : null,
+            reporter_user_id: reporterId,
+            status: 'pending'
+          });
+          alert('举报已提交，我们会尽快审核处理，感谢你的反馈！');
+          document.getElementById('report-overlay').classList.remove('show');
+          reportEvidence = [];
+          document.getElementById('report-reason').value = '';
+          document.getElementById('report-detail').value = '';
+          document.getElementById('report-name').value = '';
+          document.getElementById('report-contact').value = '';
+          renderReportEvidence();
+        } catch (e) {
+          alert('举报提交失败：' + (e.message || '请检查网络或联系管理员'));
+        }
+      });
+
+      renderReportEvidence();
+      upgradeDeviceToken();
+      init();
+    })();
+  </script>
+  <footer style="text-align:center;padding:20px 16px 28px;">
+    <a href="disclaimer.html" style="color:#999;font-size:12px;text-decoration:none;">免责声明</a>
+  </footer>
+</body>
+</html>
