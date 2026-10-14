@@ -1,0 +1,1162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://laqliecldqfjfhsooyey.supabase.co blob:; connect-src 'self' https://laqliecldqfjfhsooyey.supabase.co; font-src 'self';" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>大学生信息资源共享平台</title>
+  <style>
+    :root {
+      --bg:      oklch(98% 0.004 240);
+      --surface: oklch(100% 0 0);
+      --fg:      oklch(20% 0.02 240);
+      --muted:   oklch(50% 0.018 240);
+      --border:  oklch(90% 0.006 240);
+      --accent:  oklch(56% 0.12 170);
+      --accent-dark: oklch(42% 0.10 170);
+      --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+      --font-body:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+      --radius-card: 14px;
+      --radius-chip: 999px;
+      --radius-sm: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .top-nav .logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--accent-dark);
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+    .top-nav .logo span { color: var(--accent); }
+    .top-nav .logo .sold-badge {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--muted);
+      margin-left: 8px;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .top-nav .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s, transform 0.1s;
+      text-decoration: none;
+      position: relative;
+    }
+    .nav-icon-btn:hover { background: var(--bg); color: var(--fg); }
+    .nav-icon-btn:active { transform: scale(0.92); }
+    .nav-icon-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .nav-icon-btn .fav-count {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: var(--accent);
+      color: white;
+      font-size: 10px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      display: none;
+    }
+    .nav-icon-btn .fav-count.show { display: flex; }
+    .btn-guide {
+      display: inline-flex;
+      align-items: center;
+      background: transparent;
+      color: var(--accent-dark);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-guide:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+    .btn-guide:active { transform: scale(0.97); }
+    .btn-publish {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent);
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-publish:hover { background: var(--accent-dark); }
+    .btn-publish:active { transform: scale(0.97); }
+    .btn-publish:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .hero-banner {
+      background: var(--surface);
+      text-align: center;
+      padding: 36px 24px 28px;
+      border-bottom: 2px solid oklch(56% 0.12 170 / 0.12);
+    }
+    .hero-banner h1 {
+      font-family: var(--font-display);
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .hero-banner p {
+      color: var(--muted);
+      font-size: 15px;
+      margin-top: 6px;
+    }
+    .search-section {
+      max-width: 1200px;
+      margin: 16px auto 0;
+      padding: 0 24px;
+    }
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 0 14px;
+      transition: border-color 0.15s;
+    }
+    .search-bar:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px oklch(56% 0.12 170 / 0.12); }
+    .search-bar input {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      padding: 12px 10px;
+      font-size: 15px;
+      font-family: var(--font-body);
+      color: var(--fg);
+      outline: none;
+    }
+    .search-bar input::placeholder { color: var(--muted); }
+    .search-bar button { min-height: 36px;
+      background: none;
+      border: 0;
+      padding: 8px;
+      cursor: pointer;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      transition: color 0.15s;
+    }
+    .search-bar .clear-btn { display: none; }
+    .search-bar .clear-btn.show { display: flex; }
+    .controls-row {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 24px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .result-count {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .result-count strong { color: var(--fg); font-weight: 600; }
+    .filter-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .sort-select {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      font-size: 13px;
+      font-family: var(--font-body);
+      color: var(--fg);
+      outline: none;
+      cursor: pointer;
+    }
+    .sort-select:focus { border-color: var(--accent); }
+    .sort-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .sort-select option { font-size: 14px; }
+    .filter-toggle-btn {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: all 0.15s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .filter-toggle-btn:hover { border-color: var(--accent); color: var(--accent-dark); }
+    .filter-toggle-btn:active { transform: scale(0.97); }
+    .filter-toggle-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .filter-toggle-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+    .category-bar {
+      display: flex;
+      gap: 8px;
+      padding: 0 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .category-bar::-webkit-scrollbar { display: none; }
+    .chip {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s, transform 0.1s;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .chip:hover { border-color: var(--accent); color: var(--accent-dark); }
+    .chip:active { transform: scale(0.96); }
+    .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .chip.active { background: var(--accent); color: white; border-color: var(--accent); }
+    .chip.active svg { stroke: white; }
+    .chip svg { flex-shrink: 0; }
+    .subcategory-bar {
+      display: flex;
+      gap: 6px;
+      padding: 10px 24px 6px;
+      max-width: 1200px;
+      margin: 0 auto;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      min-height: 14px;
+      scrollbar-width: none;
+    }
+    .subcategory-bar::-webkit-scrollbar { display: none; }
+    .subcategory-bar .chip-sub {
+      flex-shrink: 0;
+      padding: 5px 14px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .subcategory-bar .chip-sub:active { transform: scale(0.96); }
+    .subcategory-bar .chip-sub:hover { color: var(--accent-dark); }
+    .subcategory-bar .chip-sub.active {
+      background: oklch(56% 0.12 170 / 0.1);
+      color: var(--accent-dark);
+      border-color: oklch(56% 0.12 170 / 0.2);
+    }
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 0 24px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .item-card {
+      background: var(--surface);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.15s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+    }
+    .item-card:hover {
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+      transform: translateY(-3px);
+    }
+    .item-card:active { transform: translateY(-1px) scale(0.99); }
+    .item-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .item-card .thumb {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: oklch(94% 0.01 240);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 13px;
+      overflow: hidden;
+      position: relative;
+    }
+    .item-card .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .item-card .thumb .initials {
+      font-size: 28px;
+      font-weight: 700;
+      color: oklch(80% 0.02 240);
+      letter-spacing: 0.04em;
+    }
+    .item-card .thumb .img-count {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+      display: none;
+    }
+    .item-card .thumb .img-count.show { display: block; }
+    .item-card .card-details {
+      display: flex;
+      gap: 6px;
+      margin-top: 2px;
+      flex-wrap: wrap;
+    }
+    .item-card .card-condition {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #e8f5e9;
+      color: #2e7d32;
+      white-space: nowrap;
+    }
+    .item-card .card-reason {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #fff3e0;
+      color: #e65100;
+      white-space: nowrap;
+    }
+    .item-card .card-sold {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #fce4ec;
+      color: #c62828;
+      white-space: nowrap;
+    }
+    .item-card .card-fav {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      background: rgba(0,0,0,0.4);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 10px;
+      backdrop-filter: blur(4px);
+      display: none;
+    }
+    .item-card .card-fav.show { display: inline; }
+    .item-card .info {
+      padding: 14px 16px 16px;
+    }
+    .item-card .info .title {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .item-card .info .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .item-card .info .price {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent-dark);
+      letter-spacing: -0.01em;
+    }
+    .item-card .info .original-price {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+    .item-card .info .meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .item-card .info .meta .tag-subcategory {
+      font-size: 11px;
+      font-weight: 500;
+      color: oklch(50% 0.04 200);
+      background: oklch(94% 0.03 200 / 0.3);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .item-card .info .meta .tag-negotiable {
+      font-size: 11px;
+      font-weight: 600;
+      color: oklch(50% 0.06 80);
+      background: oklch(94% 0.02 80 / 0.4);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 80px 24px;
+      color: var(--muted);
+      grid-column: 1 / -1;
+    }
+    .empty-state .empty-icon { margin-bottom: 14px; opacity: 0.35; }
+    .empty-state h2 { font-size: 20px; font-weight: 600; color: var(--fg); margin-bottom: 6px; }
+    .empty-state p { font-size: 14px; margin-bottom: 16px; }
+    .empty-state .empty-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 24px;
+      background: var(--accent);
+      color: white;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .empty-state .empty-cta:hover { background: var(--accent-dark); }
+    .empty-state .empty-cta:active { transform: scale(0.97); }
+    .empty-state .empty-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .loading-skeleton {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 0 24px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .loading-skeleton .sk-card {
+      background: var(--surface);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      height: 280px;
+    }
+    .loading-skeleton .sk-thumb {
+      height: 140px;
+      background: oklch(94% 0.01 240);
+      animation: sk-pulse 1.6s ease-in-out infinite;
+    }
+    .loading-skeleton .sk-body {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .loading-skeleton .sk-line {
+      height: 14px;
+      border-radius: 8px;
+      background: oklch(94% 0.01 240);
+      animation: sk-pulse 1.6s ease-in-out infinite;
+    }
+    .loading-skeleton .sk-line.wide { width: 85%; }
+    .loading-skeleton .sk-line.medium { width: 55%; }
+    .loading-skeleton .sk-line.narrow { width: 35%; }
+    @keyframes sk-pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.7; }
+    }
+    @media (max-width: 700px) {
+      .loading-skeleton { padding: 0 16px 36px; gap: 12px; grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 400px) {
+      .loading-skeleton { grid-template-columns: 1fr; gap: 14px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .loading-skeleton .sk-thumb,
+      .loading-skeleton .sk-line { animation: none; opacity: 0.3; }
+    }
+    .empty-state .empty-cta:active { transform: scale(0.97); }
+    .empty-state .empty-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    @media (max-width: 700px) {
+      .top-nav { padding: 12px 16px; }
+      .top-nav .logo { font-size: 18px; }
+      .hero-banner { padding: 22px 16px 18px; }
+      .hero-banner h1 { font-size: clamp(20px, 5vw, 28px); }
+      .search-section { padding: 0 16px; }
+      .search-bar input { padding: 11px 8px; font-size: 16px; }
+      .controls-row { padding: 12px 16px 8px; gap: 8px; }
+      .filter-group { width: 100%; }
+      .filter-group .sort-select,
+      .filter-group .filter-toggle-btn { flex: 1; min-height: 42px; }
+      .filter-toggle-btn { justify-content: center; }
+      .category-bar { padding: 0 16px; gap: 6px; }
+      .chip { padding: 7px 14px; font-size: 12px; }
+      .subcategory-bar { padding: 8px 16px 4px; }
+      .item-grid { padding: 0 16px 36px; gap: 12px; grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 700px) {
+      .filter-group { flex-wrap: wrap; }
+      .filter-group .filter-toggle-btn { flex: 1 0 auto; }
+    }
+    @media (max-width: 400px) {
+      .item-grid { grid-template-columns: 1fr; gap: 14px; }
+      .controls-row { flex-direction: column; align-items: stretch; }
+      .filter-group .filter-toggle-btn { flex: 1 1 45%; }
+    }
+    .safety-banner { background:#fff5f5; border-bottom:1px solid #fecaca; overflow:hidden; padding:6px 0; }
+    .safety-scroll { display:inline-block; white-space:nowrap; animation:marquee 18s linear infinite; color:#dc2626; font-size:12px; font-weight:600; padding-left:100%; }
+    @keyframes marquee { to { transform:translateX(-100%); } }
+    .site-footer { text-align:center; padding:20px 16px 28px; }
+    .site-footer a { color:#999; font-size:12px; text-decoration:none; }
+    .site-footer a:hover { color:#666; }
+  </style>
+</head>
+<body>
+  <nav class="top-nav" data-od-id="top-nav">
+    <a href="index.html" class="logo">杭电信息<span>资源共享平台</span><span class="sold-badge" id="sold-badge">本站已成交 0 次</span></a>
+    <div class="nav-links">
+      <a class="nav-icon-btn" id="fav-link" href="javascript:void(0)" aria-label="我的收藏" data-od-id="fav-link" title="我的收藏">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+        <span class="fav-count" id="fav-count">0</span>
+      </a>
+      <a href="guide.html" class="btn-guide">新生指南</a>
+      <a href="publish.html" class="btn-publish" data-od-id="btn-publish-nav">+ 发布</a>
+    </div>
+  </nav>
+  <div class="hero-banner" data-od-id="hero-banner">
+    <h1>大学生信息资源共享平台</h1>
+    <p>让闲置在校园里找到新主人</p>
+  </div>
+  <div class="search-section" data-od-id="search-section">
+    <div class="search-bar" data-od-id="search-bar">
+      <button aria-label="搜索">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
+      <input type="text" id="search-input" placeholder="搜索商品名称、描述…" autocomplete="off" data-od-id="search-input" />
+      <button class="clear-btn" id="clear-search" aria-label="清除" data-od-id="clear-search-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="controls-row" data-od-id="controls-row">
+    <span class="result-count" id="result-count" data-od-id="result-count">共 <strong>0</strong> 件商品</span>
+    <div class="filter-group">
+      <button class="filter-toggle-btn" id="my-items-filter" data-od-id="my-items-filter">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        我的发布
+      </button>
+      <button class="filter-toggle-btn" id="fav-filter" data-od-id="fav-filter">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        收藏
+      </button>
+      <select class="sort-select" id="school-select" data-od-id="school-select">
+        <option value="">全部学校</option>
+        <option value="杭州电子科技大学">杭州电子科技大学</option>
+        <option value="浙江大学">浙江大学</option>
+        <option value="浙江工业大学">浙江工业大学</option>
+        <option value="浙江理工大学">浙江理工大学</option>
+        <option value="浙江工商大学">浙江工商大学</option>
+        <option value="杭州师范大学">杭州师范大学</option>
+        <option value="中国计量大学">中国计量大学</option>
+        <option value="浙江财经大学">浙江财经大学</option>
+        <option value="浙江传媒学院">浙江传媒学院</option>
+        <option value="其他">其他</option>
+      </select>
+      <select class="sort-select" id="sort-select" data-od-id="sort-select">
+        <option value="newest">最新发布</option>
+        <option value="price-asc">价格从低到高</option>
+        <option value="price-desc">价格从高到低</option>
+      </select>
+    </div>
+  </div>
+  <div class="category-bar" data-od-id="category-bar">
+    <span class="chip active" data-cat="全部" data-od-id="cat-all">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+      </svg>
+      全部
+    </span>
+    <span class="chip" data-cat="书籍" data-od-id="cat-books">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+       书籍
+    </span>
+    <span class="chip" data-cat="电子产品" data-od-id="cat-electronics">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+       电子产品
+    </span>
+    <span class="chip" data-cat="日用品" data-od-id="cat-daily">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+       日用品
+    </span>
+    <span class="chip" data-cat="交通工具" data-od-id="cat-transport">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="17" r="2"/><circle cx="19" cy="17" r="2"/><path d="M12 17V9"/><path d="M5 17V9l4-2h6l4 2v8"/></svg>
+       交通工具
+    </span>
+    <span class="chip" data-cat="卡类" data-od-id="cat-cards">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="12" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="6" y1="14" x2="10" y2="14"/><line x1="13" y1="14" x2="17" y2="14"/></svg>
+       卡类
+    </span>
+    <span class="chip" data-cat="学习用品" data-od-id="cat-study">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+       学习用品
+    </span>
+    <span class="chip" data-cat="搭子" data-od-id="cat-partner">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M8 14v-1a4 4 0 0 1 8 0v1"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/></svg>
+       搭子
+    </span>
+    <span class="chip" data-cat="兼职" data-od-id="cat-job">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><circle cx="12" cy="12" r="1.5"/><path d="M16 7.5V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2.5"/></svg>
+       兼职
+    </span>
+    <span class="chip" data-cat="志愿者" data-od-id="cat-volunteer">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+       志愿者
+    </span>
+  </div>
+  <div class="subcategory-bar" id="subcategory-bar" data-od-id="subcategory-bar"></div>
+  <div class="safety-banner"><span class="safety-scroll">安全提醒：本平台仅提供信息展示，交易请务必在校园公共场所当面进行，切勿提前转账！</span></div>
+  <div class="loading-skeleton" id="loading-sk" data-od-id="loading-skeleton">
+    <div class="sk-card"><div class="sk-thumb"></div><div class="sk-body"><div class="sk-line wide"></div><div class="sk-line medium"></div><div class="sk-line narrow"></div></div></div>
+    <div class="sk-card"><div class="sk-thumb"></div><div class="sk-body"><div class="sk-line wide"></div><div class="sk-line medium"></div><div class="sk-line narrow"></div></div></div>
+    <div class="sk-card"><div class="sk-thumb"></div><div class="sk-body"><div class="sk-line wide"></div><div class="sk-line medium"></div><div class="sk-line narrow"></div></div></div>
+    <div class="sk-card"><div class="sk-thumb"></div><div class="sk-body"><div class="sk-line wide"></div><div class="sk-line medium"></div><div class="sk-line narrow"></div></div></div>
+  </div>
+  <div class="item-grid" id="item-grid" data-od-id="item-grid"></div>
+  <div id="error-state" class="empty-state" style="display:none" data-od-id="error-state">
+    <div class="empty-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+    <h2>数据异常</h2>
+    <p>商品数据加载失败，可能已损坏</p>
+    <button class="empty-cta" id="recover-btn" style="border:0;cursor:pointer;font-family:var(--font-body);">尝试恢复</button>
+  </div>
+
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://laqliecldqfjfhsooyey.supabase.co';
+      var SUPABASE_KEY = 'sb_publishable_qi2Q0YL4AttETlna_wXqRA_aNovSxCG';
+
+      async function supabaseRequest(method, path, body) {
+        var headers = {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json'
+        };
+        if (method === 'POST' || method === 'PATCH') {
+          headers['Prefer'] = 'return=representation';
+        }
+        // VUL-P0: 写操作附带签名 device_token
+        if (['POST', 'PUT', 'DELETE', 'PATCH'].indexOf(method) !== -1) {
+          headers['x-device-token'] = getDeviceToken();
+        }
+        var options = { method: method, headers: headers };
+        if (body) { options.body = JSON.stringify(body); }
+        var res = await fetch(SUPABASE_URL + path, options);
+        if (!res.ok) throw new Error('API error: ' + res.status);
+        var text = await res.text();
+        return text ? JSON.parse(text) : [];
+      }
+      function getDeviceToken() {
+        let token = localStorage.getItem('device_token');
+        if (!token) { token = crypto.randomUUID(); localStorage.setItem('device_token', token); }
+        return token;
+      }
+      // 签名 token 形如 "uuid.签名"，user_id 只取 uuid 部分（Supabase uuid 列）
+      function getUserId() {
+        let t = getDeviceToken();
+        const i = t.indexOf('.');
+        return i === -1 ? t : t.substring(0, i);
+      }
+      // 启动时从 Worker 获取签名 token，替换旧版 UUID
+      async function upgradeDeviceToken() {
+        let token = localStorage.getItem('device_token');
+        // 已是签名 token 则跳过
+        if (token && token.includes('.')) return;
+        try {
+          // 用现有 uuid 请求签名，避免身份漂移导致"我的发布"不同步
+          var q = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token) ? ('?uuid=' + encodeURIComponent(token)) : '';
+          var r = await fetch('/api/device-token' + q);
+          if (r.ok) {
+            var data = await r.json();
+            if (data && data.token) {
+              localStorage.setItem('device_token', data.token);
+            }
+          }
+        } catch (e) { /* Worker 不可用时保留旧 token */ }
+      }
+      var subcategoryMap = {
+        '书籍': ['专业教材', '小说/文学', '考试教辅', '杂志/期刊', '课外读物', '其他'],
+        '电子产品': ['手机/平板', '电脑/笔记本', '耳机/音箱', '充电器/线材', '键盘/鼠标', '其他'],
+        '日用品': ['宿舍家居', '洗护用品', '收纳整理', '小电器', '衣物鞋包', '其他'],
+        '交通工具': ['自行车', '电动车', '滑板/滑板车', '代步工具配件', '其他'],
+        '卡类': ['校园卡', '公交卡', '超市购物卡', '电话卡', '其他'],
+        '学习用品': ['文具', '笔记本/纸张', '美术用品', '办公用品', '计算器', '其他'],
+        '搭子': ['学习搭子', '运动搭子', '饭搭子', '游戏搭子', '旅游搭子', '其他'],
+        '兼职': ['校内兼职', '家教', '实习', '线上兼职', '其他'],
+        '志愿者': ['支教助学', '社区服务', '环保公益', '赛事服务', '校园服务', '敬老助残', '其他']
+      };
+
+      var grid = document.getElementById('item-grid');
+      var loadingSk = document.getElementById('loading-sk');
+      var errorState = document.getElementById('error-state');
+      var recoverBtn = document.getElementById('recover-btn');
+      var searchInput = document.getElementById('search-input');
+      var clearBtn = document.getElementById('clear-search');
+      var sortSelect = document.getElementById('sort-select');
+      var schoolSelect = document.getElementById('school-select');
+      var resultCount = document.getElementById('result-count');
+      var chips = document.querySelectorAll('.chip');
+      var subcategoryBar = document.getElementById('subcategory-bar');
+      var favFilterBtn = document.getElementById('fav-filter');
+      var favCountBadge = document.getElementById('fav-count');
+      var currentCat = '全部';
+      var currentSub = '';
+      var currentSchool = '';
+      var searchQuery = '';
+      var searchKeywords = [];
+      var showMyItems = false;
+      var myItemsBtn = document.getElementById('my-items-filter');
+      var showFavOnly = false;
+      var debounceTimer = null;
+      var dataError = false;
+
+      if (recoverBtn) {
+        recoverBtn.addEventListener('click', function () {
+          dataError = false;
+          update();
+        });
+      }
+
+      async function getItems() {
+        try {
+          var result = await supabaseRequest('GET', '/rest/v1/items?select=id,name,price,description,category,campus,image,is_negotiable,user_id&order=created_at.desc&limit=50');
+          dataError = false;
+          return (result || []).map(function (item) {
+            var descMeta = {};
+            try { descMeta = JSON.parse(item.description || '{}'); } catch (_) {}
+            return {
+              id: item.id,
+              title: item.name || '',
+              name: item.name || '',
+              price: item.price,
+              category: item.category,
+              school: descMeta.school || item.campus,
+              description: descMeta.description || item.description || '',
+              subcategory: descMeta.subcategory || '',
+              condition: descMeta.condition || '',
+              reason: descMeta.reason || '',
+              originalPrice: descMeta.originalPrice || null,
+              image: item.image,
+              images: (function () {
+                try { var parsed = JSON.parse(item.image); return Array.isArray(parsed) ? parsed : []; } catch (_) { return []; }
+              })(),
+              negotiable: item.is_negotiable,
+              is_negotiable: item.is_negotiable,
+              user_id: item.user_id,
+              status: descMeta.status || 'active',
+              time: ''
+            };
+          });
+        } catch (_) { dataError = true; return []; }
+      }
+
+      function getFavs() {
+        try { return JSON.parse(localStorage.getItem('fav_items') || '[]'); }
+        catch (_) { return []; }
+      }
+
+      function updateFavBadge() {
+        var f = getFavs();
+        var badge = favCountBadge;
+        if (f.length > 0) { badge.textContent = f.length; badge.classList.add('show'); }
+        else { badge.classList.remove('show'); }
+      }
+
+      function updateSoldBadge(items) {
+        var badge = document.getElementById('sold-badge');
+        if (!badge) return;
+        var count = 0;
+        if (items) {
+          for (var i = 0; i < items.length; i++) {
+            if (items[i].status === 'sold') count++;
+          }
+        }
+        badge.textContent = '本站已成交 ' + count + ' 次';
+      }
+
+      function renderSubcategories(cat) {
+        var subs = subcategoryMap[cat] || [];
+        currentSub = '';
+        if (!cat || cat === '全部' || subs.length === 0) { subcategoryBar.innerHTML = ''; return; }
+        subcategoryBar.innerHTML = '<span class="chip-sub active" data-sub="">全部 ' + cat + '</span>' +
+          subs.map(function (s) { return '<span class="chip-sub" data-sub="' + s + '">' + s + '</span>'; }).join('');
+        subcategoryBar.querySelectorAll('.chip-sub').forEach(function (el) {
+          el.addEventListener('click', function () {
+            subcategoryBar.querySelectorAll('.chip-sub').forEach(function (c) { c.classList.remove('active'); });
+            el.classList.add('active');
+            currentSub = el.getAttribute('data-sub');
+            update();
+          });
+        });
+      }
+
+      function filterAndSort(list) {
+        var filtered = list;
+        // 非"我的发布"模式下过滤已成交商品
+        if (!showMyItems) {
+          filtered = filtered.filter(function (item) { return !item.status || item.status !== 'sold'; });
+        }
+        if (showMyItems) {
+          var token = getUserId();
+          filtered = filtered.filter(function (item) { return item.user_id === token; });
+        }
+        if (showFavOnly) {
+          var favs = getFavs();
+          filtered = filtered.filter(function (item) { return favs.indexOf(item.id) !== -1; });
+        }
+        if (currentCat !== '全部') {
+          filtered = filtered.filter(function (item) { return item.category === currentCat; });
+        }
+        if (currentSub) {
+          filtered = filtered.filter(function (item) { return item.subcategory === currentSub; });
+        }
+        if (currentSchool) {
+          filtered = filtered.filter(function (item) { return item.school === currentSchool; });
+        }
+        if (searchKeywords.length > 0) {
+          // AI 解析后的多关键词匹配（任一关键词命中即保留）
+          filtered = filtered.filter(function (item) {
+            var haystack = (item.title + ' ' + (item.description || '') + ' ' + (item.category || '') + ' ' + (item.subcategory || '')).toLowerCase();
+            return searchKeywords.some(function (kw) {
+              return kw && haystack.indexOf(String(kw).toLowerCase()) !== -1;
+            });
+          });
+        } else if (searchQuery) {
+          // 回退：原始单关键词匹配
+          var q = searchQuery.toLowerCase();
+          filtered = filtered.filter(function (item) {
+            return item.title.toLowerCase().indexOf(q) !== -1 ||
+                   (item.description && item.description.toLowerCase().indexOf(q) !== -1) ||
+                   (item.category && item.category.toLowerCase().indexOf(q) !== -1);
+          });
+        }
+        var sort = sortSelect.value;
+        var sorted = filtered.slice();
+        if (sort === 'newest') sorted.sort(function (a, b) { return (b.id || 0) - (a.id || 0); });
+        else if (sort === 'price-asc') sorted.sort(function (a, b) { return a.price - b.price; });
+        else if (sort === 'price-desc') sorted.sort(function (a, b) { return b.price - a.price; });
+        return sorted;
+      }
+
+      function render(list) {
+        loadingSk.style.display = 'none';
+        errorState.style.display = 'none';
+        grid.style.display = '';
+        var favs = getFavs();
+        if (!list || list.length === 0) {
+          var emptyTitle = '没有找到商品';
+          var msg = showMyItems ? '你还没有发布过商品' : (showFavOnly ? '还没有收藏的商品' : (searchQuery ? '试试其他关键词' : '还没有人发布商品'));
+          var cta = '';
+          if (showMyItems) cta = '<a href="publish.html" class="empty-cta">+ 发布第一件闲置</a>';
+          else if (!showFavOnly && !searchQuery) cta = '<a href="publish.html" class="empty-cta">+ 发布第一件闲置</a>';
+          if (showMyItems) emptyTitle = '暂无发布';
+          else if (showFavOnly) emptyTitle = '暂无收藏';
+          grid.innerHTML =
+            '<div class="empty-state" data-od-id="empty-state">' +
+            '<div class="empty-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="13" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg></div>' +
+            '<h2>' + emptyTitle + '</h2>' +
+            '<p>' + msg + '</p>' + cta + '</div>';
+          resultCount.innerHTML = '共 <strong>0</strong> 件商品';
+          return;
+        }
+        resultCount.innerHTML = '共 <strong>' + list.length + '</strong> 件商品';
+        grid.innerHTML = list.map(function (item) {
+          var imgs = item.images || (item.image ? [item.image] : []);
+          var hasImg = imgs.length > 0;
+          var imgSrc = hasImg ? imgs[0] : null;
+          var initials = item.title.slice(0, 2);
+          var imageHtml = imgSrc
+            ? '<img src="' + imgSrc + '" alt="' + item.title + '" />'
+            : '<span class="initials">' + initials + '</span>';
+          var conditionBadge = item.condition
+            ? '<span class="card-condition">' + item.condition + '</span>' : '';
+          var reasonBadge = item.reason
+            ? '<span class="card-reason">' + item.reason + '</span>' : '';
+          var soldBadge = (item.status === 'sold')
+            ? '<span class="card-sold">已成交</span>' : '';
+          var imgCount = imgs.length > 1
+            ? '<span class="img-count show">+' + (imgs.length - 1) + '</span>' : '';
+          var origPrice = item.originalPrice
+            ? '<span class="original-price">¥' + item.originalPrice + '</span>' : '';
+          var negotiableTag = item.negotiable !== false
+            ? '<span class="tag-negotiable">可议价</span>' : '';
+          var subTag = item.subcategory
+            ? '<span class="tag-subcategory">' + item.subcategory + '</span>' : '';
+          var isFavd = favs.indexOf(item.id) !== -1;
+          var favTag = isFavd ? '<span class="card-fav show"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>' : '';
+          return '<a class="item-card" href="item.html?id=' + item.id + '" data-od-id="item-card-' + item.id + '">' +
+            '<div class="thumb" data-od-id="item-thumb-' + item.id + '">' +
+              imageHtml + imgCount + favTag +
+            '</div>' +
+            '<div class="info">' +
+              '<div class="title" data-od-id="item-title-' + item.id + '">' + item.title + '</div>' +
+              '<div class="price-row">' +
+                '<span class="price" data-od-id="item-price-' + item.id + '">¥' + item.price + '</span>' +
+                origPrice + negotiableTag +
+              '</div>' +
+              '<div class="card-details">' + conditionBadge + reasonBadge + soldBadge + '</div>' +
+              '<div class="meta">' +
+                '<span>' + subTag + '</span>' +
+                '<span>' + (item.school || '') + ' · ' + (item.time || '') + '</span>' +
+              '</div>' +
+            '</div></a>';
+        }).join('');
+      }
+
+      async function update() {
+        var all = await getItems();
+        if (dataError) {
+          loadingSk.style.display = 'none';
+          grid.style.display = 'none';
+          errorState.style.display = '';
+          return;
+        }
+        var result = filterAndSort(all);
+        updateSoldBadge(all);
+        render(result);
+      }
+
+      function debouncedSearch() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function () {
+          searchQuery = searchInput.value.trim();
+          clearBtn.classList.toggle('show', !!searchQuery);
+          resolveSearch(searchQuery);
+        }, 300);
+      }
+
+      // 判断是否需要走 AI 自然语言解析（简单关键词直接本地匹配）
+      function needsAiSearch(q) {
+        if (!q || q.length < 4) return false;
+        if (q.indexOf(' ') !== -1) return true;
+        var hints = ['便宜', '适合', '推荐', '好用', '想买', '求购', '性价比', '学生', '新生', '宿舍', '考研', '学习', '求', '找', '二手', '性价比'];
+        for (var i = 0; i < hints.length; i++) {
+          if (q.indexOf(hints[i]) !== -1) return true;
+        }
+        return false;
+      }
+
+      // 智能搜索：自然语言 → AI 解析关键词 → 展示结果
+      async function resolveSearch(q) {
+        if (!q) {
+          searchKeywords = [];
+          aiSearching = false;
+          update();
+          return;
+        }
+        if (needsAiSearch(q)) {
+          aiSearching = true;
+          try {
+            var res = await fetch('/api/ai', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'search', query: q })
+            });
+            // 空响应体防护：先读文本再解析，避免 res.json() 对空 body 抛 "Unexpected end of JSON input"
+            var rawText = await res.text();
+            var data = null;
+            if (rawText) { try { data = JSON.parse(rawText); } catch (e) {} }
+            if (data && Array.isArray(data.keywords) && data.keywords.length > 0) {
+              searchKeywords = data.keywords;
+              // 价格倾向映射到排序
+              if (data.priceHint === 'cheap') sortSelect.value = 'price-asc';
+              else if (data.priceHint === 'expensive') sortSelect.value = 'price-desc';
+              // 分类倾向（仅在"全部"时自动切换）
+              if (data.category && currentCat === '全部' && data.category !== '全部') {
+                var target = document.querySelector('.chip[data-cat="' + data.category + '"]');
+                if (target) {
+                  chips.forEach(function (c) { c.classList.remove('active'); });
+                  target.classList.add('active');
+                  currentCat = data.category;
+                  renderSubcategories(currentCat);
+                }
+              }
+            } else {
+              searchKeywords = [q];
+            }
+          } catch (e) {
+            searchKeywords = [q];
+          }
+          aiSearching = false;
+        } else {
+          searchKeywords = [q];
+        }
+        update();
+      }
+
+      searchInput.addEventListener('input', debouncedSearch);
+      clearBtn.addEventListener('click', function () {
+        searchInput.value = '';
+        searchQuery = '';
+        searchKeywords = [];
+        clearBtn.classList.remove('show');
+        update();
+        searchInput.focus();
+      });
+      sortSelect.addEventListener('change', update);
+      schoolSelect.addEventListener('change', function () {
+        currentSchool = this.value;
+        update();
+      });
+
+      chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          chips.forEach(function (c) { c.classList.remove('active'); });
+          chip.classList.add('active');
+          currentCat = chip.getAttribute('data-cat');
+          if (showFavOnly) { showFavOnly = false; favFilterBtn.classList.remove('active'); }
+          renderSubcategories(currentCat);
+          update();
+        });
+      });
+
+      if (myItemsBtn) {
+        myItemsBtn.addEventListener('click', function () {
+          showMyItems = !showMyItems;
+          this.classList.toggle('active', showMyItems);
+          if (showMyItems) {
+            showFavOnly = false; favFilterBtn.classList.remove('active');
+            chips.forEach(function (c) { c.classList.remove('active'); });
+            document.querySelector('.chip[data-cat="全部"]').classList.add('active');
+            currentCat = '全部';
+            renderSubcategories(currentCat);
+          }
+          update();
+        });
+      }
+
+      favFilterBtn.addEventListener('click', function () {
+        showFavOnly = !showFavOnly;
+        this.classList.toggle('active', showFavOnly);
+        if (showFavOnly) {
+          showMyItems = false; if (myItemsBtn) myItemsBtn.classList.remove('active');
+          chips.forEach(function (c) { c.classList.remove('active'); });
+          document.querySelector('.chip[data-cat="全部"]').classList.add('active');
+          currentCat = '全部';
+          renderSubcategories(currentCat);
+        }
+        update();
+      });
+
+      document.getElementById('fav-link').addEventListener('click', function () {
+        showFavOnly = true;
+        showMyItems = false; if (myItemsBtn) myItemsBtn.classList.remove('active');
+        favFilterBtn.classList.add('active');
+        chips.forEach(function (c) { c.classList.remove('active'); });
+        document.querySelector('.chip[data-cat="全部"]').classList.add('active');
+        currentCat = '全部';
+        renderSubcategories('');
+        update();
+        window.scrollTo({ top: document.querySelector('.controls-row').offsetTop - 60, behavior: 'smooth' });
+      });
+
+      function fromUrl() {
+        var p = new URLSearchParams(window.location.search);
+        var cat = p.get('cat');
+        if (cat) {
+          chips.forEach(function (c) {
+            c.classList.toggle('active', c.getAttribute('data-cat') === cat);
+          });
+          currentCat = cat;
+          renderSubcategories(currentCat);
+          update();
+        }
+      }
+
+      updateFavBadge();
+      updateSoldBadge();
+      fromUrl();
+      upgradeDeviceToken();
+      update();
+    })();
+  </script>
+  <footer class="site-footer"><a href="disclaimer.html">免责声明</a></footer>
+</body>
+</html>
