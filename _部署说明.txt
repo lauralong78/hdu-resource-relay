@@ -1,0 +1,13 @@
+﻿campus-market deployment v20260824-recog-v8
+
+上传 ZIP 方式（推荐）:
+1. Cloudflare Dashboard -> Workers & Pages -> hd2-6pi -> 生产分支。
+2. 点"上传资产" -> "Workers"，拖入本 zip，选"替换现有 Worker"。
+3. 部署后访问 https://hd2-6pi.pages.dev/api/ai 必须看到 "version":"20260824-recog-v8"
+   若仍是旧版本号或返回页面 HTML，说明未生效，重新上传一次。
+
+本版(相对 v7)修复:
+- 修复 AI 润色回填出现 "[object Object]"：后端 result 统一 toStr 消毒成字符串，
+  前端再次兜底（非字符串视为空/取 text/content/value 常用字段），杜绝 [object Object] 进描述框。
+- 保留 v7 的视觉识别模型备用链(llama-3.2-11b-vision-instruct -> llava-1.5-7b-hf)与容量退避重试。
+
