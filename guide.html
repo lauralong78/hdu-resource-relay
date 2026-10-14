@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://laqliecldqfjfhsooyey.supabase.co blob:; connect-src 'self' https://laqliecldqfjfhsooyey.supabase.co; font-src 'self';" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>新生指南 — 大学生信息资源共享平台</title>
+  <style>
+    :root {
+      --bg:      oklch(98% 0.004 240);
+      --surface: oklch(100% 0 0);
+      --fg:      oklch(20% 0.02 240);
+      --muted:   oklch(50% 0.018 240);
+      --border:  oklch(90% 0.006 240);
+      --accent:  oklch(56% 0.12 170);
+      --accent-dark: oklch(42% 0.10 170);
+      --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+      --font-body:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+      --radius-card: 14px;
+      --radius-sm: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .top-nav .logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--accent-dark);
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+    .top-nav .logo span { color: var(--accent); }
+    .top-nav .nav-links { display: flex; align-items: center; gap: 8px; }
+    .btn-publish {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent);
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-publish:hover { background: var(--accent-dark); }
+    .btn-publish:active { transform: scale(0.97); }
+
+    .page-header {
+      background: var(--surface);
+      text-align: center;
+      padding: 32px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .page-header p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    .tab-nav {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 60px;
+      z-index: 99;
+      overflow-x: auto;
+    }
+    .tab-nav button {
+      padding: 14px 28px;
+      border: 0;
+      background: transparent;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+      font-family: var(--font-body);
+    }
+    .tab-nav button.active {
+      color: var(--accent-dark);
+      border-bottom-color: var(--accent);
+      font-weight: 600;
+    }
+    .tab-nav button:hover { color: var(--fg); }
+
+    .content-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 28px 24px 60px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .doc-section {
+      background: var(--surface);
+      border-radius: var(--radius-card);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    .doc-section h2 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--fg);
+    }
+    .doc-section .doc-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .doc-section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 24px 0 10px;
+      color: var(--accent-dark);
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .doc-section h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 18px 0 8px;
+      color: var(--fg);
+    }
+    .doc-section p {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 8px;
+    }
+    .doc-section ul {
+      padding-left: 20px;
+      margin-bottom: 12px;
+    }
+    .doc-section ul li {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 4px;
+      list-style: disc;
+    }
+    .doc-section blockquote {
+      border-left: 3px solid var(--accent);
+      background: oklch(56% 0.12 170 / 0.06);
+      padding: 12px 16px;
+      margin: 12px 0;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 13px;
+      color: #555;
+    }
+    .doc-section blockquote p { margin-bottom: 4px; }
+    .doc-section .highlight-box {
+      background: oklch(50% 0.15 45 / 0.08);
+      border-left: 3px solid oklch(50% 0.15 45);
+      padding: 14px 18px;
+      margin: 14px 0;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .doc-section .highlight-box strong { color: oklch(45% 0.16 45); }
+    .doc-section .highlight-box p { margin-bottom: 6px; }
+    .doc-section .highlight-box ul { margin-bottom: 0; }
+    .doc-section .highlight-box ul li { font-size: 13px; }
+
+    .doc-section strong { font-weight: 600; color: var(--fg); }
+    .doc-section em { color: var(--muted); }
+
+    .doc-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .doc-actions .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--fg);
+      font-family: var(--font-body);
+    }
+    .doc-actions .btn:hover { background: var(--bg); border-color: var(--accent); }
+    .doc-actions .btn-primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .doc-actions .btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+
+    .share-tip {
+      display: none;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--accent);
+      animation: fadeIn 0.2s;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .intro-text {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 640px) {
+      .top-nav { padding: 12px 16px; }
+      .top-nav .logo { font-size: 18px; }
+      .tab-nav button { padding: 12px 18px; font-size: 14px; }
+      .doc-section { padding: 20px; }
+      .doc-actions { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="index.html" class="logo">杭电信息<span>资源共享平台</span></a>
+    <div class="nav-links">
+      <a href="publish.html" class="btn-publish">+ 发布</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <h1>新 生 指 南</h1>
+    <p>入学必备清单 &amp; 入学攻略，助你从容开启大学生活</p>
+  </div>
+
+  <div class="tab-nav">
+    <button class="active" data-tab="tab1">必备品清单</button>
+    <button data-tab="tab2">入学指南</button>
+    <button data-tab="tab3">源文件下载</button>
+    <button data-tab="tab4">综合指南</button>
+  </div>
+
+  <div class="content-wrap">
+    <!-- ====== 必备品清单 ====== -->
+    <div class="tab-panel active" id="tab1">
+      <p class="intro-text">打印出来，准备东西时核对一下，以防忘记。<strong style="color:#e74c3c">红色字体</strong>为强烈建议携带，黑色为推荐准备。</p>
+
+      <div class="doc-section">
+        <h2>新生必备品列表清单（详细版）</h2>
+        <p class="doc-subtitle">建议打印核对</p>
+
+        <h3>一定不能忘记</h3>
+        <ul>
+          <li><strong style="color:#e74c3c">录取通知书</strong></li>
+          <li><strong style="color:#e74c3c">高考准考证</strong></li>
+          <li><strong style="color:#e74c3c">户口本复印件</strong></li>
+          <li><strong style="color:#e74c3c">身份证及正反两面复印件</strong></li>
+          <li>一寸登记照和 2 寸登记照各一版</li>
+          <li>党、团组织关系证明</li>
+          <li>贫困证明（家庭困难学生）</li>
+        </ul>
+        <div class="highlight-box">
+          <p><strong>申请助学金需提前准备：</strong></p>
+          <ul>
+            <li>个人申请书一份（手写）</li>
+            <li>贫困证明（村委或街道证明，盖章）</li>
+            <li>《高校家庭情况调查表》两份（原件，村委/街道章 + 民政部门章，章必须是原件）</li>
+            <li>《国家助学金申请表》两份（贴照片）</li>
+            <li>《高等学校家庭经济困难学生认定申请表》两份</li>
+          </ul>
+        </div>
+
+        <h3>1、洗护用品</h3>
+        <p>牙刷、牙膏、漱口杯、毛巾、洗面奶、护肤品、洗发水、沐浴露、沐浴球、擦澡毛巾、剃须刀、盆子/桶、抹布、香皂或洗手液、洗衣皂、肥皂盒、塑胶手套、衣领净或漂白剂、刷子</p>
+
+        <h3>2、衣物</h3>
+        <p>衣服（可先带夏秋，冬天让家里寄）、鞋子、拖鞋、皮带；衣架（两札）、晒衣夹（一排）、大夹子（晒被子用）、晒衣服撑杆、挂钩若干（可贴墙）、樟脑球等防蛀防霉物品、发夹/橡皮筋、镜子/梳子</p>
+
+        <h3>3、饮食</h3>
+        <p>喝水杯/水瓶（不怕摔的为佳，军训用自己的水杯）、饭盒、筷子、削皮刀/水果刀、勺子</p>
+
+        <h3>4、住宿</h3>
+        <p>床上用品</p>
+
+        <h3>5、出行</h3>
+        <p>雨伞、遮阳伞、包包、钥匙扣、学校地图和城市地图/公交路线图</p>
+
+        <h3>6、文具</h3>
+        <p>签字笔（黑笔必备，开学填表用）、随身小记事本、U 盘、文件袋、手表</p>
+
+        <h3>7、小电器 &amp; 电子产品</h3>
+        <p>手机、充电器、耳机、护眼台灯、床头灯、闹钟、迷你手持小风扇、电脑及配件</p>
+
+        <h3>8、工具</h3>
+        <p>指甲剪、剪刀/小刀、多用插座 1 个、手电筒/应急灯、针线包、透明胶/502/双面胶/大圈透明胶、绳子、打火机、书立、十字/一字小螺丝刀、小锤子/钳子等</p>
+
+        <h3>9、医药卫生</h3>
+        <p>纸卷/纸巾、小包纸巾/湿纸巾、卫生巾/卫生棉（女生必备）；花露水/风油精/清凉油；小型家用药箱：感冒类、退烧消炎类（罗红霉素分散片、阿莫西林等）、止泻类、止疼类（众生丸、牛黄解毒片）、清火类、口腔消炎类及个人特殊常备药；有痛经史带痛经药；绷带/棉签/药用棉花/云南白药等；碘酒/棉签/纱布/创可贴</p>
+
+        <h3>床品（请以学校和正规商家最新信息为准）</h3>
+        <ul>
+          <li>床品尺寸、材质和价格请自行核实，不在本演示项目中指定具体商家。</li>
+          <li>大件物品可以比较校内接力、正规商家和到校后购买等不同方案。</li>
+          <li>涉及费用、配送、质保和售后时，请以商家或学校最新公开信息为准。</li>
+          <li>本页面不保存或公开个人联系方式；需要发布需求时，请使用平台提供的最小必要信息。</li>
+        </ul>
+
+        <div class="highlight-box">
+          <p><strong>寄语</strong></p>
+          <p>大学有着许多诱惑，没有了高中学校的管束，或许会日夜沉迷于电子游戏，或许熬到深夜追剧。一切都要有度；不要因为大学的宽松变得懒散，而要踌躇满志、满怀信心。愿你们在被打击时记起自己的珍贵，爱你所爱、行你所行、听从你心、无问西东。</p>
+          <p>那些有工作、有钱人的生活不要羡慕，因为迟早会有。但你们拥有他们没有的东西——时间、青春，其实格外重要。不要因无意义的兼职浪费大好青春。祝每一位学弟学妹都能有一段奇妙而充实的大学旅程！</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== 入学指南 ====== -->
+    <div class="tab-panel" id="tab2">
+      <p class="intro-text">老学长的亲身经历总结，帮你避开开学的坑。</p>
+
+      <div class="doc-section">
+        <h2>新生入学指南</h2>
+        <p class="doc-subtitle">过来人的经验，少走弯路</p>
+
+        <h3>新生报到（重点）</h3>
+        <p><strong>1. 提前规划好到校路线</strong></p>
+        <p><strong>2. 各个站点有学校志愿者迎接</strong></p>
+        <div class="highlight-box">
+          <p><strong>注意！</strong>一定要仔细核对是不是自己学校的，学校名字一个字也不能错，不能多也不能少——学长当年因一字之差坐错了车，都是血的教训。</p>
+        </div>
+        <p><strong>3. 行李能少带就少带，读大学 ≠ 搬家。</strong>九月份 30℃ 天气，小女生拖几个大密码箱 + N 件行李在太阳下走，想想就绝望。</p>
+        <blockquote>
+          <p><strong>总结：</strong>大件物品能邮寄就邮寄，不够到校再买，网上很便宜。别听父母的，什么脸盆衣架都往学校带，不值得。</p>
+        </blockquote>
+        <p><strong>4. 开学报到越早越好。</strong>开学第一天最忙：报到签名、进宿舍、领军训服等。</p>
+
+        <h3>准备好以下东西</h3>
+        <ul>
+          <li><strong>录取通知书</strong></li>
+          <li><strong>身份证</strong></li>
+          <li><strong>准考证</strong></li>
+          <li>一寸和二寸照片（在家自己修，蓝/红/白底都打印一些，电子照也留着）</li>
+          <li>自我介绍（大学都要自我介绍，想争取班委或留好印象的提前准备）</li>
+        </ul>
+
+        <h3>注意事项</h3>
+        <p><strong>1. 手机不要买内存低于 128G 的。</strong>各种软件、课件、资料，女生爱拍照更不够用。建议 512G，性价比高。</p>
+        <p><strong>2. 大一刚开学不用着急买电脑。</strong>根据专业需求决定：爱打游戏买游戏本，日常办公买轻薄本，方便携带。</p>
+        <p><strong>3. 少进社团，一两个感兴趣的足矣。</strong>进社团要交会费（30~50 不等），很多人交完钱再也没去过，别浪费钱。</p>
+        <p><strong>4. 最好别办校园卡，又卡又贵。</strong>别被"学长学姐"忽悠，大胆拒绝——他/她都好意思骗你钱，你还不好意思拒绝？</p>
+
+        <h3>个人建议</h3>
+        <p><strong>1. 大一大二争取一次性过英语四六级。</strong>至少有高中英语底子，越拖越难过。</p>
+        <p><strong>2. 暑假尽量不要去打暑假工（家里确实困难除外）。</strong>可以学穿搭、游泳、吉他等自己感兴趣的东西。</p>
+        <p><strong>3. 大一大二尽量别呆在寝室，多出去旅游</strong>（大三大四就没时间了），逛逛当地博物馆和景点。</p>
+        <p><strong>4. 大学对新生而言是充满憧憬和希望的地方。</strong>祝大家都有一个美好的未来，respect！</p>
+      </div>
+    </div>
+
+    <!-- ====== 源文件下载 ====== -->
+    <div class="tab-panel" id="tab3">
+      <p class="intro-text">演示所需的资料应使用已获授权或已脱敏的版本。公开仓库不随附未经核验的原始文件。</p>
+      <div class="doc-section">
+        <h3 style="margin-top:0">源文件列表</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);border-radius:10px;">
+            <div>
+              <span style="font-weight:600;font-size:14px;">新生必备品列表清单（详细版）.docx</span>
+              <span style="color:var(--muted);font-size:12px;margin-left:8px;">18.8 KB</span>
+            </div>
+            <span style="color:var(--muted);font-size:12px;">授权后接入</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);border-radius:10px;">
+            <div>
+              <span style="font-weight:600;font-size:14px;">新生入学指南.docx</span>
+              <span style="color:var(--muted);font-size:12px;margin-left:8px;">1.0 MB</span>
+            </div>
+            <span style="color:var(--muted);font-size:12px;">授权后接入</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== 综合指南 ====== -->
+    <div class="tab-panel" id="tab4">
+      <p class="intro-text">课程和评价资料涉及来源、时效与授权，须经过核验和脱敏后才能公开展示。</p>
+      <div class="doc-section">
+        <h3 style="margin-top:0">综合指南文件</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);border-radius:10px;">
+            <div>
+              <span style="font-weight:600;font-size:14px;">HDU选课指北_by STEA TEAM.xlsx</span>
+              <span style="color:var(--muted);font-size:12px;margin-left:8px;">40.2 KB</span>
+            </div>
+            <span style="color:var(--muted);font-size:12px;">待核验</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);border-radius:10px;">
+            <div>
+              <span style="font-weight:600;font-size:14px;">公选课评价收集表.xlsx</span>
+              <span style="color:var(--muted);font-size:12px;margin-left:8px;">25.9 KB</span>
+            </div>
+            <span style="color:var(--muted);font-size:12px;">待核验</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);border-radius:10px;">
+            <div>
+              <span style="font-weight:600;font-size:14px;">杭电公选课图鉴选.xlsx</span>
+              <span style="color:var(--muted);font-size:12px;margin-left:8px;">32.4 KB</span>
+            </div>
+            <span style="color:var(--muted);font-size:12px;">待核验</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);border-radius:10px;">
+            <div>
+              <span style="font-weight:600;font-size:14px;">通识选修课程归属.xlsx</span>
+              <span style="color:var(--muted);font-size:12px;margin-left:8px;">12.7 KB</span>
+            </div>
+            <span style="color:var(--muted);font-size:12px;">待核验</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-nav button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
