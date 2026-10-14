@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://laqliecldqfjfhsooyey.supabase.co blob:; connect-src 'self' https://laqliecldqfjfhsooyey.supabase.co; font-src 'self';" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>管理后台 — 大学生信息资源共享平台</title>
+  <style>
+    :root {
+      --bg: oklch(98% 0.004 240);
+      --surface: oklch(100% 0 0);
+      --fg: oklch(20% 0.02 240);
+      --muted: oklch(50% 0.018 240);
+      --border: oklch(90% 0.006 240);
+      --accent: oklch(50% 0.18 280);
+      --accent-light: oklch(60% 0.16 280);
+      --accent-dark: oklch(40% 0.20 280);
+      --danger: oklch(50% 0.18 25);
+      --danger-light: oklch(95% 0.02 25);
+      --success: oklch(50% 0.14 170);
+      --success-light: oklch(95% 0.02 170);
+      --warning: oklch(50% 0.14 85);
+      --warning-light: oklch(95% 0.02 85);
+      --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+      --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* Login Panel */
+    .login-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .login-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+    .login-card h1 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--accent-dark);
+    }
+    .login-card h1 span { color: var(--accent); }
+    .login-card .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .login-card input[type="password"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.15s;
+      text-align: center;
+      letter-spacing: 4px;
+    }
+    .login-card input[type="password"]:focus {
+      border-color: var(--accent);
+    }
+    .login-card .btn-login {
+      width: 100%;
+      margin-top: 16px;
+      padding: 12px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .login-card .btn-login:hover { background: var(--accent-dark); }
+    .login-card .login-error {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--danger);
+      min-height: 20px;
+    }
+
+    /* Admin Panel */
+    .admin-wrap { display: none; min-height: 100vh; }
+    .admin-wrap.active { display: block; }
+
+    .admin-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .admin-header .logo {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+    .admin-header .logo span { color: var(--accent); }
+    .btn-logout {
+      padding: 8px 18px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+    .tab-nav {
+      display: flex;
+      gap: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      overflow-x: auto;
+    }
+    .tab-nav button {
+      padding: 14px 20px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+      font-family: var(--font-body);
+    }
+    .tab-nav button:hover { color: var(--fg); }
+    .tab-nav button.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tab-content { display: none; padding: 24px; }
+    .tab-content.active { display: block; }
+
+    /* Filters */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-bar select, .filter-bar input {
+      padding: 8px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      outline: none;
+      background: var(--surface);
+      color: var(--fg);
+    }
+    .filter-bar select:focus, .filter-bar input:focus { border-color: var(--accent); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 18px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: var(--font-body);
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover { background: oklch(40% 0.14 170); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: oklch(40% 0.18 25); }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--fg);
+    }
+    .btn-outline:hover { background: var(--bg); }
+    .btn-sm { padding: 4px 12px; font-size: 12px; }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    table th, table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    table th {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      background: oklch(97% 0.003 240);
+    }
+    table tbody tr:hover { background: oklch(96% 0.004 240); }
+    table tbody tr:last-child td { border-bottom: none; }
+
+    .thumb { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; background: var(--bg); }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-pending { background: var(--warning-light); color: var(--warning); }
+    .badge-reviewed { background: var(--success-light); color: var(--success); }
+    .badge-dismissed { background: var(--danger-light); color: var(--danger); }
+
+    .text-muted { color: var(--muted); font-size: 13px; }
+    .text-sm { font-size: 13px; }
+    .text-ellipsis { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .actions-cell { display: flex; gap: 6px; }
+
+    /* Empty / Loading / Error */
+    .state-msg {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .spinner {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Overlays */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .overlay.active { display: flex; }
+    .overlay-content {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 28px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .overlay-content h3 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: var(--accent-dark);
+    }
+    .overlay-content .form-group {
+      margin-bottom: 16px;
+    }
+    .overlay-content label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--muted);
+    }
+    .overlay-content input, .overlay-content select, .overlay-content textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      outline: none;
+      font-family: var(--font-body);
+      background: var(--surface);
+      color: var(--fg);
+    }
+    .overlay-content textarea { resize: vertical; min-height: 80px; }
+    .overlay-content input:focus, .overlay-content select:focus, .overlay-content textarea:focus {
+      border-color: var(--accent);
+    }
+    .overlay-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+
+    /* Detail sections */
+    .detail-section {
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .detail-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .detail-value {
+      font-size: 14px;
+      color: var(--fg);
+      line-height: 1.6;
+      word-break: break-all;
+    }
+    .detail-value.evidence-thumb {
+      max-width: 120px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1px solid var(--border);
+    }
+
+    /* Image overlay */
+    .image-overlay img {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+    }
+    .image-overlay .close-img {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 32px;
+      color: #fff;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 24px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
+      z-index: 200;
+      animation: fadeInUp 0.3s ease;
+      pointer-events: none;
+    }
+    .toast-success { background: var(--success); }
+    .toast-error { background: var(--danger); }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    .confirm-dialog {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 28px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .confirm-dialog p { margin-bottom: 20px; font-size: 15px; }
+    .confirm-dialog .btn-wrap { display: flex; gap: 10px; justify-content: center; }
+
+    @media (max-width: 640px) {
+      .admin-header { padding: 12px 16px; }
+      .tab-nav { padding: 0 12px; }
+      .tab-nav button { padding: 12px 14px; font-size: 13px; }
+      .tab-content { padding: 16px; }
+      .overlay-content { padding: 20px; }
+      table th, table td { padding: 8px 10px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========== Login Panel ========== -->
+<div class="login-wrap" id="login-panel">
+  <div class="login-card">
+    <h1>管理<span>后台</span></h1>
+    <p class="subtitle">大学生信息资源共享平台</p>
+    <input type="password" id="login-pwd" placeholder="请输入管理员密码" autocomplete="off" />
+    <button class="btn-login" id="btn-login">登 录</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- ========== Admin Panel ========== -->
+<div class="admin-wrap" id="admin-panel">
+  <header class="admin-header">
+    <div class="logo">管理<span>后台</span></div>
+    <button class="btn-logout" id="btn-logout">退出登录</button>
+  </header>
+
+  <nav class="tab-nav" id="tab-nav">
+    <button class="active" data-tab="items">商品管理</button>
+    <button data-tab="reports">举报管理</button>
+    <button data-tab="blacklist">黑名单</button>
+    <button data-tab="logs">操作日志</button>
+  </nav>
+
+  <!-- Tab: Items -->
+  <div class="tab-content active" id="tab-items">
+    <div class="filter-bar">
+      <input type="text" id="item-search" placeholder="搜索商品标题..." />
+      <select id="item-category-filter">
+        <option value="">全部分类</option>
+      </select>
+      <select id="item-status-filter">
+        <option value="">全部状态</option>
+        <option value="active">在售</option>
+        <option value="sold">已成交</option>
+        <option value="deleted">已删除</option>
+      </select>
+      <input type="text" id="item-user-filter" placeholder="用户 ID 筛选..." style="width:160px;" />
+      <button class="btn btn-outline btn-sm" id="btn-refresh-items">刷新</button>
+    </div>
+    <div id="items-loading" class="state-msg"><div class="spinner"></div></div>
+    <div class="table-wrap" id="items-table-wrap" style="display:none;">
+      <table>
+        <thead>
+          <tr>
+            <th>图片</th>
+            <th>标题</th>
+            <th>价格</th>
+            <th>分类</th>
+            <th>校区</th>
+            <th>状态</th>
+            <th>联系方式</th>
+            <th>设备指纹</th>
+            <th>IP地址</th>
+            <th>发布时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="items-tbody"></tbody>
+      </table>
+    </div>
+    <div id="items-empty" class="state-msg" style="display:none;">暂无商品</div>
+  </div>
+
+  <!-- Tab: Reports -->
+  <div class="tab-content" id="tab-reports">
+    <div class="filter-bar">
+      <select id="report-status-filter">
+        <option value="">全部状态</option>
+        <option value="pending">待处理</option>
+        <option value="reviewed">已处理</option>
+        <option value="dismissed">已驳回</option>
+      </select>
+      <button class="btn btn-outline btn-sm" id="btn-refresh-reports">刷新</button>
+    </div>
+    <div id="reports-loading" class="state-msg"><div class="spinner"></div></div>
+    <div class="table-wrap" id="reports-table-wrap" style="display:none;">
+      <table>
+        <thead>
+          <tr>
+            <th>商品标题</th>
+            <th>举报原因</th>
+            <th>举报人</th>
+            <th>证据</th>
+            <th>状态</th>
+            <th>时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="reports-tbody"></tbody>
+      </table>
+    </div>
+    <div id="reports-empty" class="state-msg" style="display:none;">暂无举报</div>
+  </div>
+
+  <!-- Tab: Blacklist -->
+  <div class="tab-content" id="tab-blacklist">
+    <div class="filter-bar">
+      <button class="btn btn-primary btn-sm" id="btn-add-blacklist">添加用户</button>
+      <button class="btn btn-outline btn-sm" id="btn-refresh-blacklist">刷新</button>
+    </div>
+    <div id="blacklist-loading" class="state-msg"><div class="spinner"></div></div>
+    <div class="table-wrap" id="blacklist-table-wrap" style="display:none;">
+      <table>
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>封禁原因</th>
+            <th>封禁时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="blacklist-tbody"></tbody>
+      </table>
+    </div>
+    <div id="blacklist-empty" class="state-msg" style="display:none;">黑名单为空</div>
+  </div>
+
+  <!-- Tab: Logs -->
+  <div class="tab-content" id="tab-logs">
+    <div id="logs-loading" class="state-msg"><div class="spinner"></div></div>
+    <div class="table-wrap" id="logs-table-wrap" style="display:none;">
+      <table>
+        <thead>
+          <tr>
+            <th>时间</th>
+            <th>操作类型</th>
+            <th>目标类型</th>
+            <th>详情</th>
+          </tr>
+        </thead>
+        <tbody id="logs-tbody"></tbody>
+      </table>
+    </div>
+    <div id="logs-empty" class="state-msg" style="display:none;">暂无操作日志</div>
+  </div>
+</div>
+
+<!-- ========== Edit Overlay ========== -->
+<div class="overlay" id="edit-overlay">
+  <div class="overlay-content">
+    <h3>编辑商品</h3>
+    <input type="hidden" id="edit-id" />
+    <div class="form-group">
+      <label>标题</label>
+      <input type="text" id="edit-name" />
+    </div>
+    <div class="form-group">
+      <label>价格（元）</label>
+      <input type="number" id="edit-price" min="0" step="0.01" />
+    </div>
+    <div class="form-group">
+      <label>分类</label>
+      <select id="edit-category">
+        <option value="书籍">书籍</option><option value="电子产品">电子产品</option>
+        <option value="日用品">日用品</option><option value="交通工具">交通工具</option>
+        <option value="卡类">卡类</option><option value="学习用品">学习用品</option>
+        <option value="其他">其他</option><option value="搭子">搭子</option>
+        <option value="兼职">兼职</option><option value="志愿者">志愿者</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>描述</label>
+      <textarea id="edit-description"></textarea>
+    </div>
+    <div class="form-group">
+      <label>联系方式</label>
+      <input type="text" id="edit-contact" />
+    </div>
+    <div class="overlay-actions">
+      <button class="btn btn-outline" id="btn-edit-cancel">取消</button>
+      <button class="btn btn-primary" id="btn-edit-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Image Overlay ========== -->
+<div class="overlay image-overlay" id="image-overlay">
+  <span class="close-img" id="btn-close-img">&times;</span>
+  <img src="" alt="证据图片" id="full-image" />
+</div>
+
+<!-- ========== Report Detail Overlay ========== -->
+<div class="overlay" id="report-detail-overlay">
+  <div class="overlay-content report-detail-content" style="max-width:580px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="margin:0;">举报详情</h3>
+      <button class="btn btn-outline btn-sm" id="btn-report-detail-close">关闭</button>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">被举报商品</div>
+      <div class="detail-value" id="rd-item-name">-</div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">被举报人 (商品发布者)</div>
+      <div class="detail-value" id="rd-owner-id">-</div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">举报人</div>
+      <div class="detail-value" id="rd-reporter">-</div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">举报原因</div>
+      <div class="detail-value" id="rd-reason">-</div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">证据图片</div>
+      <div class="detail-value" id="rd-evidence" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">举报时间</div>
+      <div class="detail-value" id="rd-time">-</div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">处理状态</div>
+      <div class="detail-value" id="rd-status">-</div>
+    </div>
+    <div class="overlay-actions" style="margin-top:20px;">
+      <button class="btn btn-outline btn-sm" id="btn-rd-view-item">查看商品</button>
+      <button class="btn btn-danger btn-sm" id="btn-rd-blacklist" style="border-color:var(--warning);color:var(--warning);background:transparent;">加入黑名单</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Toast ========== -->
+<div class="toast" id="toast" style="display:none;"></div>
+
+<!-- ========== Confirm Overlay ========== -->
+<div class="overlay" id="confirm-overlay">
+  <div class="confirm-dialog">
+    <p id="confirm-msg"></p>
+    <div class="btn-wrap">
+      <button class="btn btn-outline" id="btn-confirm-no">取消</button>
+      <button class="btn btn-danger" id="btn-confirm-yes">确认</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var SUPABASE_URL = 'https://laqliecldqfjfhsooyey.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_qi2Q0YL4AttETlna_wXqRA_aNovSxCG';
+  var ADMIN_API = '/admin-login';
+
+  // ===== Session =====
+  // VUL-001 修复：使用服务端签发的 token 替代 'ok' 标记
+  async function checkLogin() {
+    var data = sessionStorage.getItem('admin_login');
+    if (!data) return false;
+    try {
+      var obj = JSON.parse(data);
+      if (Date.now() - obj.ts > 3600000) { sessionStorage.removeItem('admin_login'); return false; }
+      if (!obj.token) return false;
+      // 新增：验证 token 有效性（防止伪造）
+      var valid = await verifyToken(obj.token);
+      if (!valid) { clearLogin(); return false; }
+      return true;
+    } catch (e) { return false; }
+  }
+  function setLogin(token) {
+    sessionStorage.setItem('admin_login', JSON.stringify({ token: token, ts: Date.now() }));
+  }
+  function clearLogin() {
+    sessionStorage.removeItem('admin_login');
+  }
+  async function verifyToken(token) {
+    try {
+      var resp = await fetch(ADMIN_API + '?action=verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token })
+      });
+      if (resp.ok) {
+        var r = await resp.json();
+        return r.valid === true;
+      }
+      return false;
+    } catch (e) {
+      // 网络异常时，若 token 在 2 分钟内签发，给予一次宽限
+      var data = sessionStorage.getItem('admin_login');
+      if (data) {
+        var obj = JSON.parse(data);
+        if (Date.now() - obj.ts < 120000) return true;
+      }
+      return false;
+    }
+  }
+  function getAdminToken() {
+    var data = sessionStorage.getItem('admin_login');
+    if (!data) return '';
+    try { return JSON.parse(data).token || ''; } catch (e) { return ''; }
+  }
+
+  // ===== API =====
+  async function supabaseRequest(method, path, body) {
+    var headers = {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json'
+    };
+    if (method === 'POST' || method === 'PATCH') {
+      headers['Prefer'] = 'return=representation';
+    }
+    // 管理端所有请求经 /api/* worker 代理（管理员会话 token 鉴权 + service_role 读写），
+    // 使 reports 等隐私表的读取也走服务端密钥，不依赖 anon 授权
+    headers['x-admin-key'] = getAdminToken();
+    var options = { method: method, headers: headers };
+    if (body) { options.body = JSON.stringify(body); }
+    var res = await fetch('/api' + path, options);
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    var text = await res.text();
+    return text ? JSON.parse(text) : null;
+  }
+
+  // ===== Toast =====
+  function showToast(msg, type) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast toast-' + (type || 'success');
+    t.style.display = 'block';
+    clearTimeout(t._tid);
+    t._tid = setTimeout(function () { t.style.display = 'none'; }, 2500);
+  }
+
+  // ===== Confirm =====
+  function showConfirm(msg) {
+    return new Promise(function (resolve) {
+      document.getElementById('confirm-msg').textContent = msg;
+      document.getElementById('confirm-overlay').classList.add('active');
+      function cleanup(v) {
+        document.getElementById('confirm-overlay').classList.remove('active');
+        document.getElementById('btn-confirm-yes').removeEventListener('click', onYes);
+        document.getElementById('btn-confirm-no').removeEventListener('click', onNo);
+        resolve(v);
+      }
+      function onYes() { cleanup(true); }
+      function onNo() { cleanup(false); }
+      document.getElementById('btn-confirm-yes').addEventListener('click', onYes);
+      document.getElementById('btn-confirm-no').addEventListener('click', onNo);
+    });
+  }
+
+  // ===== Escape HTML =====
+  function esc(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  // ===== Format date =====
+  function fmtDate(ts) {
+    if (!ts) return '-';
+    var d = new Date(ts);
+    return d.getFullYear() + '-' +
+      String(d.getMonth()+1).padStart(2,'0') + '-' +
+      String(d.getDate()).padStart(2,'0') + ' ' +
+      String(d.getHours()).padStart(2,'0') + ':' +
+      String(d.getMinutes()).padStart(2,'0');
+  }
+
+  // ===== Login (VUL-001 修复：密码验证移至服务端) =====
+  document.getElementById('btn-login').addEventListener('click', async function () {
+    var pwd = document.getElementById('login-pwd').value;
+    var err = document.getElementById('login-error');
+    var btn = this;
+    if (!pwd) { err.textContent = '请输入密码'; return; }
+    btn.disabled = true;
+    btn.textContent = '验证中…';
+    try {
+      var res = await fetch(ADMIN_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pwd })
+      });
+      if (res.ok) {
+        var data = await res.json();
+        setLogin(data.token);
+        document.getElementById('login-panel').style.display = 'none';
+        document.getElementById('admin-panel').classList.add('active');
+        loadItems();
+      } else {
+        err.textContent = '密码错误，请重试';
+      }
+    } catch (e) {
+      err.textContent = '网络错误，请稍后重试';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '登 录';
+    }
+  });
+  document.getElementById('login-pwd').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') document.getElementById('btn-login').click();
+  });
+
+  // Logout
+  document.getElementById('btn-logout').addEventListener('click', function () {
+    clearLogin();
+    document.getElementById('admin-panel').classList.remove('active');
+    document.getElementById('login-panel').style.display = 'flex';
+    document.getElementById('login-pwd').value = '';
+    document.getElementById('login-error').textContent = '';
+  });
+
+  // ===== Tab Switching =====
+  document.getElementById('tab-nav').addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    var tab = btn.getAttribute('data-tab');
+    document.querySelectorAll('.tab-nav button').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(function (c) { c.classList.remove('active'); });
+    document.getElementById('tab-' + tab).classList.add('active');
+
+    if (tab === 'items') loadItems();
+    else if (tab === 'reports') loadReports();
+    else if (tab === 'blacklist') loadBlacklist();
+    else if (tab === 'logs') loadLogs();
+  });
+
+  // ===== Audit Log =====
+  async function writeAudit(action, targetType, targetId, details) {
+    try {
+      await supabaseRequest('POST', '/rest/v1/audit_logs', {
+        action: action,
+        target_type: targetType,
+        target_id: targetId || null,
+        details: details || '',
+        created_at: new Date().toISOString()
+      });
+    } catch (e) { console.error('Audit log failed:', e); }
+  }
+
+  // ==================== ITEMS ====================
+  async function loadItems() {
+    var loading = document.getElementById('items-loading');
+    var wrap = document.getElementById('items-table-wrap');
+    var empty = document.getElementById('items-empty');
+    var tbody = document.getElementById('items-tbody');
+    loading.style.display = 'block';
+    wrap.style.display = 'none';
+    empty.style.display = 'none';
+
+    try {
+      var items = await supabaseRequest('GET', '/rest/v1/items?select=*&order=created_at.desc&limit=200') || [];
+      // Populate category filter
+      var cats = {};
+      items.forEach(function (i) { if (i.category) cats[i.category] = true; });
+      var sel = document.getElementById('item-category-filter');
+      var curVal = sel.value;
+      sel.innerHTML = '<option value="">全部分类</option>';
+      Object.keys(cats).sort().forEach(function (c) {
+        sel.innerHTML += '<option value="' + esc(c) + '">' + esc(c) + '</option>';
+      });
+      sel.value = curVal;
+
+      renderItems(items);
+    } catch (e) {
+      console.error(e);
+      loading.style.display = 'none';
+      empty.style.display = 'block';
+      empty.textContent = '加载失败: ' + esc(e.message);
+    }
+  }
+
+  function renderItems(items) {
+    var loading = document.getElementById('items-loading');
+    var wrap = document.getElementById('items-table-wrap');
+    var empty = document.getElementById('items-empty');
+    var tbody = document.getElementById('items-tbody');
+    loading.style.display = 'none';
+
+    var search = (document.getElementById('item-search').value || '').toLowerCase().trim();
+    var catFilter = document.getElementById('item-category-filter').value;
+    var statusFilter = document.getElementById('item-status-filter').value;
+    var userFilter = (document.getElementById('item-user-filter').value || '').trim();
+
+    var filtered = items.filter(function (i) {
+      if (catFilter && i.category !== catFilter) return false;
+      if (statusFilter) {
+        var dm = {};
+        try { dm = JSON.parse(i.description || '{}'); } catch (_) {}
+        if ((dm.status || 'active') !== statusFilter) return false;
+      }
+      if (userFilter && (i.user_id || '').indexOf(userFilter) === -1) return false;
+      if (search && (i.name || '').toLowerCase().indexOf(search) === -1) return false;
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      wrap.style.display = 'none';
+      empty.style.display = 'block';
+      empty.textContent = items.length === 0 ? '暂无商品' : '没有匹配的商品';
+      return;
+    }
+
+    wrap.style.display = 'block';
+    empty.style.display = 'none';
+    tbody.innerHTML = filtered.map(function (item) {
+      var descMeta = {};
+      try { descMeta = JSON.parse(item.description || '{}'); } catch (_) {}
+
+      var statusText = '在售';
+      var statusColor = 'var(--success)';
+      var status = descMeta.status || 'active';
+      if (status === 'sold') { statusText = '已成交'; statusColor = 'var(--danger)'; }
+      else if (status === 'deleted') { statusText = '已删除'; statusColor = 'var(--muted)'; }
+
+      return '<tr style="cursor:pointer" onclick="window.open(\'item.html?id=' + item.id + '&ref=admin\',\'_blank\')">' +
+        '<td>' + (item.image ? '<img class="thumb" src="' + esc(item.image) + '" loading="lazy" />' : '<div class="thumb" style="background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px;">无图</div>') + '</td>' +
+        '<td class="text-ellipsis" style="max-width:180px;" title="' + esc(item.name || '') + '">' + esc(item.name || '') + '</td>' +
+        '<td>&yen;' + (item.price != null ? Number(item.price).toFixed(2) : '0.00') + '</td>' +
+        '<td>' + esc(item.category || '-') + '</td>' +
+        '<td>' + esc(item.campus || '-') + '</td>' +
+        '<td style="color:' + statusColor + ';font-weight:600;">' + statusText + '</td>' +
+        '<td class="text-sm">' + esc(maskContact(item.contact || '-')) + '</td>' +
+        '<td class="text-xs text-muted" style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + esc(descMeta.device_fingerprint || '-') + '">' + esc(maskFingerprint(descMeta.device_fingerprint || '-')) + '</td>' +
+        '<td class="text-xs text-muted">' + esc(maskIP(descMeta.ip || '-')) + '</td>' +
+        '<td class="text-sm text-muted">' + fmtDate(item.created_at) + '</td>' +
+        '<td><div class="actions-cell">' +
+          '<button class="btn btn-outline btn-sm btn-edit" data-id="' + item.id + '">编辑</button>' +
+          '<button class="btn btn-danger btn-sm btn-delete" data-id="' + item.id + '" data-name="' + esc(item.name || '') + '">删除</button>' +
+          '<button class="btn btn-outline btn-sm btn-blacklist" data-fp="' + esc(descMeta.device_fingerprint || '') + '" data-ip="' + esc(descMeta.ip || '') + '" data-user="' + esc(item.user_id || '') + '" style="border-color:var(--warning);color:var(--warning);margin-left:4px;">拉黑</button>' +
+        '</div></td>' +
+        '</tr>';
+    }).join('');
+
+    // Bind events
+    tbody.querySelectorAll('.btn-edit').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var id = parseInt(this.getAttribute('data-id'));
+        var item = items.find(function (x) { return x.id === id; });
+        if (item) openEdit(item);
+      });
+    });
+    tbody.querySelectorAll('.btn-delete').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var id = parseInt(this.getAttribute('data-id'));
+        var name = this.getAttribute('data-name');
+        deleteItem(id, name);
+      });
+    });
+    tbody.querySelectorAll('.btn-blacklist').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var fp = this.getAttribute('data-fp') || '';
+        var ip = this.getAttribute('data-ip') || '';
+        var userId = this.getAttribute('data-user') || '';
+        var reason = '设备指纹: ' + fp + ' | IP: ' + ip;
+        if (!confirm('确认将用户 ' + userId + ' 加入黑名单？\n' + reason)) return;
+        addBlacklist(userId, reason);
+      });
+    });
+  }
+
+  document.getElementById('item-search').addEventListener('input', function () {
+    if (typeof _cachedItems !== 'undefined') renderItems(_cachedItems);
+  });
+  document.getElementById('item-category-filter').addEventListener('change', function () {
+    if (typeof _cachedItems !== 'undefined') renderItems(_cachedItems);
+  });
+  document.getElementById('item-status-filter').addEventListener('change', function () {
+    if (typeof _cachedItems !== 'undefined') renderItems(_cachedItems);
+  });
+  document.getElementById('item-user-filter').addEventListener('input', function () {
+    if (typeof _cachedItems !== 'undefined') renderItems(_cachedItems);
+  });
+  document.getElementById('btn-refresh-items').addEventListener('click', loadItems);
+
+  // Cache items globally
+  var _cachedItems = [];
+  // Cache reports for row click
+  var _reportData = null;
+
+  // Override loadItems to cache
+  var _origLoadItems = loadItems;
+  loadItems = async function () {
+    var loading = document.getElementById('items-loading');
+    var wrap = document.getElementById('items-table-wrap');
+    var empty = document.getElementById('items-empty');
+    loading.style.display = 'block';
+    wrap.style.display = 'none';
+    empty.style.display = 'none';
+    try {
+      _cachedItems = await supabaseRequest('GET', '/rest/v1/items?select=*&order=created_at.desc&limit=200') || [];
+      var cats = {};
+      _cachedItems.forEach(function (i) { if (i.category) cats[i.category] = true; });
+      var sel = document.getElementById('item-category-filter');
+      var curVal = sel.value;
+      sel.innerHTML = '<option value="">全部分类</option>';
+      Object.keys(cats).sort().forEach(function (c) {
+        sel.innerHTML += '<option value="' + esc(c) + '">' + esc(c) + '</option>';
+      });
+      sel.value = curVal;
+      renderItems(_cachedItems);
+    } catch (e) {
+      console.error(e);
+      loading.style.display = 'none';
+      empty.style.display = 'block';
+      empty.textContent = '加载失败: ' + esc(e.message);
+    }
+  };
+
+  // ===== Edit Overlay =====
+  function openEdit(item) {
+    document.getElementById('edit-id').value = item.id;
+    document.getElementById('edit-name').value = item.name || '';
+    document.getElementById('edit-price').value = item.price != null ? item.price : '';
+    document.getElementById('edit-category').value = item.category || '其他';
+    document.getElementById('edit-description').value = item.description || '';
+    document.getElementById('edit-contact').value = item.contact || '';
+    document.getElementById('edit-overlay').classList.add('active');
+  }
+
+  document.getElementById('btn-edit-cancel').addEventListener('click', function () {
+    document.getElementById('edit-overlay').classList.remove('active');
+  });
+  document.getElementById('edit-overlay').addEventListener('click', function (e) {
+    if (e.target === this) this.classList.remove('active');
+  });
+
+  document.getElementById('btn-edit-save').addEventListener('click', async function () {
+    var id = parseInt(document.getElementById('edit-id').value);
+    var body = {
+      name: document.getElementById('edit-name').value.trim(),
+      price: parseFloat(document.getElementById('edit-price').value) || 0,
+      category: document.getElementById('edit-category').value,
+      description: document.getElementById('edit-description').value.trim(),
+      contact: document.getElementById('edit-contact').value.trim()
+    };
+    try {
+      await supabaseRequest('PATCH', '/rest/v1/items?id=eq.' + id, body);
+      await writeAudit('edit_item', 'item', id, '编辑商品: ' + body.name);
+      document.getElementById('edit-overlay').classList.remove('active');
+      showToast('保存成功');
+      loadItems();
+    } catch (e) {
+      showToast('保存失败: ' + e.message, 'error');
+    }
+  });
+
+  // ===== Delete Item =====
+  async function deleteItem(id, name) {
+    var ok = await showConfirm('确定要删除「' + name + '」吗？此操作不可撤销。');
+    if (!ok) return;
+    try {
+      await supabaseRequest('DELETE', '/rest/v1/items?id=eq.' + id);
+      await writeAudit('delete_item', 'item', id, '删除商品: ' + name);
+      showToast('已删除');
+      loadItems();
+    } catch (e) {
+      showToast('删除失败: ' + e.message, 'error');
+    }
+  }
+
+  // ==================== REPORTS ====================
+  async function loadReports() {
+    var loading = document.getElementById('reports-loading');
+    var wrap = document.getElementById('reports-table-wrap');
+    var empty = document.getElementById('reports-empty');
+    var tbody = document.getElementById('reports-tbody');
+    loading.style.display = 'block';
+    wrap.style.display = 'none';
+    empty.style.display = 'none';
+
+    try {
+      var reports = await supabaseRequest('GET', '/rest/v1/reports?select=*&order=created_at.desc&limit=200') || [];
+      // Batch fetch items
+      var itemIds = reports.map(function (r) { return r.item_id; }).filter(Boolean);
+      var itemMap = {};
+      if (itemIds.length > 0) {
+        var idsStr = itemIds.map(function (id) { return 'id.eq.' + id; }).join(',');
+        var items = await supabaseRequest('GET', '/rest/v1/items?select=id,name,user_id,contact&or=(' + idsStr + ')') || [];
+        items.forEach(function (i) { itemMap[i.id] = i; });
+      }
+      renderReports(reports, itemMap);
+      // Cache for row click
+      _reportData = { reports: reports, itemMap: itemMap };
+    } catch (e) {
+      console.error(e);
+      loading.style.display = 'none';
+      empty.style.display = 'block';
+      empty.textContent = '加载失败: ' + esc(e.message);
+    }
+  }
+
+  function renderReports(reports, itemMap) {
+    var loading = document.getElementById('reports-loading');
+    var wrap = document.getElementById('reports-table-wrap');
+    var empty = document.getElementById('reports-empty');
+    var tbody = document.getElementById('reports-tbody');
+    loading.style.display = 'none';
+
+    var statusFilter = document.getElementById('report-status-filter').value;
+
+    var filtered = reports.filter(function (r) {
+      if (statusFilter && r.status !== statusFilter) return false;
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      wrap.style.display = 'none';
+      empty.style.display = 'block';
+      empty.textContent = reports.length === 0 ? '暂无举报' : '没有匹配的举报';
+      return;
+    }
+
+    wrap.style.display = 'block';
+    empty.style.display = 'none';
+
+    tbody.innerHTML = filtered.map(function (r, idx) {
+      var item = itemMap[r.item_id] || {};
+      var badgeCls = 'badge-pending';
+      var badgeText = '待处理';
+      if (r.status === 'reviewed') { badgeCls = 'badge-reviewed'; badgeText = '已处理'; }
+      else if (r.status === 'dismissed') { badgeCls = 'badge-dismissed'; badgeText = '已驳回'; }
+
+      var evidenceHtml = r.evidence_image
+        ? '<a href="#" class="btn-evidence" data-img="' + esc(r.evidence_image) + '" style="color:var(--accent);font-size:13px;">查看</a>'
+        : '<span class="text-muted">无</span>';
+
+      var actionsHtml = '';
+      if (r.status === 'pending') {
+        actionsHtml = '<div class="actions-cell">' +
+          '<button class="btn btn-success btn-sm btn-review" data-id="' + r.id + '">标记已处理</button>' +
+          '<button class="btn btn-outline btn-sm btn-dismiss" data-id="' + r.id + '">驳回</button>' +
+          '</div>';
+      } else {
+        actionsHtml = '<span class="text-muted text-sm">已完成</span>';
+      }
+
+      return '<tr class="report-row" data-idx="' + idx + '" style="cursor:pointer">' +
+        '<td class="text-ellipsis" style="max-width:150px;" title="' + esc(item.name || '') + '">' + esc(item.name || '（商品已删除）') + '</td>' +
+        '<td class="text-ellipsis" style="max-width:180px;" title="' + esc(r.reason || '') + '">' + esc(r.reason || '-') + '</td>' +
+        '<td>' + esc(r.reporter_user_id || '-') + '</td>' +
+        '<td>' + evidenceHtml + '</td>' +
+        '<td><span class="badge ' + badgeCls + '">' + badgeText + '</span></td>' +
+        '<td class="text-sm text-muted">' + fmtDate(r.created_at) + '</td>' +
+        '<td>' + actionsHtml + '</td>' +
+        '</tr>';
+    }).join('');
+
+    // Bind evidence click
+    tbody.querySelectorAll('.btn-evidence').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var img = this.getAttribute('data-img');
+        document.getElementById('full-image').src = img;
+        document.getElementById('image-overlay').classList.add('active');
+      });
+    });
+
+    // Bind review/dismiss
+    tbody.querySelectorAll('.btn-review').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var id = parseInt(this.getAttribute('data-id'));
+        handleReport(id, 'reviewed');
+      });
+    });
+    tbody.querySelectorAll('.btn-dismiss').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var id = parseInt(this.getAttribute('data-id'));
+        handleReport(id, 'dismissed');
+      });
+    });
+
+    // Row click → show detail
+    tbody.querySelectorAll('.report-row').forEach(function (row) {
+      row.addEventListener('click', function () {
+        var idx = parseInt(this.getAttribute('data-idx'));
+        if (_reportData && _reportData.reports) {
+          showReportDetail(_reportData.reports[idx], _reportData.itemMap[_reportData.reports[idx].item_id]);
+        }
+      });
+    });
+  }
+
+  async function handleReport(id, status) {
+    var label = status === 'reviewed' ? '标记已处理' : '驳回';
+    try {
+      await supabaseRequest('PATCH', '/rest/v1/reports?id=eq.' + id, { status: status });
+      await writeAudit('review_report', 'report', id, label + '举报 #' + id);
+      showToast('操作成功');
+      loadReports();
+    } catch (e) {
+      showToast('操作失败: ' + e.message, 'error');
+    }
+  }
+
+  document.getElementById('report-status-filter').addEventListener('change', loadReports);
+  document.getElementById('btn-refresh-reports').addEventListener('click', loadReports);
+
+  // ===== Report Detail Overlay =====
+  var _currentReportDetail = null;
+
+  function showReportDetail(r, item) {
+    _currentReportDetail = { report: r, item: item || {} };
+    var dst = document.getElementById('report-detail-overlay');
+
+    document.getElementById('rd-item-name').textContent = (item && item.name) || '（商品已删除）';
+    document.getElementById('rd-owner-id').textContent = (item && item.user_id) || '-';
+    document.getElementById('rd-reporter').textContent = r.reporter_user_id || '-';
+    document.getElementById('rd-reason').textContent = r.reason || '-';
+    document.getElementById('rd-time').textContent = fmtDate(r.created_at);
+
+    var stText = '待处理', stColor = '#e6a817';
+    if (r.status === 'reviewed') { stText = '已处理'; stColor = 'var(--success)'; }
+    else if (r.status === 'dismissed') { stText = '已驳回'; stColor = 'var(--muted)'; }
+    var stEl = document.getElementById('rd-status');
+    stEl.textContent = stText;
+    stEl.style.color = stColor;
+
+    // Evidence
+    var evEl = document.getElementById('rd-evidence');
+    evEl.innerHTML = '';
+    var evidenceSrc = r.evidence_image || r.evidence;
+    if (evidenceSrc) {
+      try {
+        var imgs = typeof evidenceSrc === 'string' ? JSON.parse(evidenceSrc) : evidenceSrc;
+        if (Array.isArray(imgs)) {
+          imgs.forEach(function (src) {
+            var img = document.createElement('img');
+            img.src = src;
+            img.className = 'evidence-thumb';
+            img.style.maxWidth = '120px';
+            img.style.borderRadius = 'var(--radius-sm)';
+            img.style.cursor = 'pointer';
+            img.style.border = '1px solid var(--border)';
+            img.addEventListener('click', function () {
+              document.getElementById('full-image').src = src;
+              document.getElementById('image-overlay').classList.add('active');
+            });
+            evEl.appendChild(img);
+          });
+        }
+      } catch (e) {
+        // Single image URL
+        var img = document.createElement('img');
+        img.src = evidenceSrc;
+        img.className = 'evidence-thumb';
+        img.style.maxWidth = '120px';
+        img.style.borderRadius = 'var(--radius-sm)';
+        img.style.cursor = 'pointer';
+        img.style.border = '1px solid var(--border)';
+        img.addEventListener('click', function () {
+          document.getElementById('full-image').src = evidenceSrc;
+          document.getElementById('image-overlay').classList.add('active');
+        });
+        evEl.appendChild(img);
+      }
+    } else {
+      evEl.textContent = '无';
+    }
+
+    // Buttons
+    var btnItem = document.getElementById('btn-rd-view-item');
+    btnItem.onclick = function () {
+      if (r.item_id) window.open('item.html?id=' + r.item_id + '&ref=admin', '_blank');
+    };
+
+    var btnBL = document.getElementById('btn-rd-blacklist');
+    if (item && item.user_id) {
+      btnBL.style.display = '';
+      btnBL.onclick = function () {
+        var reason = '举报处理: ' + (r.reason || '').substring(0, 50);
+        if (!confirm('确认将用户 ' + item.user_id + ' 加入黑名单？\n原因: ' + reason)) return;
+        addBlacklist(item.user_id, reason);
+        dst.classList.remove('active');
+      };
+    } else {
+      btnBL.style.display = 'none';
+    }
+
+    dst.classList.add('active');
+  }
+
+  document.getElementById('btn-report-detail-close').addEventListener('click', function () {
+    document.getElementById('report-detail-overlay').classList.remove('active');
+  });
+  document.getElementById('report-detail-overlay').addEventListener('click', function (e) {
+    if (e.target === this) this.classList.remove('active');
+  });
+
+  // Image overlay close
+  document.getElementById('btn-close-img').addEventListener('click', function () {
+    document.getElementById('image-overlay').classList.remove('active');
+  });
+  document.getElementById('image-overlay').addEventListener('click', function (e) {
+    if (e.target === this || e.target.classList.contains('close-img')) {
+      this.classList.remove('active');
+    }
+  });
+
+  // ==================== BLACKLIST ====================
+  async function loadBlacklist() {
+    var loading = document.getElementById('blacklist-loading');
+    var wrap = document.getElementById('blacklist-table-wrap');
+    var empty = document.getElementById('blacklist-empty');
+    var tbody = document.getElementById('blacklist-tbody');
+    loading.style.display = 'block';
+    wrap.style.display = 'none';
+    empty.style.display = 'none';
+
+    try {
+      var list = await supabaseRequest('GET', '/rest/v1/blacklist?select=*&order=created_at.desc&limit=200') || [];
+      if (list.length === 0) {
+        loading.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+      wrap.style.display = 'block';
+      tbody.innerHTML = list.map(function (b) {
+        return '<tr>' +
+          '<td>' + esc(b.user_id || '') + '</td>' +
+          '<td>' + esc(b.reason || '-') + '</td>' +
+          '<td class="text-sm text-muted">' + fmtDate(b.created_at) + '</td>' +
+          '<td><button class="btn btn-outline btn-sm btn-remove-bl" data-id="' + b.id + '" data-uid="' + esc(b.user_id || '') + '">移出</button></td>' +
+          '</tr>';
+      }).join('');
+
+      tbody.querySelectorAll('.btn-remove-bl').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var id = parseInt(this.getAttribute('data-id'));
+          var uid = this.getAttribute('data-uid');
+          removeBlacklist(id, uid);
+        });
+      });
+    } catch (e) {
+      console.error(e);
+      loading.style.display = 'none';
+      empty.style.display = 'block';
+      empty.textContent = '加载失败: ' + esc(e.message);
+    }
+  }
+
+  async function removeBlacklist(id, uid) {
+    var ok = await showConfirm('确定将 ' + uid + ' 移出黑名单吗？');
+    if (!ok) return;
+    try {
+      await supabaseRequest('DELETE', '/rest/v1/blacklist?id=eq.' + id);
+      await writeAudit('remove_blacklist', 'blacklist', id, '移出黑名单: ' + uid);
+      showToast('已移出');
+      loadBlacklist();
+    } catch (e) {
+      showToast('操作失败: ' + e.message, 'error');
+    }
+  }
+
+  document.getElementById('btn-add-blacklist').addEventListener('click', function () {
+    var uid = prompt('请输入要封禁的用户 ID:');
+    if (!uid || !uid.trim()) return;
+    var reason = prompt('请输入封禁原因:');
+    if (reason === null) return;
+    addBlacklist(uid.trim(), (reason || '').trim());
+  });
+
+  async function addBlacklist(uid, reason) {
+    try {
+      await supabaseRequest('POST', '/rest/v1/blacklist', {
+        user_id: uid,
+        reason: reason || '',
+        created_at: new Date().toISOString()
+      });
+      await writeAudit('add_blacklist', 'blacklist', null, '添加黑名单: ' + uid + (reason ? ' (' + reason + ')' : ''));
+      
+      // 删除该用户所有商品
+      var items = await supabaseRequest('GET', '/rest/v1/items?select=id,name&user_id=eq.' + encodeURIComponent(uid) + '&limit=1000');
+      var deletedCount = 0;
+      if (items && items.length) {
+        for (var i = 0; i < items.length; i++) {
+          await supabaseRequest('DELETE', '/rest/v1/items?id=eq.' + items[i].id);
+          await writeAudit('delete_item', 'item', items[i].id, '拉黑删除: ' + items[i].name + ' (用户: ' + uid + ')');
+          deletedCount++;
+        }
+      }
+      showToast('已添加黑名单，删除商品 ' + deletedCount + ' 件');
+      loadBlacklist();
+      loadItems();
+    } catch (e) {
+      showToast('添加失败: ' + e.message, 'error');
+    }
+  }
+
+  document.getElementById('btn-refresh-blacklist').addEventListener('click', loadBlacklist);
+
+  // ==================== LOGS ====================
+  async function loadLogs() {
+    var loading = document.getElementById('logs-loading');
+    var wrap = document.getElementById('logs-table-wrap');
+    var empty = document.getElementById('logs-empty');
+    var tbody = document.getElementById('logs-tbody');
+    loading.style.display = 'block';
+    wrap.style.display = 'none';
+    empty.style.display = 'none';
+
+    try {
+      var logs = await supabaseRequest('GET', '/rest/v1/audit_logs?select=*&order=created_at.desc&limit=200') || [];
+      if (logs.length === 0) {
+        loading.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+      wrap.style.display = 'block';
+      tbody.innerHTML = logs.map(function (l) {
+        var detail = esc((l.details || '').substring(0, 80));
+        return '<tr>' +
+          '<td class="text-sm">' + fmtDate(l.created_at) + '</td>' +
+          '<td><span class="badge badge-pending">' + esc(l.action || '') + '</span></td>' +
+          '<td>' + esc(l.target_type || '-') + '</td>' +
+          '<td class="text-ellipsis text-sm" style="max-width:300px;" title="' + esc(l.details || '') + '">' + detail + '</td>' +
+          '</tr>';
+      }).join('');
+    } catch (e) {
+      console.error(e);
+      loading.style.display = 'none';
+      empty.style.display = 'block';
+      empty.textContent = '加载失败: ' + esc(e.message);
+    }
+  }
+
+  // ===== Init =====
+  (async function () {
+    if (await checkLogin()) {
+      document.getElementById('login-panel').style.display = 'none';
+      document.getElementById('admin-panel').classList.add('active');
+      loadItems();
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>
