@@ -6,6 +6,56 @@
 
 项目的首要目标不是堆叠功能，而是做出一个有明确用户、真实场景和核心价值，并且能够现场稳定展示的 AIGC 应用或 AI 智能体原型，争取进入教学班推荐和校级评审。
 
+## 当前产品定位与范围
+
+当前产品定位为“杭电校园资源接力平台”：面向二手物品与教材、找搭子、志愿活动等校园资源，通过 AI 理解用户需求，帮助用户寻找匹配资源；如果暂时没有合适结果，就自动生成一条需求接力。
+
+三类资源必须共用同一条主线：用户用自然语言提出需求 → AI 提取需求类型和关键条件 → 系统查询资源 → 普通程序按规则匹配和排序 → AI 生成匹配理由 → 用户确认、联系或发布需求接力。AI 只负责理解和整理，程序负责查询、筛选和打分，管理员负责审核、举报处理和风险控制。
+
+第一版支持三类资源：
+
+1. 二手物品与教材；
+2. 找搭子，第一阶段限于学习搭子、运动搭子、活动搭子；
+3. 志愿活动。
+
+比赛演示只重点打穿一个完整案例，优先考虑“寻找志愿活动或活动搭子”；二手物品和教材作为基础资源类型保留，不平均开发三个独立平台。
+
+第一版保留资源发布、需求发布、类型选择、AI 需求提取、搜索和基础匹配、匹配理由、需求接力、管理员审核、举报/隐藏、模拟数据及来源标记。即时聊天、支付和担保交易、信用分、用户等级、复杂社交关系、多学校扩展、大规模实时通信和自动爬取其他校园平台暂缓。
+
+找搭子不得直接公开手机号、微信号和住址，应优先使用“申请联系”或“表达兴趣”。志愿活动必须保留来源、主办方、活动时间、报名截止时间、报名链接和来源核验状态；没有官方授权或人工核验时，只能标记为“用户提交”或“来源待核验”，不能称为“官方活动”。
+
+## 统一前后端数据格式要求
+
+后端和未来前端必须围绕同一套字段工作，不能由前端重新猜测或拼接资源类型。当前统一资源对象使用以下稳定字段：
+
+```text
+id, type, title, description, category, keywords,
+campus, timeRequirement, status, source,
+sourceVerificationStatus, auditStatus, createdAt,
+price, isNegotiable, images,
+buddyType, activityFrequency, peopleCount, interest, preference,
+organizer, recruitmentCount, registrationDeadline,
+serviceHours, serviceCertificateRequired, registrationUrl
+```
+
+约定如下：
+
+- 接口字段使用 camelCase；数据库旧字段可以暂时保留 snake_case，但只能在后端适配层转换。
+- 缺失值统一使用 `null`；多值字段统一使用 `[]`，不使用空字符串表示缺失。
+- `type` 使用 `course_material`、`textbook`、`used_item`、`buddy`、`volunteer_activity`、`learning_experience`、`other`。
+- 前端不得直接依赖旧 `items` 表字段、`description` 内部 JSON 或原始 `contact` 字段。
+- 资源卡片、资源详情、匹配结果和需求接力预览都必须使用同一套展示字段；只允许根据页面用途隐藏字段，不允许改名或改变类型。
+- 新接口响应必须保留 `status`、`warnings`、`version`；前端先判断状态，再读取业务数据。
+- `dataset_not_connected`、`no_matches`、`needsConfirmation: true` 和 `warnings` 都是可预期业务状态，不应当被前端当作程序崩溃。
+- 前端第一版只允许“表达兴趣”或“申请联系”，不能读取或展示手机号、微信号、电话、住址、IP、设备指纹和原始用户 ID。
+- CSV 或旧表数据进入平台前必须经过后端脱敏、字段转换、来源标记和人工审核，不允许原样透传到前端。
+
+这套格式是前端尚未开发前的接口约束。任何前端实现必须先阅读 `outputs/后端接口合同与验收清单.md`，不得自行设计第二套资源对象。
+
+## AI 模型替换窗口
+
+当前继续使用 Cloudflare Workers AI，前端不得感知具体模型。后续如需接入 DeepSeek，只能在 Worker 内增加 provider 适配层：输入和输出仍遵守现有 `parse_need` 合同，DeepSeek API Key 只能放在服务端 Secret，不能进入前端、仓库或日志。接入前必须用同一组中文案例比较两个模型的字段准确性、幻觉、JSON 稳定性、延迟和失败降级；在比较完成前不得替换当前默认模型。
+
 ## 比赛事实与适用范围
 
 以下内容来自用户提供的比赛通知：

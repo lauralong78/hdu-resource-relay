@@ -1001,25 +1001,8 @@
       var editItemRaw = null; // 编辑时保存的原始 item 数据
 
       async function loadItemForEdit(id) {
-        try {
-          var result = await supabaseRequest('GET', '/rest/v1/items?select=*&id=eq.' + id);
-          if (!result || result.length === 0) {
-            showToast('商品不存在或已下架');
-            setTimeout(function () { window.location.href = 'index.html'; }, 1500);
-            return null;
-          }
-          editItemRaw = result[0];
-          // 验证所有权
-          if (editItemRaw.user_id !== getUserId()) {
-            showToast('你只能编辑自己发布的商品');
-            setTimeout(function () { window.location.href = 'index.html'; }, 1500);
-            return null;
-          }
-          return editItemRaw;
-        } catch (e) {
-          showToast('加载商品失败，请重试');
-          return null;
-        }
+        // 当前 device_token 不是可靠用户身份，禁止通过公开客户端读取私有编辑字段。
+        return null;
       }
 
       function prefillForm(item) {
@@ -1133,12 +1116,14 @@
       }
 
       if (isEditMode) {
-        document.getElementById('form-title').textContent = '编辑商品';
-        document.getElementById('form-subtitle').textContent = '修改商品信息后保存';
-        document.getElementById('btn-submit').textContent = '保存修改';
-        loadItemForEdit(editId).then(function (item) {
-          if (item) prefillForm(item);
-        });
+        document.getElementById('form-title').textContent = '编辑暂时停用';
+        document.getElementById('form-subtitle').textContent = '当前设备身份不能可靠证明商品所有权，暂不读取联系方式或商品私有字段。';
+        var editForm = document.getElementById('publish-form');
+        editForm.querySelectorAll('input, select, textarea, button').forEach(function (control) { control.disabled = true; });
+        var editNotice = document.createElement('div');
+        editNotice.className = 'hint';
+        editNotice.textContent = '如需修改，请联系管理员处理；普通用户编辑将在正式身份认证接入后恢复。';
+        editForm.insertBefore(editNotice, editForm.firstChild);
       }
 
       var subcategoryMap = {
@@ -1700,6 +1685,10 @@
 
       document.getElementById('btn-submit').addEventListener('click', function (e) {
         e.preventDefault();
+        if (isEditMode) {
+          showToast('普通用户编辑暂时停用，请联系管理员处理。');
+          return;
+        }
         var data = collectFormData();
         var validationErrors = validateForm(data);
         var contactError = document.getElementById('contact-error');
@@ -1815,27 +1804,16 @@
           is_negotiable: data.negotiable !== false
         };
 
-        if (isEditMode) {
-          // 编辑模式：PATCH 更新
-          try {
-            await supabaseRequest('PATCH', '/rest/v1/items?id=eq.' + editId, payload);
-            localStorage.removeItem(draftKey);
-            showPublishResult(true, editId, true);
-          } catch (_) {
-            showPublishResult(false, null, true);
-          }
-        } else {
-          // 新建模式：POST
-          payload.user_id = userId;
-          payload.ip_address = ipAddress;
-          payload.created_at = new Date().toISOString();
-          try {
-            var result = await supabaseRequest('POST', '/rest/v1/items', payload);
-            localStorage.removeItem(draftKey);
-            showPublishResult(true, result[0].id, false);
-          } catch (_) {
-            showPublishResult(false, null, false);
-          }
+        // 新建模式：POST。编辑模式已在页面初始化阶段禁用。
+        payload.user_id = userId;
+        payload.ip_address = ipAddress;
+        payload.created_at = new Date().toISOString();
+        try {
+          var result = await supabaseRequest('POST', '/rest/v1/items', payload);
+          localStorage.removeItem(draftKey);
+          showPublishResult(true, result[0].id, false);
+        } catch (_) {
+          showPublishResult(false, null, false);
         }
       });
 

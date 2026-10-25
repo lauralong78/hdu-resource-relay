@@ -259,6 +259,17 @@
       padding: 80px 24px;
       color: var(--muted);
     }
+    .demo-badge { display:inline-flex; align-items:center; gap:6px; margin-bottom:12px; padding:5px 9px; border-radius:999px; background:#fff8e6; color:#7a4d00; font-size:12px; font-weight:600; }
+    .detail-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 18px; margin-top:4px; }
+    .detail-field { display:grid; gap:2px; font-size:14px; }
+    .detail-field dt { color:var(--muted); font-size:12px; }
+    .detail-field dd { color:var(--fg); word-break:break-word; }
+    .security-note { border:1px solid #d9ebe4; background:#f5fbf8; }
+    .security-note p { font-size:13px; color:var(--muted); }
+    .intent-preview { border:1px solid #eadfbf; background:#fffaf0; }
+    .intent-preview .preview-status { color:#7a4d00; font-weight:600; }
+    .intent-preview .preview-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+    @media (max-width: 520px) { .detail-fields { grid-template-columns:1fr; } }
     @media (max-width: 700px) {
       .top-nav { padding: 12px 16px; }
       .detail-container { padding: 16px 16px 48px; }
@@ -349,6 +360,16 @@
         return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
       }
 
+      function safeImageUrl(value) {
+        if (typeof value !== 'string' || !value.trim()) return null;
+        try {
+          var url = new URL(value, window.location.href);
+          if (url.protocol === 'http:' || url.protocol === 'https:') return url.href;
+          if (url.protocol === 'data:' && /^data:image\/(png|jpe?g|gif|webp);/i.test(value)) return value;
+        } catch (_) {}
+        return null;
+      }
+
       async function supabaseRequest(method, path, body) {
         var headers = {
           'apikey': SUPABASE_KEY,
@@ -412,11 +433,33 @@
 
       var container = document.getElementById('detail-container');
       var p = new URLSearchParams(window.location.search);
-      var itemId = p.get('id') ? parseInt(p.get('id'), 10) : null;
+      var itemIdParam = p.get('id') || '';
+      var itemId = /^\d+$/.test(itemIdParam) ? parseInt(itemIdParam, 10) : null;
+      var isDemoItem = /^(?:seed-item|demo-item)-[A-Za-z0-9_-]+$/.test(itemIdParam);
+      var matchContext = (function () {
+        if (p.get('from') !== 'matches') return null;
+        var reasons = [];
+        try { reasons = JSON.parse(p.get('matchReasons') || '[]'); } catch (_) {}
+        if (!Array.isArray(reasons)) reasons = [];
+        reasons = reasons.filter(function (reason) { return typeof reason === 'string' && reason.trim(); }).slice(0, 12);
+        var score = p.get('matchScore');
+        return { reasons: reasons, score: score !== null && /^-?\d+(\.\d+)?$/.test(score) ? score : null };
+      })();
+
+      async function getDemoItem(id) {
+        var response = await fetch('public-demo-resources.json', { cache: 'no-store' });
+        if (!response.ok) throw new Error('演示商品数据加载失败（HTTP ' + response.status + '）');
+        var records = await response.json();
+        if (!Array.isArray(records)) throw new Error('演示商品数据格式无法识别');
+        var record = records.find(function (candidate) { return candidate && candidate.id === id; });
+        if (!record) return null;
+        return Object.assign({}, record, { isDemo: true });
+      }
 
       async function getItems() {
         try {
-          var result = await supabaseRequest('GET', '/rest/v1/items?select=id,name,price,description,category,campus,contact,image,is_negotiable,user_id&order=created_at.desc');
+          // 公开详情只读取公开视图；视图未创建时不回退到基础 items 表。
+          var result = await supabaseRequest('GET', '/rest/v1/public_items?select=id,name,price,description,category,campus,image,is_negotiable,created_at&order=created_at.desc');
           return (result || []).map(function (item) {
             var rawDesc = item.description || '{}';
             var descMeta = {};
@@ -440,8 +483,6 @@
               })(),
               negotiable: item.is_negotiable,
               is_negotiable: item.is_negotiable,
-              user_id: item.user_id,
-              contact: item.contact || '',
               views: descMeta.viewCount || 0,
               activityTimeStart: descMeta.activity_time_start || '',
               activityTimeEnd: descMeta.activity_time_end || '',
@@ -462,12 +503,181 @@
       }
 
       async function init() {
-        if (!itemId) { showNotFound('无效的商品链接'); return; }
+        if (!itemIdParam || (!itemId && !isDemoItem)) { showNotFound('商品 ID 无效，请从推荐结果重新打开。'); return; }
+        if (isDemoItem) {
+          try {
+            var demoItem = await getDemoItem(itemIdParam);
+            if (!demoItem) { showNotFound('未找到对应的演示商品，可能是 ID 不存在或数据已更新。'); return; }
+            renderDemoDetail(demoItem);
+          } catch (e) {
+            showNotFound(e.message || '演示商品数据暂时无法读取，请稍后重试。');
+          }
+          return;
+        }
         var items = await getItems();
         var item = items.find(function (i) { return i.id === itemId; });
         if (!item) { showNotFound('商品不存在或已下架'); return; }
         incrementViews(item);
         renderDetail(item);
+      }
+
+      function appendField(parent, label, value) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'detail-field';
+        var dt = document.createElement('dt');
+        dt.textContent = label;
+        var dd = document.createElement('dd');
+        dd.textContent = value === null || value === undefined || value === '' ? '未提供' : String(value);
+        wrapper.appendChild(dt);
+        wrapper.appendChild(dd);
+        parent.appendChild(wrapper);
+      }
+
+      function appendDemoTextCard(parent, title, text, className) {
+        var card = document.createElement('section');
+        card.className = 'desc-card' + (className ? ' ' + className : '');
+        var heading = document.createElement('h3');
+        heading.textContent = title;
+        var body = document.createElement('p');
+        body.textContent = text || '未提供';
+        card.appendChild(heading);
+        card.appendChild(body);
+        parent.appendChild(card);
+        return card;
+      }
+
+      function renderMatchContext(parent) {
+        if (!matchContext || (!matchContext.reasons.length && matchContext.score === null)) return;
+        var card = document.createElement('section');
+        card.className = 'desc-card';
+        var heading = document.createElement('h3');
+        heading.textContent = '本次推荐信息';
+        card.appendChild(heading);
+        if (matchContext.score !== null) {
+          var score = document.createElement('p');
+          score.textContent = '匹配分：' + matchContext.score;
+          card.appendChild(score);
+        }
+        if (matchContext.reasons.length) {
+          var list = document.createElement('ul');
+          list.style.cssText = 'padding-left:20px;color:var(--muted);font-size:14px;';
+          matchContext.reasons.forEach(function (reason) {
+            var li = document.createElement('li');
+            li.textContent = reason.replace(/（[+-]?\d+）$/, '');
+            list.appendChild(li);
+          });
+          card.appendChild(list);
+        }
+        var note = document.createElement('p');
+        note.style.cssText = 'margin-top:8px;font-size:12px;color:var(--muted);';
+        note.textContent = '以上为进入详情前已经生成的推荐信息，详情页不会重新调用 AI 或计算匹配分。';
+        card.appendChild(note);
+        parent.appendChild(card);
+      }
+
+      function renderDemoDetail(item) {
+        var imgs = Array.isArray(item.images) ? item.images.filter(function (src) { return typeof src === 'string' && src.trim(); }) : [];
+        container.textContent = '';
+        var imageScroller = document.createElement('div');
+        imageScroller.className = 'image-scroller';
+        if (!imgs.length) {
+          var emptyImage = document.createElement('div');
+          emptyImage.className = 'slide no-img';
+          emptyImage.textContent = '暂无商品图片';
+          imageScroller.appendChild(emptyImage);
+        } else {
+          imgs.forEach(function (src) {
+            var slide = document.createElement('div');
+            slide.className = 'slide';
+            var image = document.createElement('img');
+            image.src = src;
+            image.alt = item.title + '商品图片';
+            slide.appendChild(image);
+            imageScroller.appendChild(slide);
+          });
+        }
+        container.appendChild(imageScroller);
+        var info = document.createElement('section');
+        info.className = 'info-card';
+        var badge = document.createElement('div');
+        badge.className = 'demo-badge';
+        badge.textContent = '演示数据 · 仅用于本地展示';
+        info.appendChild(badge);
+        var title = document.createElement('div');
+        title.className = 'title';
+        title.textContent = item.title || '未命名商品';
+        info.appendChild(title);
+        var priceRow = document.createElement('div');
+        priceRow.className = 'price-row';
+        var price = document.createElement('span');
+        price.className = 'price';
+        price.textContent = item.price === null || item.price === undefined ? '价格待确认' : '¥' + item.price;
+        priceRow.appendChild(price);
+        if (item.isNegotiable === true) {
+          var negotiable = document.createElement('span');
+          negotiable.className = 'negotiable-badge';
+          negotiable.textContent = '可议价';
+          priceRow.appendChild(negotiable);
+        }
+        info.appendChild(priceRow);
+        var fields = document.createElement('dl');
+        fields.className = 'detail-fields';
+        appendField(fields, '类别', item.category);
+        appendField(fields, '所在校区', item.campus);
+        appendField(fields, '交易时间要求', item.timeRequirement);
+        appendField(fields, '商品 ID', item.id);
+        appendField(fields, '数据来源', item.source);
+        appendField(fields, '来源核验状态', item.sourceVerificationStatus);
+        appendField(fields, '商品审核状态', item.auditStatus);
+        info.appendChild(fields);
+        container.appendChild(info);
+        appendDemoTextCard(container, '商品描述', item.description);
+        renderMatchContext(container);
+        var security = appendDemoTextCard(container, '安全联系说明', '当前仅生成联系意向预览，不会读取或公开卖家手机号、微信号、QQ、用户 ID 等私人信息。演示流程不会向服务器发送申请。', 'security-note');
+        var actionCard = document.createElement('section');
+        actionCard.className = 'desc-card';
+        var action = document.createElement('div');
+        action.className = 'action-row';
+        var interestButton = document.createElement('button');
+        interestButton.className = 'btn btn-primary';
+        interestButton.type = 'button';
+        interestButton.textContent = '表达兴趣';
+        action.appendChild(interestButton);
+        var back = document.createElement('a');
+        back.className = 'btn';
+        back.href = 'index.html';
+        back.textContent = '返回推荐结果';
+        action.appendChild(back);
+        actionCard.appendChild(action);
+        container.appendChild(actionCard);
+        interestButton.addEventListener('click', function () {
+          actionCard.textContent = '';
+          actionCard.className = 'desc-card intent-preview';
+          var heading = document.createElement('h3');
+          heading.textContent = '联系申请预览';
+          var status = document.createElement('p');
+          status.className = 'preview-status';
+          status.textContent = '已生成联系意向预览，尚未提交申请';
+          actionCard.appendChild(heading);
+          actionCard.appendChild(status);
+          var summary = document.createElement('p');
+          summary.style.marginTop = '8px';
+          summary.textContent = '商品：' + (item.title || '未命名商品');
+          actionCard.appendChild(summary);
+          var privacy = document.createElement('p');
+          privacy.style.marginTop = '8px';
+          privacy.textContent = '安全提示：正式联系需要未来接入申请接口并由平台完成隐私保护；当前页面不会发送真实申请、生成申请编号或通知卖家。';
+          actionCard.appendChild(privacy);
+          var previewActions = document.createElement('div');
+          previewActions.className = 'preview-actions';
+          var close = document.createElement('button');
+          close.className = 'btn';
+          close.type = 'button';
+          close.textContent = '返回详情';
+          close.addEventListener('click', function () { location.reload(); });
+          previewActions.appendChild(close);
+          actionCard.appendChild(previewActions);
+        });
       }
 
       async function incrementViews(item) {
@@ -481,23 +691,24 @@
       }
 
       function renderDetail(item) {
-        var isOwner = item.user_id === getUserId();
+        // 公开详情不携带 user_id，因此不在未经授权的页面提供所有者操作。
+        var isOwner = false;
         var favs = getFavs();
         var isFavd = favs.indexOf(item.id) !== -1;
-        var imgs = item.images || (item.image ? [item.image] : []);
+        var imgs = (item.images || (item.image ? [item.image] : [])).map(safeImageUrl).filter(Boolean);
         var rtDescMeta = {};
         try { rtDescMeta = JSON.parse(item._rawDescription || item.description || '{}'); } catch (_) {}
         var slidesHtml;
         if (imgs.length > 0) {
           slidesHtml = imgs.map(function (src) {
-            return '<div class="slide"><img src="' + src + '" alt="' + item.title + '" /></div>';
+            return '<div class="slide"><img src="' + esc(src) + '" alt="' + esc(item.title) + '" /></div>';
           }).join('');
         } else {
           slidesHtml = '<div class="slide no-img">暂无图片</div>';
         }
-        var conditionTag = item.condition ? '<span class="tag condition">' + item.condition + '</span>' : '';
-        var reasonTag = item.reason ? '<span class="tag reason">出闲置理由：' + item.reason + '</span>' : '';
-        var originalPriceHtml = item.originalPrice ? '<span class="original-price">¥' + item.originalPrice + '</span>' : '';
+        var conditionTag = item.condition ? '<span class="tag condition">' + esc(item.condition) + '</span>' : '';
+        var reasonTag = item.reason ? '<span class="tag reason">出闲置理由：' + esc(item.reason) + '</span>' : '';
+        var originalPriceHtml = item.originalPrice ? '<span class="original-price">¥' + esc(item.originalPrice) + '</span>' : '';
         var negotiableHtml = item.negotiable !== false ? '<span class="negotiable-badge">可议价</span>' : '';
 
         var actionHtml = '<div class="action-row">' +
@@ -530,7 +741,7 @@
           '</div>' +
           ((item.activityTimeStart && item.activityTimeEnd) ? '<div class="desc-card" style="background:#f0faf7;"><h3>活动时间</h3><p>' + esc(item.activityTimeStart) + ' 至 ' + esc(item.activityTimeEnd) + '</p></div>' : '') +
           (item.description ? '<div class="desc-card"><h3>描述</h3><p>' + esc(item.description) + '</p></div>' : '') +
-          (item.contact ? '<div class="desc-card"><h3>联系方式</h3><p>' + esc(item.contact) + '</p></div>' : '') +
+          '<div class="desc-card security-note"><h3>安全联系说明</h3><p>平台不会在公开详情页展示手机号、微信号、QQ 或用户身份信息。真实联系申请尚未接入，请勿通过页面外渠道提前转账。</p></div>' +
           '<div class="desc-card" style="margin-top:12px;border:1px dashed #ddd;background:#fafafa;">' +
             '<h3 style="display:flex;align-items:center;gap:6px;">' +
               '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>遇到问题？' +
@@ -616,12 +827,27 @@
       }
 
       function showNotFound(msg) {
-        container.innerHTML =
-          '<div class="not-found">' +
-          '<div class="icon-wrap"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>' +
-          '<h2>找不到商品</h2>' +
-          '<p>' + msg + '</p>' +
-          '</div>';
+        container.textContent = '';
+        var state = document.createElement('div');
+        state.className = 'not-found';
+        var icon = document.createElement('div');
+        icon.className = 'icon-wrap';
+        icon.textContent = '？';
+        icon.style.fontSize = '42px';
+        state.appendChild(icon);
+        var heading = document.createElement('h2');
+        heading.textContent = '找不到商品';
+        state.appendChild(heading);
+        var message = document.createElement('p');
+        message.textContent = msg;
+        state.appendChild(message);
+        var back = document.createElement('a');
+        back.className = 'btn';
+        back.href = 'index.html';
+        back.style.cssText = 'display:inline-flex;margin-top:18px;text-decoration:none;';
+        back.textContent = '返回推荐结果';
+        state.appendChild(back);
+        container.appendChild(state);
       }
 
       // 举报功能
