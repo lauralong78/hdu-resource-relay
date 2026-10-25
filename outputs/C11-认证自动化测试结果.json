@@ -1,0 +1,82 @@
+{
+  "mode": "isolated-browser-with-real-sdk-and-mocked-auth-responses",
+  "realAccountCreated": false,
+  "tests": [
+    {
+      "test": "账号号码规范化、内部邮箱映射、非法号码与密码边界",
+      "status": "passed"
+    },
+    {
+      "test": "表单错误提示且非法输入不发送认证请求",
+      "status": "passed"
+    },
+    {
+      "test": "Email 未启用、Confirm Email 未关闭时阻止注册与邮件触发",
+      "status": "passed"
+    },
+    {
+      "test": "注册缺少 session 时不显示已登录",
+      "status": "passed"
+    },
+    {
+      "test": "托管服务拒绝内部别名时显示明确错误且不登录",
+      "status": "passed"
+    },
+    {
+      "test": "重复注册与服务端密码强度错误提示",
+      "status": "passed"
+    },
+    {
+      "test": "SDK email + password 注册、内部邮箱映射、脱敏状态与密码清空",
+      "status": "passed"
+    },
+    {
+      "test": "刷新通过 SDK 持久化会话并调用 getUser 核验",
+      "status": "passed"
+    },
+    {
+      "test": "过期会话通过 SDK refresh_token 自动刷新",
+      "status": "passed"
+    },
+    {
+      "test": "首页账号状态与登录页往返保持会话",
+      "status": "passed"
+    },
+    {
+      "test": "同一浏览器多个标签页同步退出状态",
+      "status": "passed"
+    },
+    {
+      "test": "退出后刷新保持未登录",
+      "status": "passed"
+    },
+    {
+      "test": "密码错误与请求限流不会伪造登录",
+      "status": "passed"
+    },
+    {
+      "test": "登录断网时提示错误且不显示已登录",
+      "status": "passed"
+    },
+    {
+      "test": "SDK email + password 登录与注册使用相同映射",
+      "status": "passed"
+    },
+    {
+      "test": "持久化数据不保存明文密码",
+      "status": "passed"
+    },
+    {
+      "test": "服务端拒绝持久化会话时不恢复已登录界面",
+      "status": "passed"
+    },
+    {
+      "test": "390px 手机视口无横向溢出",
+      "status": "passed"
+    },
+    {
+      "test": "不调用 OTP、找回或业务写接口，页面无 JS 异常（首页原有公开读取亦被拦截）",
+      "status": "passed"
+    }
+  ]
+}

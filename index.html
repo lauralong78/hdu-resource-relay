@@ -694,11 +694,15 @@
     .site-footer a { color:#999; font-size:12px; text-decoration:none; }
     .site-footer a:hover { color:#666; }
   </style>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
+  <script defer src="auth.js"></script>
+  <script defer src="auth-ui.js"></script>
 </head>
 <body>
   <nav class="top-nav" data-od-id="top-nav">
     <a href="index.html" class="logo">杭电信息<span>资源共享平台</span><span class="sold-badge" id="sold-badge">本站已成交 0 次</span></a>
     <div class="nav-links">
+      <a href="login.html" id="auth-nav">登录 / 注册</a>
       <a class="nav-icon-btn" id="fav-link" href="javascript:void(0)" aria-label="我的收藏" data-od-id="fav-link" title="我的收藏">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>

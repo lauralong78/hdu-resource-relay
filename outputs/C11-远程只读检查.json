@@ -1,0 +1,13 @@
+{
+  "mode": "live-readonly-browser",
+  "authWritesBlocked": true,
+  "sdkLoadedFromCDN": true,
+  "initialStatus": "请输入账号号码和密码。",
+  "publicSettings": {
+    "httpStatus": 200,
+    "emailEnabled": true,
+    "emailAutoconfirm": true,
+    "phoneEnabled": false,
+    "disableSignup": false
+  }
+}

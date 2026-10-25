@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://laqliecldqfjfhsooyey.supabase.co; base-uri 'self'; form-action 'self'">
+  <title>登录与注册 · 寻应</title>
+  <style>
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; padding: 28px 16px; color: #222; background: #f7f7f7; font: 16px/1.6 system-ui, sans-serif; }
+    main { max-width: 440px; margin: 24px auto; padding: 24px; background: white; border: 1px solid #ddd; border-radius: 8px; }
+    h1 { margin-top: 0; font-size: 24px; }
+    label { display: block; margin-top: 16px; }
+    input { display: block; width: 100%; padding: 10px; font: inherit; border: 1px solid #aaa; border-radius: 4px; }
+    button { padding: 9px 16px; font: inherit; cursor: pointer; }
+    button:disabled { cursor: wait; opacity: .6; }
+    button[aria-pressed="true"] { font-weight: bold; outline: 2px solid #444; }
+    #auth-submit { width: 100%; margin-top: 20px; }
+    .note { font-size: 14px; color: #555; }
+    #auth-status { min-height: 26px; overflow-wrap: anywhere; }
+    a { color: #2256a0; }
+    :focus-visible { outline: 2px solid #2256a0; outline-offset: 3px; }
+  </style>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
+  <script defer src="auth.js"></script>
+  <script defer src="auth-ui.js"></script>
+</head>
+<body>
+  <main>
+    <a href="index.html">← 返回首页</a>
+    <h1>寻应 · 登录与注册</h1>
+    <p class="note">11 位号码仅作登录账号名。当前不验证号码归属，也不通过该号码联系你或找回密码；请勿将其视为已认证手机号。</p>
+    <div id="auth-modes" aria-label="认证方式">
+      <button type="button" id="auth-login" aria-pressed="true">登录</button>
+      <button type="button" id="auth-register" aria-pressed="false">注册</button>
+    </div>
+    <form id="auth-form" novalidate>
+      <label for="auth-phone">账号号码（11 位大陆手机号格式）</label>
+      <input id="auth-phone" name="phone" type="tel" inputmode="numeric" autocomplete="username" maxlength="11" required aria-describedby="auth-status">
+      <label for="auth-password">密码（至少 6 位）</label>
+      <input id="auth-password" name="password" type="password" autocomplete="current-password" minlength="6" required aria-describedby="auth-status">
+      <div id="auth-confirm-field" hidden>
+        <label for="auth-confirm">确认密码</label>
+        <input id="auth-confirm" name="confirmation" type="password" autocomplete="new-password" aria-describedby="auth-status">
+      </div>
+      <button id="auth-submit" type="submit" disabled>登录</button>
+    </form>
+    <section id="auth-account" hidden aria-label="当前账号">
+      <p id="auth-identity"></p>
+      <button id="auth-logout" type="button">退出登录</button>
+      <p class="note">账号登录不代表已获得商品编辑或删除权限。本轮尚未接入商品所有权。</p>
+    </section>
+    <p id="auth-status" role="status" aria-live="polite">正在加载认证组件…</p>
+    <p class="note">暂不提供密码找回。账号号码不能作为身份恢复凭据，请妥善保管密码。</p>
+    <noscript>请启用 JavaScript 后使用登录功能。</noscript>
+  </main>
+</body>
+</html>
