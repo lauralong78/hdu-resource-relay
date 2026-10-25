@@ -188,6 +188,116 @@
       align-items: center;
       transition: color 0.15s;
     }
+    .relay-panel {
+      max-width: 1180px;
+      margin: 18px auto 8px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f5fbf8, #fff);
+    }
+    .relay-panel h2 { font-size: 18px; margin-bottom: 4px; color: var(--accent-dark); }
+    .relay-panel .relay-intro { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+    .relay-input-row { display: flex; gap: 10px; align-items: stretch; }
+    .relay-input-row textarea { flex: 1; min-height: 74px; resize: vertical; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font: inherit; color: var(--fg); background: #fff; }
+    .relay-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .relay-actions button { border: 0; border-radius: 9px; padding: 9px 14px; cursor: pointer; font: inherit; font-size: 13px; }
+    .relay-actions .primary { background: var(--accent); color: #fff; }
+    .relay-actions .secondary { background: #e9f4ef; color: var(--accent-dark); }
+    .relay-actions button:disabled { opacity: .55; cursor: not-allowed; }
+    .relay-status { margin-top: 10px; color: var(--muted); font-size: 13px; min-height: 20px; }
+    .local-demo-banner { display: none; margin-bottom: 12px; padding: 9px 12px; border: 1px solid #f0c36d; border-radius: 9px; background: #fff8e6; color: #7a4d00; font-size: 13px; }
+    .relay-result { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .relay-result.show { display: block; }
+    .relay-result h3 { font-size: 15px; margin-bottom: 8px; }
+    .relay-result pre { margin: 0; padding: 12px; overflow: auto; max-height: 220px; border-radius: 10px; background: #17211d; color: #d9f8e8; font: 12px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; }
+    .relay-state-card { padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+    .relay-state-card h4 { font-size: 16px; margin-bottom: 6px; }
+    .relay-state-card p { color: var(--muted); font-size: 13px; }
+    .relay-state-card ul { margin: 10px 0 0 18px; color: var(--muted); font-size: 13px; }
+    .relay-state-card li + li { margin-top: 4px; }
+    .relay-state-card.error { border-color: #f1c5c1; background: #fffafa; }
+    .relay-state-card.dataset { border-color: #f0d28c; background: #fffdf5; }
+    .relay-state-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .relay-state-actions button { min-height: 34px; padding: 7px 11px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--accent-dark); font: inherit; font-size: 13px; cursor: pointer; }
+    .relay-state-actions button:hover { border-color: var(--accent); background: #f5fbf8; }
+    .relay-preview-summary { display: grid; gap: 10px; }
+    .relay-preview-title { font-size: 17px; font-weight: 700; }
+    .relay-preview-content { margin: 0; padding: 12px; border-radius: 10px; background: #17211d; color: #d9f8e8; font: 12px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; }
+    .relay-preview-label { color: var(--muted); font-size: 12px; font-weight: 700; }
+    .relay-preview-missing, .relay-preview-privacy, .relay-preview-confirm { padding: 9px 10px; border-radius: 8px; font-size: 13px; }
+    .relay-preview-missing { background: #fff8e6; color: #7a4d00; }
+    .relay-preview-privacy { background: #f1f5f4; color: var(--muted); }
+    .relay-preview-confirm { background: #eef7f3; color: var(--accent-dark); }
+    .need-editor { display: grid; gap: 12px; }
+    .need-editor-intro { margin: 0 0 10px; color: var(--muted); font-size: 13px; }
+    .need-editor-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .need-field { display: grid; gap: 5px; }
+    .need-field label { color: var(--muted); font-size: 12px; }
+    .need-field input, .need-field select { width: 100%; min-height: 38px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--fg); font: inherit; }
+    .need-field input:focus, .need-field select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px oklch(56% 0.12 170 / 0.12); }
+    .need-field-wide { grid-column: 1 / -1; }
+    .need-value { min-height: 38px; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px; background: #fbfefd; }
+    .need-value.missing { color: var(--muted); font-style: italic; }
+    .need-notices { display: grid; gap: 6px; }
+    .need-notice { margin: 0; padding: 8px 10px; border-radius: 8px; background: #fff8e6; color: #7a4d00; font-size: 13px; }
+    .need-notice.error { background: #fff1f0; color: #b42318; }
+    .need-confirm-hint { margin: 0; color: var(--muted); font-size: 13px; }
+    .relay-matches { display: grid; gap: 14px; }
+    .relay-match-card { padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+    .relay-match-card strong { color: var(--fg); }
+    .match-card-main { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; }
+    .match-card-title-row { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+    .match-card-title { font-size: 17px; line-height: 1.35; }
+    .match-score { flex: 0 0 auto; padding: 4px 8px; border-radius: var(--radius-chip); background: #eef7f3; color: var(--accent-dark); font-size: 12px; font-weight: 600; }
+    .match-card-price { margin-top: 9px; color: var(--accent-dark); font-size: 20px; font-weight: 700; }
+    .match-card-price.unknown { color: #8a5a00; font-size: 15px; }
+    .match-card-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 10px; color: var(--muted); font-size: 13px; }
+    .match-card-description { margin-top: 11px; color: var(--fg); font-size: 14px; }
+    .match-card-image { display: flex; align-items: center; justify-content: center; width: 104px; height: 88px; overflow: hidden; border-radius: 9px; background: #f1f6f4; color: var(--muted); font-size: 12px; text-align: center; }
+    .match-card-image img { width: 100%; height: 100%; object-fit: cover; }
+    .match-card-image-fallback { padding: 8px; }
+    .match-reasons { display: grid; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .match-reason-group { display: grid; gap: 4px; }
+    .match-reason-heading { font-size: 12px; font-weight: 700; }
+    .match-reason-heading.good { color: var(--accent-dark); }
+    .match-reason-heading.caution { color: #8a5a00; }
+    .match-reason { color: var(--muted); font-size: 13px; }
+    .match-statuses { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px; }
+    .match-status { padding: 4px 8px; border-radius: var(--radius-chip); background: #fff8e6; color: #7a4d00; font-size: 12px; }
+    .match-source { background: #f1f5f4; color: var(--muted); }
+    .match-method-note { margin: -2px 0 11px; color: var(--muted); font-size: 12px; }
+    .match-card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .match-card-action { min-height: 34px; padding: 7px 11px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--accent-dark); font: inherit; font-size: 13px; text-decoration: none; cursor: pointer; }
+    .match-card-action:hover:not(:disabled) { border-color: var(--accent); background: #f5fbf8; }
+    .match-card-action:disabled { color: var(--muted); background: #f7f8f8; cursor: not-allowed; }
+    .match-action-note { align-self: center; color: var(--muted); font-size: 12px; }
+    @media (max-width: 520px) { .match-card-main { grid-template-columns: 1fr; } .match-card-image { width: 100%; height: 120px; } }
+    @media (max-width: 640px) { .relay-panel { margin-left: 12px; margin-right: 12px; padding: 14px; } .relay-input-row { display: block; } .relay-actions button { flex: 1; } .need-editor-grid { grid-template-columns: 1fr; } .need-field-wide { grid-column: auto; } }
+    .hero-banner { padding: 54px 24px 18px; border-bottom: 0; background: var(--bg); }
+    .hero-banner h1 { font-size: clamp(28px, 4.5vw, 44px); letter-spacing: -0.04em; }
+    .hero-banner p { margin-top: 10px; font-size: 16px; }
+    .hero-banner p strong { color: var(--accent-dark); font-weight: 600; }
+    .relay-panel { max-width: 920px; margin: 12px auto 34px; padding: clamp(20px, 4vw, 34px); border-color: oklch(56% 0.12 170 / 0.2); border-radius: 20px; box-shadow: 0 14px 36px rgba(26, 93, 77, 0.08); background: var(--surface); }
+    .relay-panel h2 { font-size: clamp(20px, 3vw, 26px); letter-spacing: -0.02em; }
+    .relay-panel .relay-intro { font-size: 14px; margin-bottom: 18px; }
+    .relay-input-row textarea { min-height: 116px; padding: 16px; border-color: oklch(56% 0.12 170 / 0.28); font-size: 16px; line-height: 1.6; transition: border-color 0.15s, box-shadow 0.15s; }
+    .relay-input-row textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px oklch(56% 0.12 170 / 0.12); }
+    .need-examples { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .need-examples-label { color: var(--muted); font-size: 12px; }
+    .need-example { border: 1px solid var(--border); border-radius: var(--radius-chip); padding: 6px 11px; background: #fbfefd; color: var(--accent-dark); font: inherit; font-size: 12px; cursor: pointer; transition: border-color 0.15s, background 0.15s, transform 0.1s; }
+    .need-example:hover { border-color: var(--accent); background: #f0faf6; }
+    .need-example:active { transform: scale(0.97); }
+    .need-example:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .relay-actions { margin-top: 18px; }
+    .relay-actions button { min-height: 42px; padding: 10px 17px; }
+    .relay-actions .primary { font-weight: 700; box-shadow: 0 5px 12px oklch(56% 0.12 170 / 0.2); }
+    .browse-section { border-top: 1px solid var(--border); padding-top: 28px; }
+    .browse-heading { max-width: 1200px; margin: 0 auto; padding: 0 24px 12px; }
+    .browse-heading h2 { font-size: 20px; letter-spacing: -0.02em; }
+    .browse-heading p { margin-top: 3px; color: var(--muted); font-size: 13px; }
+    .browse-search { margin-top: 0; }
+    @media (max-width: 700px) { .hero-banner { padding: 34px 16px 12px; } .hero-banner h1 { font-size: clamp(26px, 8vw, 34px); } .hero-banner p { font-size: 14px; } .relay-panel { margin: 8px 12px 26px; } .browse-heading { padding-left: 16px; padding-right: 16px; } }
     .search-bar .clear-btn { display: none; }
     .search-bar .clear-btn.show { display: flex; }
     .controls-row {
@@ -600,22 +710,74 @@
     </div>
   </nav>
   <div class="hero-banner" data-od-id="hero-banner">
-    <h1>大学生信息资源共享平台</h1>
-    <p>让闲置在校园里找到新主人</p>
+    <h1>说出你想找的校园好物</h1>
+    <p>用一句话描述需求，<strong>更快找到合适的二手商品</strong></p>
   </div>
-  <div class="search-section" data-od-id="search-section">
-    <div class="search-bar" data-od-id="search-bar">
-      <button aria-label="搜索">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-      </button>
-      <input type="text" id="search-input" placeholder="搜索商品名称、描述…" autocomplete="off" data-od-id="search-input" />
-      <button class="clear-btn" id="clear-search" aria-label="清除" data-od-id="clear-search-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+  <section class="relay-panel" aria-labelledby="relay-title" data-od-id="resource-relay-panel">
+    <h2 id="relay-title">自然语言找商品</h2>
+    <p class="relay-intro">告诉我们你想要什么，系统会先整理需求，再按规则匹配校园资源。</p>
+    <div class="local-demo-banner" id="local-demo-banner">本机演示模式：AI 使用确定性 stub，仅用于验证页面与接口闭环，不代表真实 Cloudflare Workers AI。</div>
+    <div class="relay-input-row">
+      <textarea id="need-input" maxlength="1000" aria-label="描述你想找的商品" placeholder="例如：想找一套高等数学教材，成色较新，预算 30 元以内"></textarea>
     </div>
-  </div>
+    <div class="need-examples" aria-label="需求示例">
+      <span class="need-examples-label">试试这样说：</span>
+      <button class="need-example" type="button" data-need-example="想找一套高等数学教材，成色较新，预算 30 元以内">高等数学教材 · 预算 30 元</button>
+      <button class="need-example" type="button" data-need-example="想找一副适合宿舍使用的二手蓝牙耳机，能正常降噪，预算 150 元">宿舍蓝牙耳机 · 预算 150 元</button>
+      <button class="need-example" type="button" data-need-example="想找一个无线鼠标，适合带去图书馆使用，价格实惠">图书馆无线鼠标</button>
+      <button class="need-example" type="button" data-need-example="想找一盏适合宿舍书桌的小台灯，光线柔和，最好可以在下沙校区面交">宿舍书桌台灯 · 下沙面交</button>
+    </div>
+    <div class="relay-actions">
+      <button class="primary" id="parse-need-btn" type="button">开始找商品</button>
+      <button class="secondary" id="match-resource-btn" type="button" disabled>确认条件并查找资源</button>
+      <button class="secondary" id="relay-preview-btn" type="button" disabled>生成接力预览</button>
+    </div>
+    <div class="relay-status" id="relay-status" role="status" aria-live="polite">当前使用本地脱敏种子数据；没有数据时不会伪造匹配结果。</div>
+    <div class="relay-result" id="need-result">
+      <h3>请确认你的需求条件</h3>
+      <p class="need-editor-intro">系统根据你的描述提取了以下条件。你可以修改预算、校区、时间和关键词，确认后再查找资源。</p>
+      <div class="need-notices" id="need-notices"></div>
+      <div class="need-editor">
+        <div class="need-editor-grid">
+          <div class="need-field"><label>商品类型</label><div class="need-value" id="need-type-value"></div></div>
+          <div class="need-field"><label>需求标题</label><div class="need-value" id="need-title-value"></div></div>
+          <div class="need-field need-field-wide"><label for="need-keywords-input">关键词（用逗号分隔）</label><input id="need-keywords-input" type="text" autocomplete="off" placeholder="例如：耳机，降噪"></div>
+          <div class="need-field"><label for="need-budget-input">预算上限（元）</label><input id="need-budget-input" type="number" min="0" max="100000" step="0.01" inputmode="decimal" placeholder="未设置"></div>
+          <div class="need-field"><label for="need-campus-input">校区</label><select id="need-campus-input"><option value="">未设置</option><option value="下沙">下沙</option><option value="滨江">滨江</option><option value="东岳">东岳</option><option value="不限">不限校区</option></select></div>
+          <div class="need-field need-field-wide"><label for="need-time-input">时间要求</label><input id="need-time-input" type="text" maxlength="100" placeholder="例如：周六下午；未设置也可以继续"></div>
+        </div>
+        <p class="need-confirm-hint" id="need-confirm-hint">确认后才会调用资源匹配。</p>
+      </div>
+    </div>
+    <div class="relay-result" id="match-result">
+      <h3>匹配结果</h3>
+      <p class="match-method-note">AI 只负责理解你输入的需求；匹配分和展示顺序由规则程序依据已确认的条件生成，不代表交易成功概率或商品质量评分。</p>
+      <div class="relay-matches" id="match-result-list"></div>
+    </div>
+    <div class="relay-result" id="relay-result">
+      <h3>需求接力预览</h3>
+      <div id="relay-result-json" class="relay-preview-summary"></div>
+    </div>
+  </section>
+  <section class="browse-section" aria-labelledby="browse-title">
+    <div class="browse-heading">
+      <h2 id="browse-title">浏览全部商品</h2>
+      <p>也可以直接搜索、筛选和查看现有发布。</p>
+    </div>
+    <div class="search-section browse-search" data-od-id="search-section">
+      <div class="search-bar" data-od-id="search-bar">
+        <button aria-label="搜索">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+        <input type="text" id="search-input" placeholder="按商品名称或描述搜索…" autocomplete="off" data-od-id="search-input" />
+        <button class="clear-btn" id="clear-search" aria-label="清除" data-od-id="clear-search-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
   <div class="controls-row" data-od-id="controls-row">
     <span class="result-count" id="result-count" data-od-id="result-count">共 <strong>0</strong> 件商品</span>
     <div class="filter-group">
@@ -793,9 +955,575 @@
       var searchKeywords = [];
       var showMyItems = false;
       var myItemsBtn = document.getElementById('my-items-filter');
+      if (myItemsBtn) {
+        myItemsBtn.disabled = true;
+        myItemsBtn.setAttribute('aria-disabled', 'true');
+        myItemsBtn.title = '普通用户“我的发布”暂时停用，待正式身份认证接入后恢复';
+      }
       var showFavOnly = false;
       var debounceTimer = null;
       var dataError = false;
+
+      // 资源接力闭环：前端只调用统一接口，不直接读取旧 items 表或原始 CSV。
+      var needInput = document.getElementById('need-input');
+      var parseNeedBtn = document.getElementById('parse-need-btn');
+      var matchResourceBtn = document.getElementById('match-resource-btn');
+      var relayPreviewBtn = document.getElementById('relay-preview-btn');
+      var relayStatus = document.getElementById('relay-status');
+      var needResult = document.getElementById('need-result');
+      var needNotices = document.getElementById('need-notices');
+      var needTypeValue = document.getElementById('need-type-value');
+      var needTitleValue = document.getElementById('need-title-value');
+      var needKeywordsInput = document.getElementById('need-keywords-input');
+      var needBudgetInput = document.getElementById('need-budget-input');
+      var needCampusInput = document.getElementById('need-campus-input');
+      var needTimeInput = document.getElementById('need-time-input');
+      var needConfirmHint = document.getElementById('need-confirm-hint');
+      var matchResult = document.getElementById('match-result');
+      var matchResultList = document.getElementById('match-result-list');
+      var relayResult = document.getElementById('relay-result');
+      var relayResultJson = document.getElementById('relay-result-json');
+      var currentNeed = null;
+      var needConfirmed = false;
+      var localSeedResources = null;
+      var relayRequestSerial = 0;
+      var RELAY_SNAPSHOT_KEY = 'relay_match_snapshot_v1';
+
+      if ((location.hostname === '127.0.0.1' || location.hostname === 'localhost') && location.port === '8788') {
+        document.getElementById('local-demo-banner').style.display = 'block';
+      }
+
+      function setRelayStatus(message, isError) {
+        relayStatus.textContent = message;
+        relayStatus.style.color = isError ? '#b42318' : '';
+      }
+
+      async function readApiJson(path, body) {
+        var response;
+        try {
+          response = await fetch(path, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+        } catch (_) {
+          throw new Error('网络请求失败，请检查本地演示服务后重试。');
+        }
+        var raw = await response.text();
+        var data = null;
+        try { data = raw ? JSON.parse(raw) : {}; } catch (_) { data = { error: '接口返回不是合法 JSON' }; }
+        if (!response.ok) throw new Error(data.error || ('接口请求失败（' + response.status + '）'));
+        return data;
+      }
+
+      function clearRelayOutput() {
+        matchResultList.textContent = '';
+        relayResultJson.textContent = '';
+        relayPreviewBtn.disabled = true;
+      }
+
+      function clearRelaySnapshot() {
+        try { sessionStorage.removeItem(RELAY_SNAPSHOT_KEY); } catch (_) {}
+      }
+
+      function snapshotNeed(need) {
+        if (!need) return null;
+        return {
+          needType: need.needType || null,
+          title: typeof need.title === 'string' ? need.title.slice(0, 200) : '',
+          keywords: Array.isArray(need.keywords) ? need.keywords.slice(0, 8).map(function (value) { return String(value).slice(0, 30); }) : [],
+          budgetMax: need.budgetMax === null || need.budgetMax === undefined ? null : need.budgetMax,
+          campus: need.campus || null,
+          timeRequirement: need.timeRequirement || null,
+          parseStatus: need.parseStatus || 'ok',
+          warnings: Array.isArray(need.warnings) ? need.warnings.slice(0, 8) : [],
+          needsConfirmation: !!need.needsConfirmation
+        };
+      }
+
+      function snapshotResource(resource) {
+        if (!resource || typeof resource !== 'object') return {};
+        var copy = {};
+        ['id', 'type', 'title', 'description', 'category', 'keywords', 'campus', 'timeRequirement', 'status', 'source',
+          'sourceVerificationStatus', 'auditStatus', 'price', 'isNegotiable', 'images', 'subcategory'].forEach(function (key) {
+          if (resource[key] !== undefined) copy[key] = resource[key];
+        });
+        return copy;
+      }
+
+      function saveRelaySnapshot(data) {
+        try {
+          var snapshot = {
+            savedAt: Date.now(),
+            need: snapshotNeed(currentNeed),
+            status: data && data.status,
+            canRelay: !!(data && data.canRelay),
+            matches: data && Array.isArray(data.matches) ? data.matches.slice(0, 30).map(function (match) {
+              return {
+                score: match && match.score !== undefined ? match.score : null,
+                reasons: match && Array.isArray(match.reasons) ? match.reasons.slice(0, 12).map(String) : [],
+                resource: snapshotResource(match && match.resource)
+              };
+            }) : []
+          };
+          sessionStorage.setItem(RELAY_SNAPSHOT_KEY, JSON.stringify(snapshot));
+        } catch (_) {}
+      }
+
+      function restoreRelaySnapshot() {
+        try {
+          var raw = sessionStorage.getItem(RELAY_SNAPSHOT_KEY);
+          if (!raw) return false;
+          var snapshot = JSON.parse(raw);
+          if (!snapshot || !snapshot.savedAt || Date.now() - snapshot.savedAt > 30 * 60 * 1000 || !snapshot.need) {
+            clearRelaySnapshot();
+            return false;
+          }
+          currentNeed = snapshot.need;
+          needInput.value = currentNeed.title || '';
+          renderNeedResult(currentNeed);
+          setNeedConfirmed(true);
+          renderMatchResult({ status: snapshot.status, canRelay: snapshot.canRelay, matches: snapshot.matches || [] });
+          relayPreviewBtn.disabled = snapshot.status === 'matched' || !snapshot.canRelay;
+          setRelayStatus('已恢复本次推荐结果；如需新搜索，请重新输入需求并点击“开始找商品”。');
+          return true;
+        } catch (_) {
+          clearRelaySnapshot();
+          return false;
+        }
+      }
+
+      function appendStateAction(parent, label, handler, primary) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = label;
+        if (primary) button.style.background = '#e9f4ef';
+        button.addEventListener('click', handler);
+        parent.appendChild(button);
+        return button;
+      }
+
+      function focusNeedField(field) {
+        var target = field === 'budget' ? needBudgetInput : field === 'campus' ? needCampusInput : field === 'time' ? needTimeInput : needKeywordsInput;
+        target.focus();
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      function renderRelayPreview(data) {
+        relayResultJson.textContent = '';
+        var relay = data && data.relay ? data.relay : {};
+        appendTextElement(relayResultJson, 'div', 'relay-preview-title', relay.title || '未命名需求');
+        appendTextElement(relayResultJson, 'div', 'relay-preview-label', '预览内容');
+        appendTextElement(relayResultJson, 'div', 'relay-preview-content', relay.content || '暂无预览内容');
+        var missing = Array.isArray(relay.missingFields) ? relay.missingFields : [];
+        if (missing.length) appendTextElement(relayResultJson, 'div', 'relay-preview-missing', '还缺少：' + missing.join('、') + '。你可以补充后重新生成预览。');
+        if (relay.privacyNotice) appendTextElement(relayResultJson, 'div', 'relay-preview-privacy', '隐私提醒：' + relay.privacyNotice);
+        appendTextElement(relayResultJson, 'div', 'relay-preview-confirm', data && data.needsConfirmation === true ? '这是待你确认的预览，不会自动发布，也不代表需求已经发布或有人响应。' : '这是预览内容，不会自动发布，也不代表需求已经发布或有人响应。');
+      }
+
+      async function loadLocalSeedResources() {
+        if (localSeedResources !== null) return localSeedResources;
+        try {
+          var response = await fetch('public-demo-resources.json', { cache: 'no-store' });
+          if (!response.ok) throw new Error('本地种子数据不可用');
+          var data = await response.json();
+          localSeedResources = Array.isArray(data) ? data : [];
+        } catch (_) {
+          localSeedResources = [];
+        }
+        return localSeedResources;
+      }
+
+      var needTypeLabels = {
+        course_material: '课程资料', textbook: '教材', used_item: '闲置物品', buddy: '找搭子',
+        volunteer_activity: '志愿活动', learning_experience: '学习经验', other: '其他'
+      };
+      var parseStatusLabels = { ok: '解析完成', degraded: '解析结果需要人工检查' };
+      var warningLabels = {
+        MODEL_NON_OBJECT: 'AI 返回的内容格式不完整，请检查并修改条件。',
+        INVALID_NEEDS_CONFIRMATION_TYPE: '确认状态无法由 AI 可靠判断，请以你检查后的条件为准。',
+        INVALID_BUDGET_MAX: '预算格式或范围不正确，预算已留空。',
+        INVALID_CAMPUS: '校区未能识别，请手动选择。',
+        SENSITIVE_CONTACT_REMOVED: '出于隐私保护，联系方式不会作为需求条件。',
+        UNVERIFIED_SOURCE_STATUS: '来源核验状态需要人工确认。'
+      };
+
+      function readableNeedValue(value, fallback) {
+        return value === null || value === undefined || value === '' || (Array.isArray(value) && value.length === 0) ? fallback : String(value);
+      }
+
+      function renderNeedNotices(data) {
+        needNotices.textContent = '';
+        var status = data.parseStatus || 'degraded';
+        var statusNotice = document.createElement('p');
+        statusNotice.className = 'need-notice' + (status === 'degraded' ? ' error' : '');
+        statusNotice.textContent = parseStatusLabels[status] || '解析结果需要人工检查';
+        needNotices.appendChild(statusNotice);
+        (Array.isArray(data.warnings) ? data.warnings : []).forEach(function (warning) {
+          var notice = document.createElement('p');
+          notice.className = 'need-notice';
+          notice.textContent = warningLabels[warning] || 'AI 返回的某项条件格式不完整，请检查条件后再确认。';
+          needNotices.appendChild(notice);
+        });
+      }
+
+      function renderNeedResult(data) {
+        renderNeedNotices(data);
+        var missing = [];
+        if (data.budgetMax === null || data.budgetMax === undefined) missing.push('预算');
+        if (!data.campus) missing.push('校区');
+        if (!data.timeRequirement) missing.push('交易时间');
+        if (missing.length) {
+          var optionalNotice = document.createElement('p');
+          optionalNotice.className = 'need-notice';
+          optionalNotice.textContent = '还可以补充' + missing.join('、') + '，也可以保留为空后继续确认；系统不会替你猜测这些条件。';
+          needNotices.appendChild(optionalNotice);
+        }
+        needTypeValue.textContent = readableNeedValue(needTypeLabels[data.needType], '还需要确认');
+        needTitleValue.textContent = readableNeedValue(data.title, '还需要确认');
+        needKeywordsInput.value = Array.isArray(data.keywords) ? data.keywords.join('，') : '';
+        needBudgetInput.value = data.budgetMax === null || data.budgetMax === undefined ? '' : data.budgetMax;
+        needCampusInput.value = data.campus || '';
+        needTimeInput.value = data.timeRequirement || '';
+        needConfirmHint.textContent = data.needsConfirmation ? '部分条件需要你确认；未填写的可选条件不会阻止继续。确认后才会调用资源匹配。' : '请检查条件。确认后才会调用资源匹配。';
+        needResult.classList.add('show');
+      }
+
+      function setNeedConfirmed(confirmed) {
+        needConfirmed = confirmed;
+        matchResourceBtn.disabled = !confirmed;
+        if (!confirmed) relayPreviewBtn.disabled = true;
+      }
+
+      function readEditedNeed() {
+        var budgetText = needBudgetInput.value.trim();
+        var budget = null;
+        if (budgetText !== '') {
+          budget = Number(budgetText);
+          if (!Number.isFinite(budget) || budget < 0 || budget > 100000) {
+            throw new Error('预算必须是 0 到 100000 元之间的数字。');
+          }
+        }
+        var keywords = needKeywordsInput.value.split(/[，,]/).map(function (item) { return item.trim(); }).filter(Boolean);
+        var uniqueKeywords = [];
+        keywords.forEach(function (keyword) { if (uniqueKeywords.indexOf(keyword) === -1) uniqueKeywords.push(keyword); });
+        if (uniqueKeywords.length > 8 || uniqueKeywords.some(function (keyword) { return keyword.length > 30; })) {
+          throw new Error('关键词最多填写 8 个，每个不超过 30 个字。');
+        }
+        var timeRequirement = needTimeInput.value.trim();
+        if (timeRequirement.length > 100) throw new Error('时间要求不能超过 100 个字。');
+        var edited = Object.assign({}, currentNeed);
+        edited.keywords = uniqueKeywords;
+        edited.budgetMax = budget;
+        edited.campus = needCampusInput.value || null;
+        edited.timeRequirement = timeRequirement || null;
+        edited.needsConfirmation = false;
+        return edited;
+      }
+
+      function markNeedEdited() {
+        if (!currentNeed) return;
+        needConfirmed = false;
+        matchResourceBtn.disabled = !currentNeed.needType || !currentNeed.title;
+        relayPreviewBtn.disabled = true;
+        matchResult.classList.remove('show');
+        relayResult.classList.remove('show');
+        relayResultJson.textContent = '';
+        needConfirmHint.textContent = '条件已修改，请点击“确认条件并查找资源”。';
+      }
+
+      var resourceTypeLabels = {
+        course_material: '课程资料', textbook: '教材', used_item: '闲置物品', buddy: '找搭子',
+        volunteer_activity: '志愿活动', learning_experience: '学习经验', other: '其他'
+      };
+
+      function appendTextElement(parent, tagName, className, text) {
+        var element = document.createElement(tagName);
+        if (className) element.className = className;
+        element.textContent = text;
+        parent.appendChild(element);
+        return element;
+      }
+
+      function formatResourcePrice(resource) {
+        if (resource.price === null || resource.price === undefined) return '价格待确认';
+        return '¥' + String(resource.price) + (resource.isNegotiable ? ' · 可议价' : '');
+      }
+
+      function getUsableImageUrl(resource) {
+        if (!Array.isArray(resource.images)) return null;
+        for (var i = 0; i < resource.images.length; i += 1) {
+          var value = resource.images[i];
+          if (typeof value !== 'string' || !value.trim()) continue;
+          try {
+            var url = new URL(value, window.location.href);
+            if (url.protocol === 'http:' || url.protocol === 'https:' || url.protocol === 'data:') return url.href;
+          } catch (_) {}
+        }
+        return null;
+      }
+
+      function isPositiveMatchReason(reason) {
+        return /^(资源类型匹配|资源分类匹配|关键词\/标题匹配|校区匹配|时间要求匹配|预算范围内|搭子类型匹配|兴趣\/主题匹配|人数条件满足|活动频率匹配|招募人数条件满足|志愿时长条件满足|来源标记为用户提交)/.test(reason);
+      }
+
+      function userFriendlyReason(reason) {
+        return String(reason).replace(/（[+-]?\d+）$/, '');
+      }
+
+      function appendReasonGroups(parent, match, resource) {
+        var positive = [];
+        var caution = [];
+        (Array.isArray(match.reasons) ? match.reasons : []).forEach(function (reason) {
+          if (typeof reason !== 'string' || !reason.trim()) return;
+          (isPositiveMatchReason(reason) ? positive : caution).push(userFriendlyReason(reason));
+        });
+        if (resource.price === null || resource.price === undefined) caution.push('价格待确认，不能据此确认满足预算');
+        if (currentNeed && currentNeed.campus && currentNeed.campus !== '不限' && resource.campus && resource.campus !== currentNeed.campus && caution.indexOf('校区不一致') === -1) caution.push('校区不一致');
+        if (currentNeed && currentNeed.timeRequirement && !resource.timeRequirement && caution.indexOf('交易时间尚不确定') === -1) caution.push('交易时间尚不确定');
+
+        if (positive.length) {
+          var goodGroup = document.createElement('div');
+          goodGroup.className = 'match-reason-group';
+          appendTextElement(goodGroup, 'div', 'match-reason-heading good', '符合条件');
+          positive.forEach(function (reason) { appendTextElement(goodGroup, 'div', 'match-reason', '• ' + reason); });
+          parent.appendChild(goodGroup);
+        }
+        if (caution.length) {
+          var cautionGroup = document.createElement('div');
+          cautionGroup.className = 'match-reason-group';
+          appendTextElement(cautionGroup, 'div', 'match-reason-heading caution', '需要注意');
+          caution.forEach(function (reason) { appendTextElement(cautionGroup, 'div', 'match-reason', '• ' + reason); });
+          parent.appendChild(cautionGroup);
+        }
+      }
+
+      function appendResourceStatuses(parent, resource) {
+        var statuses = [];
+        var sourceLabels = {
+          synthetic_demo_seed: '演示数据', collaborator_csv_sanitized: '脱敏协作者数据', user_submitted: '用户提交数据'
+        };
+        if (resource.source) statuses.push({ text: '数据来源：' + (sourceLabels[resource.source] || resource.source), source: true });
+        if (resource.sourceVerificationStatus === 'pending_verification') statuses.push('来源待核验');
+        else if (resource.sourceVerificationStatus === 'user_submitted') statuses.push('用户提交来源');
+        if (resource.auditStatus === 'pending_review') statuses.push('商品待审核');
+        if (!statuses.length) return;
+        var wrapper = document.createElement('div');
+        wrapper.className = 'match-statuses';
+        statuses.forEach(function (status) {
+          var statusText = typeof status === 'string' ? status : status.text;
+          appendTextElement(wrapper, 'span', 'match-status' + (status.source ? ' match-source' : ''), statusText);
+        });
+        parent.appendChild(wrapper);
+      }
+
+      function appendMatchActions(parent, resource, match) {
+        var actions = document.createElement('div');
+        actions.className = 'match-card-actions';
+        var id = resource && resource.id;
+        var hasId = id !== null && id !== undefined && String(id).trim() !== '';
+        if (hasId) {
+          var detailLink = document.createElement('a');
+          detailLink.className = 'match-card-action';
+          var detailParams = new URLSearchParams();
+          detailParams.set('id', String(id));
+          // 只传递当前匹配接口已经返回的理由；详情页不重新计算匹配。
+          if (match && Array.isArray(match.reasons) && match.reasons.length) {
+            detailParams.set('matchReasons', JSON.stringify(match.reasons.filter(function (reason) {
+              return typeof reason === 'string' && reason.trim();
+            })));
+          }
+          if (match && match.score !== null && match.score !== undefined) detailParams.set('matchScore', String(match.score));
+          detailParams.set('from', 'matches');
+          detailLink.href = 'item.html?' + detailParams.toString();
+          detailLink.textContent = '查看详情';
+          actions.appendChild(detailLink);
+        }
+        var contactButton = document.createElement('button');
+        contactButton.className = 'match-card-action';
+        contactButton.type = 'button';
+        contactButton.disabled = true;
+        contactButton.textContent = '申请联系（待 C6 接入）';
+        actions.appendChild(contactButton);
+        appendTextElement(actions, 'span', 'match-action-note', hasId ? '详情页可查看安全联系预览' : '资源缺少可用 ID');
+        parent.appendChild(actions);
+      }
+
+      function renderMatchResult(data) {
+        matchResultList.textContent = '';
+        if (data.status === 'no_matches') {
+          var empty = document.createElement('div');
+          empty.className = 'relay-state-card';
+          appendTextElement(empty, 'h4', '', '暂时没有找到符合条件的商品');
+          appendTextElement(empty, 'p', '', '这只表示当前接入的数据中没有匹配结果，不能确定是哪一项条件导致没有结果。');
+          var tips = document.createElement('ul');
+          ['调整预算上限', '更换或放宽校区', '补充或调整交易时间', '修改关键词'].forEach(function (label) { appendTextElement(tips, 'li', '', label); });
+          empty.appendChild(tips);
+          var actions = document.createElement('div');
+          actions.className = 'relay-state-actions';
+          appendStateAction(actions, '返回条件卡修改', function () { needResult.scrollIntoView({ behavior: 'smooth', block: 'center' }); focusNeedField('keywords'); });
+          if (data.canRelay) appendStateAction(actions, '生成需求接力预览', previewRelayNeed, true);
+          empty.appendChild(actions);
+          matchResultList.appendChild(empty);
+        } else if (data.status === 'dataset_not_connected') {
+          var datasetCard = document.createElement('div');
+          datasetCard.className = 'relay-state-card dataset';
+          appendTextElement(datasetCard, 'h4', '', '当前还没有接入可用于匹配的数据集');
+          appendTextElement(datasetCard, 'p', '', '这不代表校园内没有符合要求的商品，只是当前没有可查询的资源数据。你可以先修改条件，或生成一份需求接力预览。');
+          var datasetActions = document.createElement('div');
+          datasetActions.className = 'relay-state-actions';
+          appendStateAction(datasetActions, '返回条件卡修改', function () { needResult.scrollIntoView({ behavior: 'smooth', block: 'center' }); focusNeedField('keywords'); });
+          if (data.canRelay) appendStateAction(datasetActions, '生成需求接力预览', previewRelayNeed, true);
+          datasetCard.appendChild(datasetActions);
+          matchResultList.appendChild(datasetCard);
+        } else if (data.status !== 'matched' || !Array.isArray(data.matches)) {
+          var unknownCard = document.createElement('div');
+          unknownCard.className = 'relay-state-card error';
+          appendTextElement(unknownCard, 'h4', '', '匹配服务返回了无法识别的状态');
+          appendTextElement(unknownCard, 'p', '', '没有把服务异常当作无商品结果。请重试；如果仍然失败，请稍后再试。');
+          var unknownActions = document.createElement('div');
+          unknownActions.className = 'relay-state-actions';
+          appendStateAction(unknownActions, '重试匹配', matchRelayResources, true);
+          unknownCard.appendChild(unknownActions);
+          matchResultList.appendChild(unknownCard);
+        } else {
+          data.matches.forEach(function (match) {
+            var resource = match && match.resource ? match.resource : {};
+            var card = document.createElement('article');
+            card.className = 'relay-match-card';
+            var main = document.createElement('div');
+            main.className = 'match-card-main';
+            var info = document.createElement('div');
+            var titleRow = document.createElement('div');
+            titleRow.className = 'match-card-title-row';
+            appendTextElement(titleRow, 'strong', 'match-card-title', resource.title || '未命名资源');
+            if (match.score !== null && match.score !== undefined) appendTextElement(titleRow, 'span', 'match-score', '匹配分 ' + String(match.score));
+            info.appendChild(titleRow);
+            var price = appendTextElement(info, 'div', 'match-card-price' + (resource.price === null || resource.price === undefined ? ' unknown' : ''), formatResourcePrice(resource));
+            price.setAttribute('aria-label', resource.price === null || resource.price === undefined ? '价格待确认' : '商品价格 ' + String(resource.price) + ' 元');
+            var meta = document.createElement('div');
+            meta.className = 'match-card-meta';
+            appendTextElement(meta, 'span', '', '类别：' + (resourceTypeLabels[resource.type || resource.needType] || resource.category || '未标注'));
+            appendTextElement(meta, 'span', '', '校区：' + (resource.campus || '未标注'));
+            if (resource.timeRequirement) appendTextElement(meta, 'span', '', '交易时间：' + resource.timeRequirement);
+            info.appendChild(meta);
+            if (resource.description) appendTextElement(info, 'p', 'match-card-description', resource.description);
+            main.appendChild(info);
+            var imageBox = document.createElement('div');
+            imageBox.className = 'match-card-image';
+            var imageUrl = getUsableImageUrl(resource);
+            if (imageUrl) {
+              var image = document.createElement('img');
+              image.src = imageUrl;
+              image.alt = resource.title ? resource.title + '商品图片' : '商品图片';
+              image.addEventListener('error', function () {
+                imageBox.textContent = '图片暂不可用';
+                imageBox.classList.add('match-card-image-fallback');
+              });
+              imageBox.appendChild(image);
+            } else {
+              imageBox.textContent = '暂无图片';
+              imageBox.classList.add('match-card-image-fallback');
+            }
+            main.appendChild(imageBox);
+            card.appendChild(main);
+            appendResourceStatuses(card, resource);
+            var reasons = document.createElement('div');
+            reasons.className = 'match-reasons';
+            appendReasonGroups(reasons, match, resource);
+            if (!reasons.children.length) appendTextElement(reasons, 'div', 'match-reason', '暂无具体匹配说明');
+            card.appendChild(reasons);
+            appendMatchActions(card, resource, match);
+            matchResultList.appendChild(card);
+          });
+        }
+        matchResult.classList.add('show');
+      }
+
+      async function parseNeedForRelay() {
+        var text = needInput.value.trim();
+        if (!text) { setRelayStatus('请先输入你的需求。', true); needInput.focus(); return; }
+        clearRelaySnapshot();
+        parseNeedBtn.disabled = true;
+        var requestSerial = ++relayRequestSerial;
+        clearRelayOutput();
+        setRelayStatus('正在整理需求……');
+        try {
+          var data = await readApiJson('/api/ai', { action: 'parse_need', needText: text });
+          if (requestSerial !== relayRequestSerial) return;
+          currentNeed = data;
+          setNeedConfirmed(false);
+          renderNeedResult(data);
+          matchResourceBtn.disabled = !data.needType || !data.title;
+          setRelayStatus(data.parseStatus === 'degraded' ? '需求已部分整理，请检查提示并确认条件，或重新输入后重试。' : '需求已整理，请检查条件后确认。');
+        } catch (e) {
+          if (requestSerial !== relayRequestSerial) return;
+          currentNeed = null;
+          needResult.classList.remove('show');
+          clearRelayOutput();
+          setNeedConfirmed(false);
+          matchResourceBtn.disabled = true;
+          relayPreviewBtn.disabled = true;
+          setRelayStatus('AI 解析失败：' + (e.message || '服务暂时不可用。') + ' 可以保留原输入后重试。', true);
+        } finally { parseNeedBtn.disabled = false; }
+      }
+
+      async function matchRelayResources() {
+        if (!currentNeed || !currentNeed.needType || !currentNeed.title) { setRelayStatus('商品类型和需求标题未能识别，请重新输入。', true); return; }
+        var editedNeed;
+        try { editedNeed = readEditedNeed(); } catch (e) { setRelayStatus(e.message, true); return; }
+        currentNeed = editedNeed;
+        var requestSerial = ++relayRequestSerial;
+        clearRelayOutput();
+        setNeedConfirmed(true);
+        matchResourceBtn.disabled = true;
+        setRelayStatus('正在按规则匹配资源……');
+        try {
+          var resources = await loadLocalSeedResources();
+          var data = await readApiJson('/api/resource-match', { need: currentNeed, resources: resources });
+          if (requestSerial !== relayRequestSerial) return;
+          renderMatchResult(data);
+          saveRelaySnapshot(data);
+          relayPreviewBtn.disabled = data.status === 'matched' || !data.canRelay;
+          setRelayStatus(data.status === 'matched' ? '已按你确认后的条件返回匹配结果。' : (data.status === 'dataset_not_connected' ? '数据集未接入；这不等于没有商品。你可以主动生成需求接力预览。' : data.status === 'no_matches' ? '暂时没有找到符合条件的商品。你可以修改条件，或主动生成需求接力预览。' : '匹配服务状态异常，请重试。'), data.status !== 'matched' && data.status !== 'no_matches' && data.status !== 'dataset_not_connected');
+        } catch (e) { if (requestSerial === relayRequestSerial) { clearRelayOutput(); setRelayStatus('资源匹配请求失败：' + (e.message || '服务暂时不可用。') + ' 请点击“确认条件并查找资源”重试。', true); } }
+        finally { matchResourceBtn.disabled = false; }
+      }
+
+      async function previewRelayNeed() {
+        if (!currentNeed) return;
+        var requestSerial = ++relayRequestSerial;
+        relayPreviewBtn.disabled = true;
+        setRelayStatus('正在生成需求接力预览……');
+        try {
+          var data = await readApiJson('/api/relay/preview', { need: currentNeed });
+          if (requestSerial !== relayRequestSerial) return;
+          renderRelayPreview(data);
+          relayResult.classList.add('show');
+          setRelayStatus('预览已生成；当前不会自动发布、写入数据库，也不代表有人响应。');
+        } catch (e) { if (requestSerial === relayRequestSerial) setRelayStatus('接力预览生成失败：' + (e.message || '服务暂时不可用。') + ' 请重试。', true); }
+        finally { relayPreviewBtn.disabled = false; }
+      }
+
+      parseNeedBtn.addEventListener('click', parseNeedForRelay);
+      matchResourceBtn.addEventListener('click', matchRelayResources);
+      relayPreviewBtn.addEventListener('click', previewRelayNeed);
+      [needKeywordsInput, needBudgetInput, needCampusInput, needTimeInput].forEach(function (input) {
+        input.addEventListener('input', markNeedEdited);
+        input.addEventListener('change', markNeedEdited);
+      });
+      document.querySelectorAll('.need-example').forEach(function (example) {
+        example.addEventListener('click', function () {
+          clearRelaySnapshot();
+          currentNeed = null;
+          clearRelayOutput();
+          needResult.classList.remove('show');
+          matchResult.classList.remove('show');
+          needInput.value = example.getAttribute('data-need-example') || '';
+          needInput.focus();
+          setRelayStatus('示例已填入输入框，请确认后点击“开始找商品”。');
+        });
+      });
 
       if (recoverBtn) {
         recoverBtn.addEventListener('click', function () {
@@ -806,7 +1534,37 @@
 
       async function getItems() {
         try {
-          var result = await supabaseRequest('GET', '/rest/v1/items?select=id,name,price,description,category,campus,image,is_negotiable,user_id&order=created_at.desc&limit=50');
+          // ai-parse-verify Preview 使用明确标记的自制演示数据；Production 仍只读取 public_items。
+          if (window.location.hostname === 'ai-parse-verify.hd2-6pi.pages.dev') {
+            var demoResources = await loadLocalSeedResources();
+            if (demoResources.length) {
+              dataError = false;
+              return demoResources.map(function (item) {
+                return {
+                  id: item.id,
+                  title: item.title || '',
+                  name: item.title || '',
+                  price: item.price,
+                  category: item.category,
+                  school: item.campus,
+                  description: item.description || '',
+                  subcategory: '',
+                  condition: '',
+                  reason: '',
+                  originalPrice: null,
+                  image: null,
+                  images: [],
+                  negotiable: item.isNegotiable !== false,
+                  is_negotiable: item.isNegotiable !== false,
+                  status: item.status || 'active',
+                  time: item.timeRequirement || '',
+                  isDemo: true
+                };
+              });
+            }
+          }
+          // 公开列表只读公开视图；视图未创建或权限不足时不回退到 items。
+          var result = await supabaseRequest('GET', '/rest/v1/public_items?select=id,name,price,description,category,campus,image,is_negotiable,created_at&order=created_at.desc&limit=50');
           dataError = false;
           return (result || []).map(function (item) {
             var descMeta = {};
@@ -829,7 +1587,6 @@
               })(),
               negotiable: item.is_negotiable,
               is_negotiable: item.is_negotiable,
-              user_id: item.user_id,
               status: descMeta.status || 'active',
               time: ''
             };
@@ -883,10 +1640,6 @@
         if (!showMyItems) {
           filtered = filtered.filter(function (item) { return !item.status || item.status !== 'sold'; });
         }
-        if (showMyItems) {
-          var token = getUserId();
-          filtered = filtered.filter(function (item) { return item.user_id === token; });
-        }
         if (showFavOnly) {
           var favs = getFavs();
           filtered = filtered.filter(function (item) { return favs.indexOf(item.id) !== -1; });
@@ -925,6 +1678,22 @@
         return sorted;
       }
 
+      function escapeHtml(value) {
+        return String(value === null || value === undefined ? '' : value)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      function safeImageUrl(value) {
+        if (typeof value !== 'string' || !value.trim()) return null;
+        try {
+          var url = new URL(value, window.location.href);
+          if (url.protocol === 'http:' || url.protocol === 'https:') return url.href;
+          if (url.protocol === 'data:' && /^data:image\/(png|jpe?g|gif|webp);/i.test(value)) return value;
+        } catch (_) {}
+        return null;
+      }
+
       function render(list) {
         loadingSk.style.display = 'none';
         errorState.style.display = 'none';
@@ -950,41 +1719,45 @@
         grid.innerHTML = list.map(function (item) {
           var imgs = item.images || (item.image ? [item.image] : []);
           var hasImg = imgs.length > 0;
-          var imgSrc = hasImg ? imgs[0] : null;
-          var initials = item.title.slice(0, 2);
+          var imgSrc = hasImg ? safeImageUrl(imgs[0]) : null;
+          var title = String(item.title || '');
+          var initials = title.slice(0, 2);
           var imageHtml = imgSrc
-            ? '<img src="' + imgSrc + '" alt="' + item.title + '" />'
-            : '<span class="initials">' + initials + '</span>';
+            ? '<img src="' + escapeHtml(imgSrc) + '" alt="' + escapeHtml(title) + '" />'
+            : '<span class="initials">' + escapeHtml(initials) + '</span>';
           var conditionBadge = item.condition
-            ? '<span class="card-condition">' + item.condition + '</span>' : '';
+            ? '<span class="card-condition">' + escapeHtml(item.condition) + '</span>' : '';
           var reasonBadge = item.reason
-            ? '<span class="card-reason">' + item.reason + '</span>' : '';
+            ? '<span class="card-reason">' + escapeHtml(item.reason) + '</span>' : '';
+          var demoBadge = item.isDemo
+            ? '<span class="card-condition">演示数据</span>' : '';
           var soldBadge = (item.status === 'sold')
             ? '<span class="card-sold">已成交</span>' : '';
           var imgCount = imgs.length > 1
             ? '<span class="img-count show">+' + (imgs.length - 1) + '</span>' : '';
           var origPrice = item.originalPrice
-            ? '<span class="original-price">¥' + item.originalPrice + '</span>' : '';
+            ? '<span class="original-price">¥' + escapeHtml(item.originalPrice) + '</span>' : '';
           var negotiableTag = item.negotiable !== false
             ? '<span class="tag-negotiable">可议价</span>' : '';
           var subTag = item.subcategory
-            ? '<span class="tag-subcategory">' + item.subcategory + '</span>' : '';
+            ? '<span class="tag-subcategory">' + escapeHtml(item.subcategory) + '</span>' : '';
           var isFavd = favs.indexOf(item.id) !== -1;
           var favTag = isFavd ? '<span class="card-fav show"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>' : '';
-          return '<a class="item-card" href="item.html?id=' + item.id + '" data-od-id="item-card-' + item.id + '">' +
-            '<div class="thumb" data-od-id="item-thumb-' + item.id + '">' +
+          var safeId = encodeURIComponent(String(item.id));
+          return '<a class="item-card" href="item.html?id=' + safeId + '" data-od-id="item-card-' + safeId + '">' +
+            '<div class="thumb" data-od-id="item-thumb-' + safeId + '">' +
               imageHtml + imgCount + favTag +
             '</div>' +
             '<div class="info">' +
-              '<div class="title" data-od-id="item-title-' + item.id + '">' + item.title + '</div>' +
+              '<div class="title" data-od-id="item-title-' + safeId + '">' + escapeHtml(title) + '</div>' +
               '<div class="price-row">' +
-                '<span class="price" data-od-id="item-price-' + item.id + '">¥' + item.price + '</span>' +
+                '<span class="price" data-od-id="item-price-' + safeId + '">' + (item.price === null || item.price === undefined ? '价格待确认' : '¥' + escapeHtml(item.price)) + '</span>' +
                 origPrice + negotiableTag +
               '</div>' +
-              '<div class="card-details">' + conditionBadge + reasonBadge + soldBadge + '</div>' +
+              '<div class="card-details">' + demoBadge + conditionBadge + reasonBadge + soldBadge + '</div>' +
               '<div class="meta">' +
                 '<span>' + subTag + '</span>' +
-                '<span>' + (item.school || '') + ' · ' + (item.time || '') + '</span>' +
+                '<span>' + escapeHtml((item.school || '') + ' · ' + (item.time || '')) + '</span>' +
               '</div>' +
             '</div></a>';
         }).join('');
@@ -1099,16 +1872,7 @@
 
       if (myItemsBtn) {
         myItemsBtn.addEventListener('click', function () {
-          showMyItems = !showMyItems;
-          this.classList.toggle('active', showMyItems);
-          if (showMyItems) {
-            showFavOnly = false; favFilterBtn.classList.remove('active');
-            chips.forEach(function (c) { c.classList.remove('active'); });
-            document.querySelector('.chip[data-cat="全部"]').classList.add('active');
-            currentCat = '全部';
-            renderSubcategories(currentCat);
-          }
-          update();
+          setRelayStatus('“我的发布”暂时停用：当前设备身份不能可靠证明商品所有权。', true);
         });
       }
 
@@ -1154,7 +1918,7 @@
       updateSoldBadge();
       fromUrl();
       upgradeDeviceToken();
-      update();
+      if (!restoreRelaySnapshot()) update();
     })();
   </script>
   <footer class="site-footer"><a href="disclaimer.html">免责声明</a></footer>

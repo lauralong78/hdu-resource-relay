@@ -10,6 +10,14 @@ work/
 !.env.example
 .dev.vars
 node_modules/
+.wrangler/
+
+# Internal evaluation artifacts and security drafts; never add these to public commits
+outputs/listing_holdout_c10_2.json
+outputs/listing_quality_c10_2_results.json
+outputs/synthetic_raw_posts_extraction_test.json
+outputs/supabase-*.sql
+outputs/UI开发交接包/
 
 # Local editor and OS files
 .DS_Store
