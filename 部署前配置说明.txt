@@ -1,0 +1,12 @@
+Cloudflare Pages 手动部署配置说明
+
+1. 将本压缩包解压后，把解压目录内的文件作为 Pages Direct Upload 内容上传；不要把 ZIP 文件本身上传。
+2. 在 Cloudflare Pages 项目的 Settings → Variables and Secrets 中配置服务端变量：
+   - TOKEN_SECRET：至少 64 个字符的随机值（Pages Functions/Worker 环境变量，按 Secret 保存）。不配置时商品写入和管理员登录会被安全关闭。
+   - SUPABASE_SERVICE_KEY：Supabase service_role key，按 Secret 保存。
+   - SUPABASE_ADMIN_PASSWORD：仅在需要登录后台管理举报、拉黑、下架等功能时配置，按 Secret 保存；它不参与普通商品发布。
+3. 本部署包不含数据库 SQL。Supabase 需已应用项目文件 outputs/supabase-public-items-secure.sql 的数据库安全迁移，并确认 public_items 视图及 items.public_visible 字段可用。普通发布经 Worker 校验后立即公开；发布者不能自行指定公开状态。管理员仍可下架商品。此前已保存但 public_visible=false 的旧商品不会被自动批量公开。
+4. 首页没有公开商品时会显示本包内 20 条合成演示商品和 2 条脱敏协作者商品。合成商品使用明确标记的示意图；两条协作者商品使用其 CSV 对应的实拍图。所有演示记录仅供页面演示，不会写入 Supabase。
+5. 本包只包含网站文件，不代表已上传或已部署。部署后需另行核对线上 URL、Supabase 项目配置及核心流程。
+
+6. 两条脱敏协作者商品配套的鼠标和 HUAWEI 耳机实拍图已放入 assets/demo-products，并已缩放压缩、移除 EXIF 元数据。

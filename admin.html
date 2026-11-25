@@ -5,6 +5,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://laqliecldqfjfhsooyey.supabase.co blob:; connect-src 'self' https://laqliecldqfjfhsooyey.supabase.co; font-src 'self';" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>管理后台 — 大学生信息资源共享平台</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/xunying-app-icon.svg" />
   <style>
     :root {
       --bg: oklch(98% 0.004 240);
@@ -121,10 +122,18 @@
       z-index: 50;
     }
     .admin-header .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
       font-family: var(--font-display);
       font-size: 18px;
       font-weight: 600;
       color: var(--accent-dark);
+    }
+    .admin-header .logo img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
     }
     .admin-header .logo span { color: var(--accent); }
     .btn-logout {
@@ -425,8 +434,9 @@
       table th, table td { padding: 8px 10px; font-size: 12px; }
     }
   </style>
+  <link rel="stylesheet" href="assets/ui/theme.css" />
 </head>
-<body>
+<body class="ui-admin">
 
 <!-- ========== Login Panel ========== -->
 <div class="login-wrap" id="login-panel">
@@ -442,7 +452,7 @@
 <!-- ========== Admin Panel ========== -->
 <div class="admin-wrap" id="admin-panel">
   <header class="admin-header">
-    <div class="logo">管理<span>后台</span></div>
+    <div class="logo"><img src="assets/brand/xunying-mark.svg" alt="寻应标志">管理<span>后台</span></div>
     <button class="btn-logout" id="btn-logout">退出登录</button>
   </header>
 
@@ -479,7 +489,8 @@
             <th>价格</th>
             <th>分类</th>
             <th>校区</th>
-            <th>状态</th>
+            <th>商品状态</th>
+            <th>公开状态</th>
             <th>联系方式</th>
             <th>设备指纹</th>
             <th>IP地址</th>
@@ -944,11 +955,13 @@
         '<td>' + esc(item.category || '-') + '</td>' +
         '<td>' + esc(item.campus || '-') + '</td>' +
         '<td style="color:' + statusColor + ';font-weight:600;">' + statusText + '</td>' +
+        '<td><span class="badge ' + (item.public_visible === true ? 'badge-reviewed' : 'badge-pending') + '">' + (item.public_visible === true ? '已公开' : '未公开') + '</span></td>' +
         '<td class="text-sm">' + esc(maskContact(item.contact || '-')) + '</td>' +
         '<td class="text-xs text-muted" style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + esc(descMeta.device_fingerprint || '-') + '">' + esc(maskFingerprint(descMeta.device_fingerprint || '-')) + '</td>' +
         '<td class="text-xs text-muted">' + esc(maskIP(descMeta.ip || '-')) + '</td>' +
         '<td class="text-sm text-muted">' + fmtDate(item.created_at) + '</td>' +
         '<td><div class="actions-cell">' +
+          '<button class="btn btn-outline btn-sm btn-visibility" data-id="' + item.id + '" data-visible="' + (item.public_visible === true ? 'true' : 'false') + '">' + (item.public_visible === true ? '下架' : '公开') + '</button>' +
           '<button class="btn btn-outline btn-sm btn-edit" data-id="' + item.id + '">编辑</button>' +
           '<button class="btn btn-danger btn-sm btn-delete" data-id="' + item.id + '" data-name="' + esc(item.name || '') + '">删除</button>' +
           '<button class="btn btn-outline btn-sm btn-blacklist" data-fp="' + esc(descMeta.device_fingerprint || '') + '" data-ip="' + esc(descMeta.ip || '') + '" data-user="' + esc(item.user_id || '') + '" style="border-color:var(--warning);color:var(--warning);margin-left:4px;">拉黑</button>' +
@@ -957,6 +970,14 @@
     }).join('');
 
     // Bind events
+    tbody.querySelectorAll('.btn-visibility').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var id = parseInt(this.getAttribute('data-id'), 10);
+        var makePublic = this.getAttribute('data-visible') !== 'true';
+        setItemVisibility(id, makePublic);
+      });
+    });
     tbody.querySelectorAll('.btn-edit').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -1071,6 +1092,23 @@
       showToast('保存失败: ' + e.message, 'error');
     }
   });
+
+  // ===== Admin visibility controls =====
+  async function setItemVisibility(id, makePublic) {
+    var prompt = makePublic
+      ? '商品将对所有访客公开。确定公开吗？'
+      : '商品将从公开市场下架。确定继续吗？';
+    var ok = await showConfirm(prompt);
+    if (!ok) return;
+    try {
+      await supabaseRequest('PATCH', '/rest/v1/items?id=eq.' + id, { public_visible: makePublic });
+      await writeAudit(makePublic ? 'publish_item' : 'hide_item', 'item', id, makePublic ? '管理员手动公开商品' : '将商品从公开市场下架');
+      showToast(makePublic ? '商品已公开' : '商品已下架');
+      loadItems();
+    } catch (e) {
+      showToast('更新公开状态失败: ' + e.message, 'error');
+    }
+  }
 
   // ===== Delete Item =====
   async function deleteItem(id, name) {
@@ -1398,7 +1436,7 @@
         created_at: new Date().toISOString()
       });
       await writeAudit('add_blacklist', 'blacklist', null, '添加黑名单: ' + uid + (reason ? ' (' + reason + ')' : ''));
-      
+
       // 删除该用户所有商品
       var items = await supabaseRequest('GET', '/rest/v1/items?select=id,name&user_id=eq.' + encodeURIComponent(uid) + '&limit=1000');
       var deletedCount = 0;

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>寻应品牌预览</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: #eef4f8;
+      color: #0b2449;
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+    }
+    .canvas {
+      width: 1600px;
+      min-height: 1200px;
+      margin: 0 auto;
+      padding: 64px;
+      background:
+        linear-gradient(rgba(20, 81, 132, .045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(20, 81, 132, .045) 1px, transparent 1px),
+        #f7fbfd;
+      background-size: 40px 40px;
+    }
+    .kicker {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: #168e7a;
+      font: 700 15px/1 Arial, sans-serif;
+      letter-spacing: 4px;
+    }
+    .kicker::before {
+      content: "";
+      width: 34px;
+      height: 4px;
+      background: #f2a33a;
+      border-radius: 99px;
+    }
+    h1 {
+      margin: 18px 0 10px;
+      font-size: 42px;
+      letter-spacing: 1px;
+    }
+    .intro {
+      margin: 0 0 38px;
+      color: #60758c;
+      font-size: 18px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.55fr .85fr;
+      gap: 24px;
+    }
+    .panel {
+      min-height: 300px;
+      border: 1px solid #d8e4ed;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    .light {
+      display: grid;
+      place-items: center;
+      padding: 44px;
+      background: rgba(255,255,255,.94);
+    }
+    .light img { width: 100%; max-width: 790px; }
+    .badge {
+      display: grid;
+      place-items: center;
+      background: #e4edf4;
+      padding: 26px;
+    }
+    .badge img { width: 280px; height: 280px; filter: drop-shadow(0 16px 28px rgba(7, 31, 75, .18)); }
+    .dark {
+      grid-column: 1 / -1;
+      min-height: 270px;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 28px;
+      padding: 46px 52px;
+      background:
+        radial-gradient(circle at 12% 20%, rgba(33, 196, 167, .16), transparent 34%),
+        #071f4b;
+      border-color: #163d70;
+    }
+    .dark-logo { display: grid; place-items: center; }
+    .dark-logo img { width: 100%; max-width: 690px; }
+    .spec {
+      display: grid;
+      align-content: center;
+      gap: 14px;
+      color: #c9d8e8;
+    }
+    .spec h2 { margin: 0 0 8px; color: white; font-size: 23px; }
+    .colors { display: flex; gap: 10px; }
+    .swatch { flex: 1; }
+    .swatch i {
+      display: block;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    .swatch small { display: block; margin-top: 7px; color: #9fb5ca; font: 12px Arial, sans-serif; }
+    .scale {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 180px;
+      padding: 34px 46px;
+      background: #fff;
+    }
+    .scale img { display: block; object-fit: contain; }
+    .scale .s96 { width: 96px; height: 96px; }
+    .scale .s64 { width: 64px; height: 64px; }
+    .scale .s48 { width: 48px; height: 48px; }
+    .scale .s32 { width: 32px; height: 32px; }
+    .scale .s24 { width: 24px; height: 24px; }
+    .scale-note { color: #60758c; font-size: 15px; text-align: right; }
+    .scale-note strong { display: block; color: #0b3275; font-size: 18px; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <main class="canvas">
+    <div class="kicker">BRAND IDENTITY 01</div>
+    <h1>寻应 · 校园资源互助平台</h1>
+    <p class="intro">正式采用方案A“双环回响”：以高校徽章结构为灵感，用放大镜、反向接力箭头和回应节点表达寻找与应答。</p>
+
+    <section class="grid">
+      <div class="panel light">
+        <img src="xunying-logo.svg" alt="寻应横向品牌标志">
+      </div>
+      <div class="panel badge">
+        <img src="xunying-badge.svg" alt="寻应圆形品牌徽章">
+      </div>
+
+      <div class="panel dark">
+        <div class="dark-logo">
+          <img src="xunying-logo-dark-bg.svg" alt="寻应深色背景品牌标志">
+        </div>
+        <div class="spec">
+          <h2>品牌色</h2>
+          <div class="colors">
+            <div class="swatch"><i style="background:#0b3275"></i><small>HDU NAVY #0B3275</small></div>
+            <div class="swatch"><i style="background:#16a98c"></i><small>RELAY #16A98C</small></div>
+            <div class="swatch"><i style="background:#f2a33a"></i><small>REPLY #F2A33A</small></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel scale">
+        <img class="s96" src="xunying-mark.svg" alt="">
+        <img class="s64" src="xunying-mark.svg" alt="">
+        <img class="s48" src="xunying-mark.svg" alt="">
+        <img class="s32" src="xunying-mark.svg" alt="">
+        <img class="s24" src="xunying-mark.svg" alt="">
+        <div class="scale-note"><strong>小尺寸可识别</strong>96 / 64 / 48 / 32 / 24 px</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

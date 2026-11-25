@@ -1,467 +1,338 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://laqliecldqfjfhsooyey.supabase.co blob:; connect-src 'self' https://laqliecldqfjfhsooyey.supabase.co; font-src 'self';" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>新生指南 — 大学生信息资源共享平台</title>
+  <title>使用指南 · 寻应</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/xunying-app-icon.svg" />
+  <link rel="stylesheet" href="assets/ui/theme.css" />
   <style>
-    :root {
-      --bg:      oklch(98% 0.004 240);
-      --surface: oklch(100% 0 0);
-      --fg:      oklch(20% 0.02 240);
-      --muted:   oklch(50% 0.018 240);
-      --border:  oklch(90% 0.006 240);
-      --accent:  oklch(56% 0.12 170);
-      --accent-dark: oklch(42% 0.10 170);
-      --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
-      --font-body:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
-      --radius-card: 14px;
-      --radius-sm: 8px;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; }
-    body {
-      font-family: var(--font-body);
-      background: var(--bg);
-      color: var(--fg);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-    .top-nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 24px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .top-nav .logo {
-      font-family: var(--font-display);
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--accent-dark);
-      letter-spacing: -0.01em;
-      text-decoration: none;
-    }
-    .top-nav .logo span { color: var(--accent); }
-    .top-nav .nav-links { display: flex; align-items: center; gap: 8px; }
-    .btn-publish {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--accent);
-      color: white;
-      font-size: 14px;
-      font-weight: 600;
-      padding: 10px 20px;
-      border: 0;
-      border-radius: 10px;
-      cursor: pointer;
-      text-decoration: none;
-      letter-spacing: 0.02em;
-      transition: background 0.15s, transform 0.1s;
-    }
-    .btn-publish:hover { background: var(--accent-dark); }
-    .btn-publish:active { transform: scale(0.97); }
-
-    .page-header {
-      background: var(--surface);
-      text-align: center;
-      padding: 32px 24px;
-      border-bottom: 1px solid var(--border);
-    }
-    .page-header h1 {
-      font-family: var(--font-display);
-      font-size: clamp(22px, 3vw, 28px);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-    .page-header p {
-      color: var(--muted);
-      font-size: 14px;
-      margin-top: 6px;
-    }
-
-    .tab-nav {
-      display: flex;
-      justify-content: center;
-      gap: 0;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 60px;
-      z-index: 99;
-      overflow-x: auto;
-    }
-    .tab-nav button {
-      padding: 14px 28px;
-      border: 0;
-      background: transparent;
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--muted);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: color 0.15s, border-color 0.15s;
-      white-space: nowrap;
-      font-family: var(--font-body);
-    }
-    .tab-nav button.active {
-      color: var(--accent-dark);
-      border-bottom-color: var(--accent);
-      font-weight: 600;
-    }
-    .tab-nav button:hover { color: var(--fg); }
-
-    .content-wrap {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 28px 24px 60px;
-    }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    .doc-section {
-      background: var(--surface);
-      border-radius: var(--radius-card);
-      padding: 32px;
-      margin-bottom: 24px;
-    }
-    .doc-section h2 {
-      font-family: var(--font-display);
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      color: var(--fg);
-    }
-    .doc-section .doc-subtitle {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 20px;
-    }
-
-    .doc-section h3 {
-      font-size: 16px;
-      font-weight: 600;
-      margin: 24px 0 10px;
-      color: var(--accent-dark);
-      padding-bottom: 6px;
-      border-bottom: 1px solid var(--border);
-    }
-    .doc-section h4 {
-      font-size: 14px;
-      font-weight: 600;
-      margin: 18px 0 8px;
-      color: var(--fg);
-    }
-    .doc-section p {
-      font-size: 14px;
-      color: #444;
-      margin-bottom: 8px;
-    }
-    .doc-section ul {
-      padding-left: 20px;
-      margin-bottom: 12px;
-    }
-    .doc-section ul li {
-      font-size: 14px;
-      color: #444;
-      margin-bottom: 4px;
-      list-style: disc;
-    }
-    .doc-section blockquote {
-      border-left: 3px solid var(--accent);
-      background: oklch(56% 0.12 170 / 0.06);
-      padding: 12px 16px;
-      margin: 12px 0;
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      font-size: 13px;
-      color: #555;
-    }
-    .doc-section blockquote p { margin-bottom: 4px; }
-    .doc-section .highlight-box {
-      background: oklch(50% 0.15 45 / 0.08);
-      border-left: 3px solid oklch(50% 0.15 45);
-      padding: 14px 18px;
-      margin: 14px 0;
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-    }
-    .doc-section .highlight-box strong { color: oklch(45% 0.16 45); }
-    .doc-section .highlight-box p { margin-bottom: 6px; }
-    .doc-section .highlight-box ul { margin-bottom: 0; }
-    .doc-section .highlight-box ul li { font-size: 13px; }
-
-    .doc-section strong { font-weight: 600; color: var(--fg); }
-    .doc-section em { color: var(--muted); }
-
-    .doc-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-    }
-    .doc-actions .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 18px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s;
-      text-decoration: none;
-      border: 1.5px solid var(--border);
-      background: var(--surface);
-      color: var(--fg);
-      font-family: var(--font-body);
-    }
-    .doc-actions .btn:hover { background: var(--bg); border-color: var(--accent); }
-    .doc-actions .btn-primary {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
-    }
-    .doc-actions .btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
-
-    .share-tip {
-      display: none;
-      margin-top: 8px;
-      font-size: 12px;
-      color: var(--accent);
-      animation: fadeIn 0.2s;
-    }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .intro-text {
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
-
-    @media (max-width: 640px) {
-      .top-nav { padding: 12px 16px; }
-      .top-nav .logo { font-size: 18px; }
-      .tab-nav button { padding: 12px 18px; font-size: 14px; }
-      .doc-section { padding: 20px; }
-      .doc-actions { flex-wrap: wrap; }
-    }
+    :root{--guide-deep:#071a31;--guide-mint:rgba(76,211,229,.12);--guide-line:rgba(184,218,255,.14);--guide-copy:rgba(207,227,246,.72);--guide-amber:#ffc879;--guide-amber-bg:rgba(255,178,82,.085)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:92px;background:#030914}
+    body.ui-guide{margin:0;min-width:320px;min-height:100vh;--bg:#040b16;--surface:#09182b;--fg:#f4f8ff;--muted:rgba(203,224,244,.58);--border:rgba(184,218,255,.15);--accent:#55d6e6;--accent-dark:#62dae6;--success:#67dda7;--danger:#ff8492;background:radial-gradient(ellipse 74% 38% at 50% -10%,rgba(63,123,255,.23),transparent 68%),radial-gradient(ellipse 42% 26% at 78% 18%,rgba(58,181,220,.08),transparent 72%),radial-gradient(ellipse 64% 36% at 4% 58%,rgba(27,133,196,.085),transparent 76%),radial-gradient(ellipse 56% 34% at 92% 82%,rgba(47,112,220,.075),transparent 76%),linear-gradient(180deg,#040a14 0%,#071426 46%,#061120 74%,#030914 100%);background-attachment:fixed;background-color:#040b16;color:#f4f8ff;color-scheme:dark}
+    .skip-link{position:fixed;left:18px;top:-80px;z-index:300;padding:10px 14px;border:1px solid rgba(184,218,255,.16);border-radius:6px;background:rgba(9,24,43,.97);color:#f4f8ff;font-size:13px;font-weight:650;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.34);transition:top 160ms ease}
+    .skip-link:focus{top:12px}
+    body.ui-guide .top-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding-top:10px;padding-bottom:10px;background:linear-gradient(180deg,rgba(5,12,23,.96),rgba(6,16,29,.82));border-bottom-color:rgba(184,218,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 10px 34px rgba(0,0,0,.24)}
+    body.ui-guide .top-nav .brand-name{color:#f7fbff;text-shadow:0 0 24px rgba(105,188,255,.12)}
+    body.ui-guide .top-nav .brand-sub{color:rgba(203,224,244,.46)}
+    body.ui-guide .top-nav .brand-mark{border-radius:50%;box-shadow:0 0 0 1px rgba(184,218,255,.16),0 8px 24px rgba(0,0,0,.28),0 0 22px rgba(67,145,255,.1)}
+    .ui-guide .brand-link{flex:0 0 auto}
+    .guide-nav-actions{display:flex;align-items:center;gap:8px;min-width:0}
+    .guide-nav-actions .nav-back,.guide-nav-actions .nav-guide{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 14px;border:1px solid rgba(184,218,255,.13);border-radius:999px;background:rgba(255,255,255,.045);color:rgba(229,243,255,.72);font-size:13px;font-weight:600;text-decoration:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.035);transition:background 150ms ease,border-color 150ms ease,color 150ms ease}
+    .guide-nav-actions .nav-back:hover,.guide-nav-actions .nav-guide:hover{border-color:rgba(104,212,220,.34);background:rgba(72,186,194,.1);color:#f8ffff}
+    .guide-hero{position:relative;overflow:hidden;padding:clamp(58px,8vw,92px) 24px 48px;border-bottom:1px solid rgba(184,218,255,.08);background:linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),radial-gradient(ellipse 80% 140% at 50% -48%,rgba(73,132,255,.3),transparent 70%),radial-gradient(ellipse 50% 80% at 88% 92%,rgba(61,205,230,.075),transparent 76%),linear-gradient(180deg,rgba(5,17,33,.96),rgba(4,12,24,.82));background-size:72px 72px,72px 72px,auto,auto,auto;color:#fff}
+    .guide-hero::after{content:"";position:absolute;right:-80px;bottom:-230px;width:470px;height:470px;border:1px solid rgba(105,210,238,.14);border-radius:50%;box-shadow:0 0 0 54px rgba(105,210,238,.025),0 0 0 108px rgba(105,210,238,.016);pointer-events:none}
+    .guide-hero-inner{position:relative;z-index:1;width:min(1120px,100%);margin:0 auto}
+    .guide-eyebrow{display:inline-flex;align-items:center;gap:8px;margin:0 0 20px;padding:7px 11px;border:1px solid rgba(128,215,238,.2);border-radius:999px;background:rgba(255,255,255,.05);color:rgba(225,244,255,.82);font-size:12px;font-weight:600;letter-spacing:.04em}
+    .guide-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:#72dfeb;box-shadow:0 0 0 4px rgba(99,218,231,.12),0 0 16px rgba(99,218,231,.22)}
+    .guide-hero h1{max-width:800px;margin:0;color:#fff;font-size:clamp(38px,5.3vw,64px);font-weight:760;line-height:1.12;letter-spacing:0}
+    .guide-hero h1 span{display:block;white-space:nowrap}
+    .guide-hero-copy{max-width:650px;margin:20px 0 0;color:rgba(211,231,249,.7);font-size:clamp(14px,1.6vw,17px);line-height:1.85}
+    .guide-hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+    .guide-primary,.guide-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 19px;border-radius:8px;font-size:14px;font-weight:650;text-decoration:none;transition:transform 150ms ease,background 150ms ease}
+    .guide-primary{border:1px solid rgba(142,238,247,.22);background:linear-gradient(180deg,rgba(235,253,255,.98),rgba(174,240,246,.94));color:#073044;box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 12px 30px rgba(0,0,0,.2),0 0 22px rgba(82,218,231,.08)}
+    .guide-secondary{border:1px solid rgba(184,218,255,.16);background:rgba(255,255,255,.045);color:#f3fcfa;box-shadow:inset 0 1px 0 rgba(255,255,255,.045)}
+    .guide-primary:hover,.guide-secondary:hover{transform:translateY(-1px)}
+    .guide-primary:hover{background:linear-gradient(180deg,#fff,rgba(211,250,252,.98))}.guide-secondary:hover{border-color:rgba(104,212,220,.34);background:rgba(72,186,194,.1)}
+    .flow-wrap{position:relative;z-index:2;width:min(1120px,calc(100% - 48px));margin:-24px auto 0}
+    .flow-rail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;padding:0;overflow:hidden;border:1px solid var(--guide-line);border-radius:10px;background:radial-gradient(ellipse 90% 150% at 50% -30%,rgba(63,131,245,.12),transparent 72%),linear-gradient(145deg,rgba(15,32,54,.93),rgba(7,18,33,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 18px 46px rgba(0,0,0,.2);-webkit-backdrop-filter:blur(18px) saturate(125%);backdrop-filter:blur(18px) saturate(125%);list-style:none}
+    .flow-rail li{position:relative;display:flex;align-items:center;gap:12px;min-width:0;padding:18px 20px}.flow-rail li+li{border-left:1px solid var(--guide-line)}
+    .flow-number{flex:0 0 auto;color:#63dce9;font-size:11px;font-weight:750;letter-spacing:.06em}.flow-label{min-width:0;color:rgba(238,247,255,.9);font-size:13px;font-weight:650;line-height:1.4}
+    .guide-shell{display:grid;grid-template-columns:220px minmax(0,1fr);align-items:start;gap:22px;width:min(1120px,calc(100% - 48px));margin:28px auto 72px}
+    .guide-toc{position:sticky;top:88px;padding:18px;border:1px solid var(--guide-line);border-radius:12px;background:radial-gradient(ellipse 110% 70% at 8% 0%,rgba(65,136,245,.09),transparent 72%),linear-gradient(145deg,rgba(15,32,54,.9),rgba(7,18,33,.94));-webkit-backdrop-filter:blur(18px) saturate(125%);backdrop-filter:blur(18px) saturate(125%);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 16px 38px rgba(0,0,0,.18)}
+    .guide-toc-title{display:block;margin-bottom:10px;color:rgba(181,209,233,.45);font-size:10px;font-weight:700;letter-spacing:.12em}.guide-toc nav{display:grid;gap:3px}
+    .guide-toc a{display:block;padding:8px 9px;border-radius:6px;color:rgba(203,224,244,.62);font-size:13px;font-weight:520;line-height:1.4;text-decoration:none;transition:background 140ms ease,color 140ms ease}
+    .guide-toc a:hover{background:rgba(255,255,255,.055);color:#f5faff}.guide-toc a.is-active{background:rgba(75,210,228,.11);color:#83edf5;font-weight:650;box-shadow:inset 0 0 0 1px rgba(98,220,235,.08)}
+    .guide-main{min-width:0;padding:clamp(24px,4vw,44px);border:1px solid var(--guide-line);border-radius:14px;background:radial-gradient(ellipse 78% 58% at 8% 0%,rgba(65,136,245,.09),transparent 72%),radial-gradient(ellipse 56% 44% at 100% 100%,rgba(55,190,213,.045),transparent 76%),linear-gradient(145deg,rgba(15,32,54,.91),rgba(7,18,33,.94) 66%,rgba(9,24,42,.92));box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 18px 48px rgba(0,0,0,.14);-webkit-backdrop-filter:blur(18px) saturate(125%);backdrop-filter:blur(18px) saturate(125%)}
+    .guide-intro{margin:0 0 34px;color:var(--guide-copy);font-size:15px;line-height:1.9}.guide-intro strong{color:#f1f8ff;font-weight:680}
+    .guide-section{position:relative;padding:8px 0 36px;scroll-margin-top:88px}.guide-section+.guide-section{padding-top:36px;border-top:1px solid rgba(184,218,255,.1)}.guide-section:last-child{padding-bottom:0}
+    .section-kicker{display:block;margin-bottom:7px;color:var(--accent);font-size:10px;font-weight:750;letter-spacing:.12em}
+    .guide-section h2{margin:0 0 10px;color:#f5f9ff;font-size:clamp(24px,3vw,31px);font-weight:720;line-height:1.35;letter-spacing:0;text-shadow:0 0 28px rgba(117,180,255,.1)}
+    .guide-section h3{margin:26px 0 9px;color:#e7f2ff;font-size:16px;font-weight:680;line-height:1.5}
+    .guide-section p,.guide-section li{color:var(--guide-copy);font-size:14px;line-height:1.86}.guide-section p{margin:0 0 12px}
+    .guide-section ul,.guide-section ol{margin:10px 0 14px;padding-left:22px}.guide-section li+li{margin-top:7px}.guide-section strong{color:#f1f8ff;font-weight:680}
+    .notice{margin:20px 0;padding:15px 17px;border:1px solid rgba(83,210,229,.12);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;background:rgba(52,135,190,.1);color:rgba(220,235,249,.76);font-size:13px;line-height:1.8}.notice strong{color:#7ee8f0}
+    .notice.amber{border-color:rgba(255,181,92,.12);border-left-color:var(--guide-amber);background:var(--guide-amber-bg);color:rgba(255,236,209,.74)}.notice.amber strong{color:#ffd08a}
+    .step-list{display:grid;gap:0;margin:22px 0 6px;padding:0;list-style:none}.step-item{display:grid;grid-template-columns:40px minmax(0,1fr);gap:15px;position:relative;padding:0 0 25px}.step-item:last-child{padding-bottom:0}
+    .step-item:not(:last-child)::before{content:"";position:absolute;left:19px;top:39px;bottom:8px;width:1px;background:rgba(184,218,255,.14)}
+    .step-index{display:grid;place-items:center;width:40px;height:40px;border:1px solid rgba(87,213,230,.22);border-radius:50%;background:rgba(73,201,220,.08);color:#75e5ef;font-size:12px;font-weight:750;box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+    .step-content h3{margin:1px 0 5px;font-size:15px;font-weight:680}.step-content p{margin:0;font-size:13px}
+    .prompt-example{margin:18px 0 20px;padding:19px 20px;border:1px solid rgba(184,218,255,.13);border-radius:10px;background:radial-gradient(ellipse 80% 120% at 10% 0%,rgba(63,131,245,.1),transparent 72%),rgba(4,14,27,.54);box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}.prompt-example span{display:block;margin-bottom:8px;color:rgba(181,209,233,.48);font-size:10px;font-weight:700;letter-spacing:.1em}.prompt-example p{margin:0;color:#e9f5ff;font-size:15px;font-weight:560;line-height:1.75}
+    .result-anatomy{display:grid;gap:12px;margin:20px 0}.result-line{display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;padding-bottom:12px;border-bottom:1px solid rgba(184,218,255,.09)}.result-line:last-child{padding-bottom:0;border-bottom:0}.result-line dt{color:#6fe1ec;font-size:12px;font-weight:700;line-height:1.8}.result-line dd{margin:0;color:var(--guide-copy);font-size:13px;line-height:1.8}
+    .faq-list{margin-top:16px}.faq-list details{border-top:1px solid rgba(184,218,255,.09)}.faq-list details:last-child{border-bottom:1px solid rgba(184,218,255,.09)}.faq-list summary{position:relative;padding:16px 34px 16px 0;color:#e7f2ff;font-size:14px;font-weight:650;line-height:1.65;cursor:pointer;list-style:none}.faq-list summary::-webkit-details-marker{display:none}
+    .faq-list summary::after{content:"+";position:absolute;right:4px;top:50%;color:rgba(127,218,235,.68);font-size:19px;font-weight:400;transform:translateY(-50%)}.faq-list details[open] summary::after{content:"−"}.faq-answer{padding:0 34px 16px 0;color:var(--guide-copy);font-size:13px;line-height:1.85}
+    .end-cta{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:36px;padding:24px;border:1px solid rgba(105,210,238,.13);border-radius:12px;background:radial-gradient(ellipse 82% 130% at 12% 0%,rgba(63,131,245,.17),transparent 72%),radial-gradient(ellipse 55% 100% at 100% 100%,rgba(55,190,213,.075),transparent 78%),linear-gradient(145deg,rgba(12,30,52,.96),rgba(5,17,32,.96));color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 16px 38px rgba(0,0,0,.16)}.end-cta h2{margin:0 0 4px;color:#fff;font-size:20px;font-weight:700}.end-cta p{margin:0;color:rgba(203,224,244,.62);font-size:13px}.end-cta a{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 17px;border:1px solid rgba(142,238,247,.2);border-radius:8px;background:linear-gradient(180deg,rgba(235,253,255,.98),rgba(174,240,246,.94));color:#073044;font-size:13px;font-weight:680;text-decoration:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 10px 26px rgba(0,0,0,.2)}
+    @media(max-width:900px){.guide-shell{grid-template-columns:minmax(0,1fr);margin-top:20px}.guide-toc{top:70px;z-index:20;padding:10px;overflow-x:auto}.guide-toc-title{display:none}.guide-toc nav{display:flex;width:max-content;gap:4px}.guide-toc a{white-space:nowrap}}
+    @media(max-width:680px){html{scroll-padding-top:118px}.ui-guide .top-nav{padding-left:14px;padding-right:14px}.ui-guide .brand-link .brand-sub{display:none}.guide-nav-actions{gap:4px}.guide-nav-actions .nav-back,.guide-nav-actions .nav-guide{min-height:36px;padding:7px 10px;font-size:12px}.guide-hero{padding:46px 18px 42px}.guide-hero h1{font-size:clamp(31px,9vw,46px)}.guide-hero-copy{margin-top:16px;font-size:14px}.guide-hero-actions{margin-top:24px}.guide-primary,.guide-secondary{min-height:42px;padding:0 15px;font-size:13px}.flow-wrap{width:calc(100% - 24px);margin-top:-18px}.flow-rail{grid-template-columns:repeat(2,minmax(0,1fr))}.flow-rail li{padding:14px 13px}.flow-rail li:nth-child(3){border-left:0;border-top:1px solid var(--guide-line)}.flow-rail li:nth-child(4){border-top:1px solid var(--guide-line)}.flow-number{font-size:10px}.flow-label{font-size:12px}.guide-shell{width:calc(100% - 24px);gap:12px;margin-bottom:40px}.guide-toc{top:64px}.guide-main{padding:25px 18px}.guide-intro{font-size:14px}.guide-section{padding-bottom:30px}.guide-section+.guide-section{padding-top:30px}.guide-section h2{font-size:25px}.step-item{grid-template-columns:36px minmax(0,1fr);gap:13px}.step-index{width:36px;height:36px}.step-item:not(:last-child)::before{left:17px;top:35px}.result-line{grid-template-columns:minmax(0,1fr);gap:3px}.end-cta{align-items:flex-start;flex-direction:column;gap:16px}.end-cta a{width:100%}}
+    @media(max-width:390px){body.ui-guide .guide-nav-actions .nav-back{display:none}}
   </style>
 </head>
-<body>
-  <nav class="top-nav">
-    <a href="index.html" class="logo">杭电信息<span>资源共享平台</span></a>
-    <div class="nav-links">
-      <a href="publish.html" class="btn-publish">+ 发布</a>
+<body class="ui-guide">
+  <a class="skip-link" href="#guide-content">跳到使用指南</a>
+  <nav class="top-nav" aria-label="主导航">
+    <a href="app.html" class="brand-link" aria-label="寻应首页">
+      <img class="brand-mark" src="assets/brand/xunying-mark.svg" alt="寻应标志" />
+      <span class="brand-copy">
+        <span class="brand-name">寻应</span>
+        <span class="brand-sub">校园资源互助</span>
+      </span>
+    </a>
+    <div class="guide-nav-actions">
+      <a href="app.html" class="nav-back">返回首页</a>
+      <a href="publish.html" class="nav-guide">发布资源</a>
     </div>
   </nav>
 
-  <div class="page-header">
-    <h1>新 生 指 南</h1>
-    <p>入学必备清单 &amp; 入学攻略，助你从容开启大学生活</p>
+  <header class="guide-hero">
+    <div class="guide-hero-inner">
+      <p class="guide-eyebrow">第一次使用 · 约 3 分钟读完</p>
+      <h1><span>把需求说清楚</span><span>找到合适的校园资源</span></h1>
+      <p class="guide-hero-copy">寻应会先听你描述需求，再把校区、预算与时间整理成可确认的条件。由你检查无误后，才会进入资源匹配。</p>
+      <div class="guide-hero-actions">
+        <a class="guide-primary" href="#quick-start">开始了解流程</a>
+        <a class="guide-secondary" href="app.html">立即体验寻应</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="flow-wrap" aria-label="寻应使用流程">
+    <ol class="flow-rail">
+      <li><span class="flow-number">01</span><span class="flow-label">描述你的需求</span></li>
+      <li><span class="flow-number">02</span><span class="flow-label">确认整理后的条件</span></li>
+      <li><span class="flow-number">03</span><span class="flow-label">浏览匹配结果</span></li>
+      <li><span class="flow-number">04</span><span class="flow-label">查看详情并联系</span></li>
+    </ol>
   </div>
 
-  <div class="tab-nav">
-    <button class="active" data-tab="tab1">必备品清单</button>
-    <button data-tab="tab2">入学指南</button>
-    <button data-tab="tab3">源文件下载</button>
-    <button data-tab="tab4">综合指南</button>
-  </div>
+  <div class="guide-shell">
+    <aside class="guide-toc" aria-label="指南目录">
+      <span class="guide-toc-title">指南目录</span>
+      <nav>
+        <a href="#quick-start">快速开始</a>
+        <a href="#search">怎么写需求</a>
+        <a href="#results">怎么看结果</a>
+        <a href="#contact">详情与联系</a>
+        <a href="#publish">发布资源</a>
+        <a href="#safety">安全边界</a>
+        <a href="#faq">常见问题</a>
+      </nav>
+    </aside>
 
-  <div class="content-wrap">
-    <!-- ====== 必备品清单 ====== -->
-    <div class="tab-panel active" id="tab1">
-      <p class="intro-text">打印出来，准备东西时核对一下，以防忘记。<strong style="color:#e74c3c">红色字体</strong>为强烈建议携带，黑色为推荐准备。</p>
+    <main class="guide-main" id="guide-content">
+      <p class="guide-intro">这份指南说明寻应从<strong>描述需求到查看资源</strong>的实际使用流程，也包含发布闲置资源与线下联系前需要留意的边界。当前站点使用演示资源展示完整交互，部分来源和商品仍处于待核验状态。</p>
 
-      <div class="doc-section">
-        <h2>新生必备品列表清单（详细版）</h2>
-        <p class="doc-subtitle">建议打印核对</p>
+      <section class="guide-section" id="quick-start">
+        <span class="section-kicker">QUICK START</span>
+        <h2>快速开始</h2>
+        <p>不需要学习复杂的搜索语法。用日常语言写下你想找什么、在哪个校区、准备花多少，以及什么时候方便即可。</p>
+        <ol class="step-list">
+          <li class="step-item">
+            <span class="step-index">1</span>
+            <div class="step-content">
+              <h3>描述需求</h3>
+              <p>在首页输入完整需求，例如物品、用途、预算、校区和期望时间。</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-index">2</span>
+            <div class="step-content">
+              <h3>检查候选条件</h3>
+              <p>AI 会先整理出可能相关的条件。你需要逐项检查、修改并确认，确认前不会直接匹配。</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-index">3</span>
+            <div class="step-content">
+              <h3>浏览匹配结果</h3>
+              <p>查看推荐理由、价格、位置、来源状态与审核状态，再选择更符合预期的资源。</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-index">4</span>
+            <div class="step-content">
+              <h3>打开详情并联系</h3>
+              <p>在详情页核对资源信息，使用联系意向预览了解后续流程，并在公共地点完成线下确认。</p>
+            </div>
+          </li>
+        </ol>
+        <div class="notice"><strong>先由你确认，再开始匹配。</strong>AI 只负责整理候选条件，不会替你作出最终决定，也不会自动修改你的需求。</div>
+      </section>
 
-        <h3>一定不能忘记</h3>
+      <section class="guide-section" id="search">
+        <span class="section-kicker">DESCRIBE</span>
+        <h2>怎么写一则清楚的需求</h2>
+        <p>越具体，候选条件越容易命中。至少写清“要找什么”，再尽量补充下面四项信息：</p>
         <ul>
-          <li><strong style="color:#e74c3c">录取通知书</strong></li>
-          <li><strong style="color:#e74c3c">高考准考证</strong></li>
-          <li><strong style="color:#e74c3c">户口本复印件</strong></li>
-          <li><strong style="color:#e74c3c">身份证及正反两面复印件</strong></li>
-          <li>一寸登记照和 2 寸登记照各一版</li>
-          <li>党、团组织关系证明</li>
-          <li>贫困证明（家庭困难学生）</li>
+          <li><strong>预算：</strong>可接受的价格范围，例如 50 元以内。</li>
+          <li><strong>校区或位置：</strong>方便见面的校区、宿舍区或公共地点。</li>
+          <li><strong>时间：</strong>希望什么时候拿到，或哪些时间段方便面交。</li>
+          <li><strong>状态要求：</strong>是否介意使用痕迹、是否需要配件齐全。</li>
         </ul>
-        <div class="highlight-box">
-          <p><strong>申请助学金需提前准备：</strong></p>
-          <ul>
-            <li>个人申请书一份（手写）</li>
-            <li>贫困证明（村委或街道证明，盖章）</li>
-            <li>《高校家庭情况调查表》两份（原件，村委/街道章 + 民政部门章，章必须是原件）</li>
-            <li>《国家助学金申请表》两份（贴照片）</li>
-            <li>《高等学校家庭经济困难学生认定申请表》两份</li>
-          </ul>
+        <div class="prompt-example">
+          <span>更容易理解的描述</span>
+          <p>我想找一盏适合宿舍书桌的护眼台灯，预算 60 元以内，下沙校区，这周晚上可以面交，外观有使用痕迹没关系。</p>
         </div>
-
-        <h3>1、洗护用品</h3>
-        <p>牙刷、牙膏、漱口杯、毛巾、洗面奶、护肤品、洗发水、沐浴露、沐浴球、擦澡毛巾、剃须刀、盆子/桶、抹布、香皂或洗手液、洗衣皂、肥皂盒、塑胶手套、衣领净或漂白剂、刷子</p>
-
-        <h3>2、衣物</h3>
-        <p>衣服（可先带夏秋，冬天让家里寄）、鞋子、拖鞋、皮带；衣架（两札）、晒衣夹（一排）、大夹子（晒被子用）、晒衣服撑杆、挂钩若干（可贴墙）、樟脑球等防蛀防霉物品、发夹/橡皮筋、镜子/梳子</p>
-
-        <h3>3、饮食</h3>
-        <p>喝水杯/水瓶（不怕摔的为佳，军训用自己的水杯）、饭盒、筷子、削皮刀/水果刀、勺子</p>
-
-        <h3>4、住宿</h3>
-        <p>床上用品</p>
-
-        <h3>5、出行</h3>
-        <p>雨伞、遮阳伞、包包、钥匙扣、学校地图和城市地图/公交路线图</p>
-
-        <h3>6、文具</h3>
-        <p>签字笔（黑笔必备，开学填表用）、随身小记事本、U 盘、文件袋、手表</p>
-
-        <h3>7、小电器 &amp; 电子产品</h3>
-        <p>手机、充电器、耳机、护眼台灯、床头灯、闹钟、迷你手持小风扇、电脑及配件</p>
-
-        <h3>8、工具</h3>
-        <p>指甲剪、剪刀/小刀、多用插座 1 个、手电筒/应急灯、针线包、透明胶/502/双面胶/大圈透明胶、绳子、打火机、书立、十字/一字小螺丝刀、小锤子/钳子等</p>
-
-        <h3>9、医药卫生</h3>
-        <p>纸卷/纸巾、小包纸巾/湿纸巾、卫生巾/卫生棉（女生必备）；花露水/风油精/清凉油；小型家用药箱：感冒类、退烧消炎类（罗红霉素分散片、阿莫西林等）、止泻类、止疼类（众生丸、牛黄解毒片）、清火类、口腔消炎类及个人特殊常备药；有痛经史带痛经药；绷带/棉签/药用棉花/云南白药等；碘酒/棉签/纱布/创可贴</p>
-
-        <h3>床品（请以学校和正规商家最新信息为准）</h3>
+        <h3>确认候选条件时，重点看这几项</h3>
         <ul>
-          <li>床品尺寸、材质和价格请自行核实，不在本演示项目中指定具体商家。</li>
-          <li>大件物品可以比较校内接力、正规商家和到校后购买等不同方案。</li>
-          <li>涉及费用、配送、质保和售后时，请以商家或学校最新公开信息为准。</li>
-          <li>本页面不保存或公开个人联系方式；需要发布需求时，请使用平台提供的最小必要信息。</li>
+          <li>预算是否被正确理解，尤其要留意“以内”“左右”等表述。</li>
+          <li>校区、时间与面交方式是否符合你的真实安排。</li>
+          <li>系统整理出的物品类别是否准确，不需要的标签可以直接删掉。</li>
         </ul>
+      </section>
 
-        <div class="highlight-box">
-          <p><strong>寄语</strong></p>
-          <p>大学有着许多诱惑，没有了高中学校的管束，或许会日夜沉迷于电子游戏，或许熬到深夜追剧。一切都要有度；不要因为大学的宽松变得懒散，而要踌躇满志、满怀信心。愿你们在被打击时记起自己的珍贵，爱你所爱、行你所行、听从你心、无问西东。</p>
-          <p>那些有工作、有钱人的生活不要羡慕，因为迟早会有。但你们拥有他们没有的东西——时间、青春，其实格外重要。不要因无意义的兼职浪费大好青春。祝每一位学弟学妹都能有一段奇妙而充实的大学旅程！</p>
-        </div>
-      </div>
-    </div>
+      <section class="guide-section" id="results">
+        <span class="section-kicker">RESULTS</span>
+        <h2>查看匹配结果</h2>
+        <p>结果按确认后的条件展示。不要只看标题和图片，建议同时核对以下信息：</p>
+        <dl class="result-anatomy">
+          <div class="result-line">
+            <dt>推荐理由</dt>
+            <dd>说明这条资源为什么进入结果，是预算、类别、位置还是时间条件匹配。</dd>
+          </div>
+          <div class="result-line">
+            <dt>来源状态</dt>
+            <dd>标明信息来源是否已经核验。待核验资源需要你在联系前进一步确认。</dd>
+          </div>
+          <div class="result-line">
+            <dt>商品状态</dt>
+            <dd>演示资源可能显示“待审核”。这不代表商品已经完成真实性审查或交易担保。</dd>
+          </div>
+          <div class="result-line">
+            <dt>价格与地点</dt>
+            <dd>用于帮助你缩小选择范围，实际价格、库存和见面地点仍需双方确认。</dd>
+          </div>
+        </dl>
+        <div class="notice amber"><strong>没有看到合适结果时：</strong>可以先放宽预算、扩大校区范围，或删除不必要的筛选条件。如果仍然没有结果，说明当前演示库中没有符合条件的资源。</div>
+      </section>
 
-    <!-- ====== 入学指南 ====== -->
-    <div class="tab-panel" id="tab2">
-      <p class="intro-text">老学长的亲身经历总结，帮你避开开学的坑。</p>
-
-      <div class="doc-section">
-        <h2>新生入学指南</h2>
-        <p class="doc-subtitle">过来人的经验，少走弯路</p>
-
-        <h3>新生报到（重点）</h3>
-        <p><strong>1. 提前规划好到校路线</strong></p>
-        <p><strong>2. 各个站点有学校志愿者迎接</strong></p>
-        <div class="highlight-box">
-          <p><strong>注意！</strong>一定要仔细核对是不是自己学校的，学校名字一个字也不能错，不能多也不能少——学长当年因一字之差坐错了车，都是血的教训。</p>
-        </div>
-        <p><strong>3. 行李能少带就少带，读大学 ≠ 搬家。</strong>九月份 30℃ 天气，小女生拖几个大密码箱 + N 件行李在太阳下走，想想就绝望。</p>
-        <blockquote>
-          <p><strong>总结：</strong>大件物品能邮寄就邮寄，不够到校再买，网上很便宜。别听父母的，什么脸盆衣架都往学校带，不值得。</p>
-        </blockquote>
-        <p><strong>4. 开学报到越早越好。</strong>开学第一天最忙：报到签名、进宿舍、领军训服等。</p>
-
-        <h3>准备好以下东西</h3>
+      <section class="guide-section" id="contact">
+        <span class="section-kicker">DETAILS</span>
+        <h2>详情页与联系意向</h2>
+        <p>进入资源详情后，先核对其来源、审核状态、描述与图片，再决定是否发起联系意向。详情页用于帮助你判断下一步，不提供平台内的付款或担保交易。</p>
+        <h3>联系意向预览代表什么</h3>
         <ul>
-          <li><strong>录取通知书</strong></li>
-          <li><strong>身份证</strong></li>
-          <li><strong>准考证</strong></li>
-          <li>一寸和二寸照片（在家自己修，蓝/红/白底都打印一些，电子照也留着）</li>
-          <li>自我介绍（大学都要自我介绍，想争取班委或留好印象的提前准备）</li>
+          <li>它会展示接下来需要确认的信息与联系流程。</li>
+          <li><strong>预览不等于真实申请，也不代表资源已经为你保留。</strong></li>
+          <li>实际见面、价格与交接方式仍由双方在安全前提下确认。</li>
         </ul>
+        <h3>线下交接建议</h3>
+        <ul>
+          <li>优先选择校内公共区域，例如图书馆、食堂或教学楼一层。</li>
+          <li>当面检查物品状态和配件，再决定是否完成交接。</li>
+          <li>不提前转账，不通过陌生链接付款，不向对方提供身份证照片或验证码。</li>
+        </ul>
+      </section>
 
-        <h3>注意事项</h3>
-        <p><strong>1. 手机不要买内存低于 128G 的。</strong>各种软件、课件、资料，女生爱拍照更不够用。建议 512G，性价比高。</p>
-        <p><strong>2. 大一刚开学不用着急买电脑。</strong>根据专业需求决定：爱打游戏买游戏本，日常办公买轻薄本，方便携带。</p>
-        <p><strong>3. 少进社团，一两个感兴趣的足矣。</strong>进社团要交会费（30~50 不等），很多人交完钱再也没去过，别浪费钱。</p>
-        <p><strong>4. 最好别办校园卡，又卡又贵。</strong>别被"学长学姐"忽悠，大胆拒绝——他/她都好意思骗你钱，你还不好意思拒绝？</p>
-
-        <h3>个人建议</h3>
-        <p><strong>1. 大一大二争取一次性过英语四六级。</strong>至少有高中英语底子，越拖越难过。</p>
-        <p><strong>2. 暑假尽量不要去打暑假工（家里确实困难除外）。</strong>可以学穿搭、游泳、吉他等自己感兴趣的东西。</p>
-        <p><strong>3. 大一大二尽量别呆在寝室，多出去旅游</strong>（大三大四就没时间了），逛逛当地博物馆和景点。</p>
-        <p><strong>4. 大学对新生而言是充满憧憬和希望的地方。</strong>祝大家都有一个美好的未来，respect！</p>
-      </div>
-    </div>
-
-    <!-- ====== 源文件下载 ====== -->
-    <div class="tab-panel" id="tab3">
-      <p class="intro-text">演示所需的资料应使用已获授权或已脱敏的版本。公开仓库不随附未经核验的原始文件。</p>
-      <div class="doc-section">
-        <h3 style="margin-top:0">源文件列表</h3>
-        <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);border-radius:10px;">
-            <div>
-              <span style="font-weight:600;font-size:14px;">新生必备品列表清单（详细版）.docx</span>
-              <span style="color:var(--muted);font-size:12px;margin-left:8px;">18.8 KB</span>
+      <section class="guide-section" id="publish">
+        <span class="section-kicker">PUBLISH</span>
+        <h2>发布闲置资源</h2>
+        <p>发布入口适合登记闲置物品或校园接力资源。填写越完整，后续核对越省时间。</p>
+        <ol class="step-list">
+          <li class="step-item">
+            <span class="step-index">1</span>
+            <div class="step-content">
+              <h3>填写资源信息</h3>
+              <p>补充名称、类别、成色、价格、校区和联系方式等必要信息。</p>
             </div>
-            <span style="color:var(--muted);font-size:12px;">授权后接入</span>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);border-radius:10px;">
-            <div>
-              <span style="font-weight:600;font-size:14px;">新生入学指南.docx</span>
-              <span style="color:var(--muted);font-size:12px;margin-left:8px;">1.0 MB</span>
+          </li>
+          <li class="step-item">
+            <span class="step-index">2</span>
+            <div class="step-content">
+              <h3>核对 AI 解析草稿</h3>
+              <p>AI 生成的标题、描述和标签只是草稿，发布者本人必须逐项检查并修正。</p>
             </div>
-            <span style="color:var(--muted);font-size:12px;">授权后接入</span>
-          </div>
+          </li>
+          <li class="step-item">
+            <span class="step-index">3</span>
+            <div class="step-content">
+              <h3>人工确认后提交</h3>
+              <p>确认图片真实、信息准确后提交审核。AI 草稿不会自动发布，也不会绕过审核。</p>
+            </div>
+          </li>
+        </ol>
+        <div class="notice"><strong>地址与隐私：</strong>不要填写宿舍门牌号、身份证号、银行卡号等敏感信息。需要见面时，可在双方确认后选择校内公共地点。</div>
+      </section>
+
+      <section class="guide-section" id="safety">
+        <span class="section-kicker">SAFETY</span>
+        <h2>安全边界</h2>
+        <p>寻应是校园资源信息与匹配工具，不是支付平台，也不提供交易担保。联系与交接前，请自行完成必要核验。</p>
+        <ul>
+          <li><strong>核验来源：</strong>优先选择来源明确、描述完整、状态可核验的资源。</li>
+          <li><strong>公共地点：</strong>首次见面尽量选择校内人流较多的公共区域。</li>
+          <li><strong>不要提前转账：</strong>未见到实物或未完成当面确认前，不支付定金或全款。</li>
+          <li><strong>保护隐私：</strong>不公开真实姓名、证件、住址、验证码和支付信息。</li>
+          <li><strong>及时举报：</strong>遇到虚假信息、诱导付款或冒用身份，请停止联系并通过详情页举报。</li>
+        </ul>
+        <div class="notice amber"><strong>演示数据说明：</strong>页面中的部分商品、价格和描述用于演示搜索结果，可能存在“来源待核验、商品待审核”状态，不应直接视为真实可交易资源。</div>
+      </section>
+
+      <section class="guide-section" id="faq">
+        <span class="section-kicker">FAQ</span>
+        <h2>常见问题</h2>
+        <div class="faq-list">
+          <details>
+            <summary>为什么确认条件后仍然没有结果？</summary>
+            <div class="faq-answer">可能是预算、位置或时间条件限制过窄，也可能是演示资源库暂时没有对应数据。可以尝试逐项放宽条件，再重新匹配。</div>
+          </details>
+          <details>
+            <summary>AI 整理出的条件可以直接使用吗？</summary>
+            <div class="faq-answer">不建议。AI 整理的是候选条件，你需要检查预算、校区、时间和类别是否准确。只有你确认后，系统才会按这些条件继续匹配。</div>
+          </details>
+          <details>
+            <summary>AI 生成的发布草稿会自动上线吗？</summary>
+            <div class="faq-answer">不会。草稿只是辅助整理信息。发布者必须核对文字、图片和标签，再主动提交审核；审核通过前不会作为正式资源展示。</div>
+          </details>
+          <details>
+            <summary>看到“联系意向预览”就代表申请成功了吗？</summary>
+            <div class="faq-answer">不是。预览只用于说明后续联系流程，不等于提交真实申请，也不代表资源为你保留。实际联系和线下确认仍需双方完成。</div>
+          </details>
+          <details>
+            <summary>“校园接力”预览代表资源已经发布了吗？</summary>
+            <div class="faq-answer">不代表。接力预览仅用于查看流程与呈现效果。只有发布者在核对信息后主动提交，并完成相应审核，才可能进入正式展示。</div>
+          </details>
         </div>
-      </div>
-    </div>
 
-    <!-- ====== 综合指南 ====== -->
-    <div class="tab-panel" id="tab4">
-      <p class="intro-text">课程和评价资料涉及来源、时效与授权，须经过核验和脱敏后才能公开展示。</p>
-      <div class="doc-section">
-        <h3 style="margin-top:0">综合指南文件</h3>
-        <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);border-radius:10px;">
-            <div>
-              <span style="font-weight:600;font-size:14px;">HDU选课指北_by STEA TEAM.xlsx</span>
-              <span style="color:var(--muted);font-size:12px;margin-left:8px;">40.2 KB</span>
-            </div>
-            <span style="color:var(--muted);font-size:12px;">待核验</span>
+        <div class="end-cta">
+          <div>
+            <h2>准备好开始了吗</h2>
+            <p>先写下一条具体需求，让寻应帮你整理候选条件。</p>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);border-radius:10px;">
-            <div>
-              <span style="font-weight:600;font-size:14px;">公选课评价收集表.xlsx</span>
-              <span style="color:var(--muted);font-size:12px;margin-left:8px;">25.9 KB</span>
-            </div>
-            <span style="color:var(--muted);font-size:12px;">待核验</span>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);border-radius:10px;">
-            <div>
-              <span style="font-weight:600;font-size:14px;">杭电公选课图鉴选.xlsx</span>
-              <span style="color:var(--muted);font-size:12px;margin-left:8px;">32.4 KB</span>
-            </div>
-            <span style="color:var(--muted);font-size:12px;">待核验</span>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);border-radius:10px;">
-            <div>
-              <span style="font-weight:600;font-size:14px;">通识选修课程归属.xlsx</span>
-              <span style="color:var(--muted);font-size:12px;margin-left:8px;">12.7 KB</span>
-            </div>
-            <span style="color:var(--muted);font-size:12px;">待核验</span>
-          </div>
+          <a href="app.html">立即体验</a>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   </div>
 
   <script>
-    // Tab switching
-    document.querySelectorAll('.tab-nav button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(btn.dataset.tab).classList.add('active');
-      });
-    });
+    (function () {
+      var links = Array.prototype.slice.call(document.querySelectorAll('.guide-toc a[href^="#"]'));
+      var sections = links.map(function (link) {
+        return document.querySelector(link.getAttribute('href'));
+      }).filter(Boolean);
+
+      if (!('IntersectionObserver' in window) || !sections.length) return;
+
+      function setActive(id) {
+        links.forEach(function (link) {
+          var active = link.getAttribute('href') === '#' + id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        });
+      }
+
+      var observer = new IntersectionObserver(function (entries) {
+        var visible = entries.filter(function (entry) { return entry.isIntersecting; });
+        if (!visible.length) return;
+        visible.sort(function (a, b) { return b.intersectionRatio - a.intersectionRatio; });
+        setActive(visible[0].target.id);
+      }, { rootMargin: '-88px 0px -62% 0px', threshold: [0, 0.15, 0.5] });
+
+      sections.forEach(function (section) { observer.observe(section); });
+    })();
   </script>
 </body>
 </html>

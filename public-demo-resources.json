@@ -1,0 +1,523 @@
+[
+  {
+    "id": "seed-item-001",
+    "type": "used_item",
+    "title": "白色无线鼠标",
+    "description": "色调偏白，成色较新，附原装充电器。",
+    "category": "闲置物品",
+    "keywords": [
+      "鼠标",
+      "电脑外设"
+    ],
+    "campus": "下沙",
+    "timeRequirement": null,
+    "status": "active",
+    "source": "collaborator_csv_sanitized",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "createdAt": "2026-08-24T13:57:38.339Z",
+    "price": 50,
+    "isNegotiable": true,
+    "images": [
+      "assets/demo-products/user-demo-mouse.jpg"
+    ]
+  },
+  {
+    "id": "seed-item-002",
+    "type": "used_item",
+    "title": "华为降噪耳机",
+    "description": "九成新，原装配件齐全，支持现场试听。",
+    "category": "闲置物品",
+    "keywords": [
+      "耳机",
+      "降噪耳机",
+      "电子产品"
+    ],
+    "campus": "下沙",
+    "timeRequirement": null,
+    "status": "active",
+    "source": "collaborator_csv_sanitized",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "createdAt": "2026-08-26T02:34:52.208Z",
+    "price": 99,
+    "isNegotiable": true,
+    "images": [
+      "assets/demo-products/user-demo-headphones.jpg"
+    ]
+  },
+  {
+    "id": "demo-item-001",
+    "type": "used_item",
+    "title": "蓝牙耳机",
+    "description": "自制模拟展示商品。盒子和充电线都在，原帖称日常听歌没问题。",
+    "category": "闲置物品",
+    "keywords": [
+      "耳机",
+      "蓝牙耳机"
+    ],
+    "campus": "下沙",
+    "timeRequirement": "今晚七点后或明天下午",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 80,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/bluetooth-earbuds.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-002",
+    "type": "used_item",
+    "title": "头戴式降噪耳机",
+    "description": "自制模拟展示商品。外观有些旧，发帖描述称功能尚可；品牌未提供。",
+    "category": "闲置物品",
+    "keywords": [
+      "耳机",
+      "降噪耳机",
+      "头戴式"
+    ],
+    "campus": "下沙",
+    "timeRequirement": null,
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 60,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/over-ear-headphones.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-003",
+    "type": "used_item",
+    "title": "无线鼠标",
+    "description": "自制模拟展示商品。可正常使用。",
+    "category": "闲置物品",
+    "keywords": [
+      "鼠标",
+      "无线鼠标",
+      "电脑外设"
+    ],
+    "campus": "下沙",
+    "timeRequirement": "周六下午",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 25,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/wireless-mouse.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-004",
+    "type": "used_item",
+    "title": "机械键盘",
+    "description": "自制模拟展示商品。可以正常使用，空格键有些响。",
+    "category": "闲置物品",
+    "keywords": [
+      "键盘",
+      "机械键盘",
+      "电脑外设"
+    ],
+    "campus": "下沙",
+    "timeRequirement": "周六下午",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 70,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/mechanical-keyboard.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-005",
+    "type": "used_item",
+    "title": "宿舍台灯",
+    "description": "自制模拟展示商品。三档亮度，插电款；发帖未提供价格。",
+    "category": "闲置物品",
+    "keywords": [
+      "台灯",
+      "宿舍用品",
+      "照明"
+    ],
+    "campus": "东岳",
+    "timeRequirement": null,
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": null,
+    "isNegotiable": null,
+    "images": [
+      "assets/demo-products/desk-lamp.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-006",
+    "type": "textbook",
+    "title": "高等数学 A1 教材",
+    "description": "自制模拟展示商品。封面和内页情况按帖子描述保留，未缺页。",
+    "category": "教材",
+    "keywords": [
+      "高等数学",
+      "A1",
+      "教材"
+    ],
+    "campus": "下沙",
+    "timeRequirement": "周五中午",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 20,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/math-textbook.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-007",
+    "type": "textbook",
+    "title": "大学英语四级词汇书",
+    "description": "自制模拟展示商品。书角有些卷。",
+    "category": "教材",
+    "keywords": [
+      "英语四级",
+      "词汇书",
+      "教材"
+    ],
+    "campus": "下沙",
+    "timeRequirement": "周六下午",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 10,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/vocabulary-book.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-008",
+    "type": "used_item",
+    "title": "自行车",
+    "description": "自制模拟展示商品。可骑行，刹车情况建议看车时确认。",
+    "category": "闲置物品",
+    "keywords": [
+      "自行车",
+      "单车"
+    ],
+    "campus": "滨江",
+    "timeRequirement": "周日早上",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 150,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/bicycle.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-009",
+    "type": "used_item",
+    "title": "宿舍收纳箱",
+    "description": "自制模拟展示商品。搬宿舍整理闲置。",
+    "category": "闲置物品",
+    "keywords": [
+      "收纳箱",
+      "宿舍用品",
+      "收纳"
+    ],
+    "campus": "下沙",
+    "timeRequirement": "今晚九点前",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 10,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/storage-box.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-010",
+    "type": "used_item",
+    "title": "宿舍插线板",
+    "description": "自制模拟展示商品。带开关，能正常使用；价格待定。",
+    "category": "闲置物品",
+    "keywords": [
+      "插线板",
+      "宿舍用品",
+      "电源"
+    ],
+    "campus": "下沙",
+    "timeRequirement": "周日中午前",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": null,
+    "isNegotiable": null,
+    "images": [
+      "assets/demo-products/power-strip.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-011",
+    "type": "used_item",
+    "title": "折叠台灯",
+    "description": "自制模拟展示商品。台灯可正常亮，表面有些灰。",
+    "category": "闲置物品",
+    "keywords": [
+      "台灯",
+      "折叠",
+      "宿舍用品"
+    ],
+    "campus": "下沙",
+    "timeRequirement": "周六下午",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 25,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/folding-lamp.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-012",
+    "type": "used_item",
+    "title": "床上小桌",
+    "description": "自制模拟展示商品。床上使用的小桌，帖子称比较新。",
+    "category": "闲置物品",
+    "keywords": [
+      "床上桌",
+      "宿舍用品",
+      "小桌"
+    ],
+    "campus": "下沙",
+    "timeRequirement": "今晚九点前",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 20,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/bed-tray.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-013",
+    "type": "used_item",
+    "title": "衣架（一把）",
+    "description": "自制模拟展示商品。",
+    "category": "闲置物品",
+    "keywords": [
+      "衣架",
+      "宿舍用品"
+    ],
+    "campus": "下沙",
+    "timeRequirement": "周日中午前",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 5,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/hangers.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-014",
+    "type": "used_item",
+    "title": "宿舍床帘",
+    "description": "自制模拟展示商品。",
+    "category": "闲置物品",
+    "keywords": [
+      "床帘",
+      "宿舍用品",
+      "遮光"
+    ],
+    "campus": "东岳",
+    "timeRequirement": null,
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 40,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/bed-curtain.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-015",
+    "type": "used_item",
+    "title": "保温杯",
+    "description": "自制模拟展示商品。",
+    "category": "闲置物品",
+    "keywords": [
+      "保温杯",
+      "生活用品"
+    ],
+    "campus": "滨江",
+    "timeRequirement": null,
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 18,
+    "isNegotiable": true,
+    "images": [
+      "assets/demo-products/thermos.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-016",
+    "type": "used_item",
+    "title": "双肩背包",
+    "description": "自制模拟展示商品。",
+    "category": "闲置物品",
+    "keywords": [
+      "背包",
+      "书包",
+      "生活用品"
+    ],
+    "campus": "下沙",
+    "timeRequirement": "工作日晚上",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 35,
+    "isNegotiable": true,
+    "images": [
+      "assets/demo-products/backpack.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-017",
+    "type": "used_item",
+    "title": "科学计算器",
+    "description": "自制模拟展示商品。",
+    "category": "闲置物品",
+    "keywords": [
+      "计算器",
+      "学习用品"
+    ],
+    "campus": "滨江",
+    "timeRequirement": "周末白天",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 28,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/calculator.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-018",
+    "type": "used_item",
+    "title": "桌面小风扇",
+    "description": "自制模拟展示商品。",
+    "category": "闲置物品",
+    "keywords": [
+      "风扇",
+      "宿舍用品",
+      "桌面"
+    ],
+    "campus": "东岳",
+    "timeRequirement": "周六下午",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 22,
+    "isNegotiable": true,
+    "images": [
+      "assets/demo-products/desk-fan.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-019",
+    "type": "used_item",
+    "title": "折叠雨伞",
+    "description": "自制模拟展示商品。",
+    "category": "闲置物品",
+    "keywords": [
+      "雨伞",
+      "生活用品"
+    ],
+    "campus": "下沙",
+    "timeRequirement": "周末白天",
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 12,
+    "isNegotiable": false,
+    "images": [
+      "assets/demo-products/umbrella.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  },
+  {
+    "id": "demo-item-020",
+    "type": "used_item",
+    "title": "桌面小书架",
+    "description": "自制模拟展示商品。",
+    "category": "闲置物品",
+    "keywords": [
+      "书架",
+      "桌面收纳",
+      "宿舍用品"
+    ],
+    "campus": "滨江",
+    "timeRequirement": null,
+    "status": "active",
+    "source": "synthetic_demo_seed",
+    "sourceVerificationStatus": "pending_verification",
+    "auditStatus": "pending_review",
+    "price": 30,
+    "isNegotiable": true,
+    "images": [
+      "assets/demo-products/bookshelf.png"
+    ],
+    "imageNote": "演示示意图，非商品实拍"
+  }
+]

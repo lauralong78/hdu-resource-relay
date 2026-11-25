@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://laqliecldqfjfhsooyey.supabase.co blob:; connect-src 'self' https://laqliecldqfjfhsooyey.supabase.co; font-src 'self';" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>发布商品 — 大学生信息资源共享平台</title>
+  <title>发布资源 · 寻应</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/xunying-app-icon.svg" />
   <style>
     :root {
       --bg:      oklch(98% 0.004 240);
@@ -16,8 +17,8 @@
       --accent-dark: oklch(42% 0.10 170);
       --success: oklch(58% 0.16 145);
       --danger:  oklch(55% 0.20 28);
-      --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
-      --font-body:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+      --font-display: 'Noto Sans SC', 'HarmonyOS Sans SC', 'MiSans', 'PingFang SC', 'Microsoft YaHei UI', 'Microsoft YaHei', system-ui, sans-serif;
+      --font-body:    'Noto Sans SC', 'HarmonyOS Sans SC', 'MiSans', 'PingFang SC', 'Microsoft YaHei UI', 'Microsoft YaHei', system-ui, sans-serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 16px; }
@@ -406,10 +407,19 @@
     .price-input-wrap {
       position: relative;
     }
-    .price-input-wrap input { padding-left: 24px; }
-    .price-input-wrap .prefix {
+    .price-input-wrap input {
+      padding-right: 38px;
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+    .price-input-wrap input::-webkit-inner-spin-button,
+    .price-input-wrap input::-webkit-outer-spin-button {
+      margin: 0;
+      -webkit-appearance: none;
+    }
+    .price-input-wrap .suffix {
       position: absolute;
-      left: 14px;
+      right: 14px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--muted);
@@ -583,8 +593,10 @@
       padding: 28px 24px 20px;
       max-width: 440px;
       width: 100%;
-      max-height: 80vh;
+      max-height: min(80vh, 720px);
+      overflow-x: hidden;
       overflow-y: auto;
+      overscroll-behavior: contain;
     }
     .confirm-box h3 {
       font-size: 18px;
@@ -598,27 +610,62 @@
     }
     .confirm-box .confirm-grid {
       display: grid;
-      gap: 10px;
-      margin-bottom: 20px;
+      min-width: 0;
+      gap: 2px;
+      margin-bottom: 18px;
     }
     .confirm-box .confirm-row {
       display: flex;
+      align-items: flex-start;
       justify-content: space-between;
+      min-width: 0;
+      gap: 18px;
       font-size: 14px;
-      padding: 6px 0;
+      line-height: 1.55;
+      padding: 9px 0;
       border-bottom: 1px solid var(--border);
     }
-    .confirm-box .confirm-row .cl { color: var(--muted); }
-    .confirm-box .confirm-row .cv { font-weight: 600; text-align: right; max-width: 60%; }
+    .confirm-box .confirm-row .cl {
+      flex: 0 0 76px;
+      color: var(--muted);
+    }
+    .confirm-box .confirm-row .cv {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: none;
+      font-weight: 600;
+      text-align: right;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .confirm-box .confirm-images {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .confirm-box .confirm-image-count {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
     .confirm-box .confirm-row .cv .img-thumb {
-      width: 40px;
-      height: 40px;
-      border-radius: 6px;
+      width: 38px;
+      height: 38px;
+      border-radius: 7px;
       object-fit: cover;
       vertical-align: middle;
-      margin-left: 6px;
+      margin: 0;
+      border: 1px solid var(--border);
+      background: var(--bg);
     }
     .confirm-box .confirm-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .confirm-box .confirm-button-row {
       display: flex;
       gap: 10px;
     }
@@ -644,7 +691,7 @@
       color: white;
     }
     .confirm-box .confirm-ok:hover { background: var(--accent-dark); }
-    .disclaimer-check { display:block; text-align:center; font-size:12px; color:#666; margin:8px 0; }
+    .disclaimer-check { display:block; text-align:left; font-size:12px; line-height:1.6; color:#666; margin:0; }
     .disclaimer-check input { margin-right:4px; vertical-align:middle; }
     .disclaimer-check a { color:var(--accent); text-decoration:underline; }
     .confirm-ok:disabled { opacity:.5; cursor:not-allowed; }
@@ -661,12 +708,19 @@
       .upload-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
+  <link rel="stylesheet" href="assets/ui/theme.css" />
 </head>
-<body>
+<body class="ui-publish">
   <nav class="top-nav" data-od-id="top-nav">
-    <a href="index.html" class="logo">智信<span>学府</span></a>
-    <a href="guide.html" class="nav-guide">新生指南</a>
-    <a href="index.html" class="nav-back" data-od-id="btn-back">← 返回</a>
+    <a href="app.html" class="logo brand-link" aria-label="寻应首页">
+      <img class="brand-mark" src="assets/brand/xunying-mark.svg" alt="寻应标志" />
+      <span class="brand-copy">
+        <span class="brand-name">寻应</span>
+        <span class="brand-sub">校园资源互助</span>
+      </span>
+    </a>
+    <a href="guide.html" class="nav-guide">使用指南</a>
+    <a href="app.html" class="nav-back" data-od-id="btn-back">← 返回</a>
   </nav>
   <div class="draft-banner" id="draft-banner">
     <span class="draft-text">📝 检测到未发布的草稿</span>
@@ -689,7 +743,7 @@
       <div class="form-card">
         <div class="card-title"><span class="step-num">1</span> 商品照片</div>
         <div class="form-group">
-          <label>上传图片 <span class="req">*</span> <button type="button" id="btn-ai-recognize" style="margin-left:8px;font-size:12px;padding:2px 12px;border-radius:12px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;vertical-align:middle;">拍照识别</button></label>
+          <label>上传图片 <span class="req">*</span></label>
           <div class="upload-grid" id="upload-grid">
             <div class="upload-slot" id="upload-trigger" data-od-id="upload-trigger">
               <div class="plus-icon">+</div>
@@ -697,7 +751,6 @@
             </div>
           </div>
           <input type="file" id="file-input" accept="image/*" multiple style="display:none" />
-          <input type="file" id="recognize-input" accept="image/*" style="display:none" />
           <div class="hint">最多 6 张，支持 JPG / PNG，建议正方形比例</div>
         </div>
       </div>
@@ -709,7 +762,7 @@
           <div class="char-counter"><span id="title-count">0</span>/60</div>
         </div>
         <div class="form-group">
-          <label for="description">商品描述 <button type="button" id="btn-ai-polish" style="margin-left:8px;font-size:12px;padding:2px 12px;border-radius:12px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;vertical-align:middle;">AI 润色</button></label>
+          <label for="description">商品描述</label>
           <textarea id="description" placeholder="描述商品的成色、购入时间、使用频率、配件情况、出售原因……" rows="4" maxlength="1000"></textarea>
           <div class="char-counter"><span id="desc-count">0</span>/1000</div>
           <div class="hint">建议包含：成色说明 · 使用时间 · 配件清单 · 出售原因 · 期望交易方式</div>
@@ -749,16 +802,16 @@
           <div class="form-group">
             <label for="price">售价（元）<span class="req">*</span></label>
             <div class="price-input-wrap">
-              <span class="prefix">¥</span>
               <input type="number" id="price" placeholder="0" min="0" step="1" required />
+              <span class="suffix" aria-hidden="true">¥</span>
             </div>
             <div class="price-tip" id="price-tip">建议参考同类商品定价</div>
           </div>
           <div class="form-group" id="original-price-group">
             <label for="original-price">原价（元）</label>
             <div class="price-input-wrap">
-              <span class="prefix">¥</span>
               <input type="number" id="original-price" placeholder="0" min="0" step="1" />
+              <span class="suffix" aria-hidden="true">¥</span>
             </div>
             <div class="hint">展示价格对比，让买家觉得划算</div>
           </div>
@@ -778,26 +831,14 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="school">所在学校 <span class="req">*</span></label>
-          <select id="school">
-            <option value="">请选择学校</option>
-            <option value="杭州电子科技大学">杭州电子科技大学</option>
-            <option value="浙江大学">浙江大学</option>
-            <option value="浙江工业大学">浙江工业大学</option>
-            <option value="浙江理工大学">浙江理工大学</option>
-            <option value="浙江工商大学">浙江工商大学</option>
-            <option value="杭州师范大学">杭州师范大学</option>
-            <option value="中国计量大学">中国计量大学</option>
-            <option value="浙江财经大学">浙江财经大学</option>
-            <option value="浙江传媒学院">浙江传媒学院</option>
-            <option value="其他">其他</option>
+          <label for="campus">校区 <span class="req">*</span></label>
+          <select id="campus" required>
+            <option value="">请选择校区</option>
+            <option value="下沙">下沙校区</option>
+            <option value="东岳">东岳校区</option>
+            <option value="滨江">滨江校区</option>
+            <option value="绍兴">绍兴校区</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label for="campus">所在校区</label>
-            <select id="campus">
-              <option value="">请先选择学校</option>
-            </select>
         </div>
         <div class="form-group" style="margin-bottom:0">
           <div class="switch-row">
@@ -835,7 +876,7 @@
           </div>
           <div class="field-error" id="contact-error">隐藏手机号时，请至少填写微信号或QQ号中的一种</div>
         </div>
-        <div class="hint">买家将通过你选择的联系方式联系你，仅对校内用户可见</div>
+        <div class="hint">选择公开的联系方式会向已登录用户展示；隐藏手机号时，页面只展示你填写的微信号或 QQ 号</div>
       </div>
       <div class="action-bar">
         <button type="button" class="btn-draft" id="btn-draft" data-od-id="btn-draft">保存草稿</button>
@@ -849,9 +890,11 @@
       <p class="confirm-sub">请核对商品信息，确认无误后再发布</p>
       <div class="confirm-grid" id="confirm-grid"></div>
       <div class="confirm-actions">
-        <button class="confirm-cancel" id="confirm-cancel">返回修改</button>
         <label class="disclaimer-check"><input type="checkbox" id="disclaimer-agree" /> 我已阅读并同意<a href="disclaimer.html" target="_blank">《免责声明》</a></label>
-        <button class="confirm-ok" id="confirm-ok">确认发布</button>
+        <div class="confirm-button-row">
+          <button class="confirm-cancel" id="confirm-cancel">返回修改</button>
+          <button class="confirm-ok" id="confirm-ok">确认发布</button>
+        </div>
       </div>
     </div>
   </div>
@@ -862,7 +905,7 @@
       <h3 class="result-title" id="result-title">发布成功</h3>
       <p class="result-desc" id="result-desc">你的商品已成功发布</p>
       <div class="result-actions">
-        <a class="result-btn secondary" href="index.html">返回市场</a>
+        <a class="result-btn secondary" href="app.html">返回市场</a>
         <a class="result-btn primary" id="result-view-link" href="#">查看商品</a>
       </div>
     </div>
@@ -896,9 +939,18 @@
         // 写操作统一走 /api/* worker 代理（校验 device_token 签名 + service_role 权限），读取仍直连 Supabase
         var base = ['POST', 'PUT', 'DELETE', 'PATCH'].indexOf(method) !== -1 ? '/api' : SUPABASE_URL;
         var res = await fetch(base + path, options);
-        if (!res.ok) throw new Error('API error: ' + res.status);
         var text = await res.text();
-        return text ? JSON.parse(text) : [];
+        var payload = null;
+        if (text) {
+          try { payload = JSON.parse(text); } catch (_) {}
+        }
+        if (!res.ok) {
+          var detail = payload && (payload.error || payload.message || payload.hint || payload.details);
+          var error = new Error(detail || (res.status === 404 ? '发布服务未部署或尚未生效' : '请求失败（HTTP ' + res.status + '）'));
+          error.status = res.status;
+          throw error;
+        }
+        return payload === null ? [] : payload;
       }
 
       var fpPromise = null;
@@ -1000,26 +1052,39 @@
       var isEditMode = !!editId;
       var editItemRaw = null; // 编辑时保存的原始 item 数据
 
-      async function loadItemForEdit(id) {
-        try {
-          var result = await supabaseRequest('GET', '/rest/v1/items?select=*&id=eq.' + id);
-          if (!result || result.length === 0) {
-            showToast('商品不存在或已下架');
-            setTimeout(function () { window.location.href = 'index.html'; }, 1500);
-            return null;
-          }
-          editItemRaw = result[0];
-          // 验证所有权
-          if (editItemRaw.user_id !== getUserId()) {
-            showToast('你只能编辑自己发布的商品');
-            setTimeout(function () { window.location.href = 'index.html'; }, 1500);
-            return null;
-          }
-          return editItemRaw;
-        } catch (e) {
-          showToast('加载商品失败，请重试');
-          return null;
+      async function ownerItemRequest(method, id, body) {
+        await upgradeDeviceToken();
+        var token = getDeviceToken();
+        if (!token || token.indexOf('.') === -1) {
+          var tokenError = new Error('设备身份尚未初始化，请刷新页面后重试');
+          tokenError.status = 401;
+          throw tokenError;
         }
+        var headers = { 'x-device-token': token };
+        var options = { method: method, headers: headers, cache: 'no-store' };
+        if (body !== undefined) {
+          headers['Content-Type'] = 'application/json';
+          options.body = JSON.stringify(body);
+        }
+        var response = await fetch('/api/my-item?id=' + encodeURIComponent(String(id)), options);
+        var text = await response.text();
+        var data = null;
+        if (text) {
+          try { data = JSON.parse(text); } catch (_) {}
+        }
+        if (!response.ok) {
+          var error = new Error((data && data.error) || ('商品管理请求失败（HTTP ' + response.status + '）'));
+          error.status = response.status;
+          throw error;
+        }
+        return data || {};
+      }
+
+      async function loadItemForEdit(id) {
+        var data = await ownerItemRequest('GET', id);
+        if (!data.item) throw new Error('商品数据格式异常，请稍后重试');
+        editItemRaw = data.item;
+        return editItemRaw;
       }
 
       function prefillForm(item) {
@@ -1040,6 +1105,7 @@
         if (item.category) {
           categorySelect.value = item.category;
           renderSubcategories(item.category);
+          updateCategoryMode(item.category);
           document.getElementById('price-tip').textContent = '💰 ' + (categoryPriceTips[item.category] || '参考同类商品定价');
         }
 
@@ -1080,20 +1146,8 @@
         if (descMeta.activity_time_start) document.getElementById('activity-time-start').value = descMeta.activity_time_start;
         if (descMeta.activity_time_end) document.getElementById('activity-time-end').value = descMeta.activity_time_end;
 
-        // 学校/校区
-        var savedSchool = descMeta.school || '';
-        if (savedSchool) {
-          document.getElementById('school').value = savedSchool;
-          updateCampuses();
-          if (item.campus) document.getElementById('campus').value = item.campus;
-        } else if (item.campus) {
-          var matchedSchool = matchSchoolByCampus(item.campus);
-          if (matchedSchool) {
-            document.getElementById('school').value = matchedSchool;
-            updateCampuses();
-          }
-          document.getElementById('campus').value = item.campus;
-        }
+        // 旧商品仍使用 campus 字段；不再读取已废弃的 school 元数据。
+        if (item.campus) document.getElementById('campus').value = item.campus;
 
         // 可议价
         document.getElementById('negotiable').checked = item.is_negotiable !== false;
@@ -1130,15 +1184,6 @@
         }
 
         updateProgress();
-      }
-
-      if (isEditMode) {
-        document.getElementById('form-title').textContent = '编辑商品';
-        document.getElementById('form-subtitle').textContent = '修改商品信息后保存';
-        document.getElementById('btn-submit').textContent = '保存修改';
-        loadItemForEdit(editId).then(function (item) {
-          if (item) prefillForm(item);
-        });
       }
 
       var subcategoryMap = {
@@ -1336,18 +1381,23 @@
         });
       }
 
-      categorySelect.addEventListener('change', function () {
-        renderSubcategories(this.value);
-        var tip = categoryPriceTips[this.value] || '参考同类商品定价';
-        document.getElementById('price-tip').textContent = '💰 ' + tip;
+      function updateCategoryMode(category) {
         // 搭子/兼职/志愿者：隐藏成色/原价/购买时间，显示活动时间
-        var isActivity = (this.value === '搭子' || this.value === '兼职' || this.value === '志愿者');
+        var isActivity = (category === '搭子' || category === '兼职' || category === '志愿者');
         document.getElementById('condition-group').style.display = isActivity ? 'none' : '';
         document.getElementById('original-price-group').style.display = isActivity ? 'none' : '';
         document.getElementById('purchase-date-group').style.display = isActivity ? 'none' : '';
         document.getElementById('activity-time-row').style.display = isActivity ? '' : 'none';
+      }
+
+      categorySelect.addEventListener('change', function () {
+        renderSubcategories(this.value);
+        var tip = categoryPriceTips[this.value] || '参考同类商品定价';
+        document.getElementById('price-tip').textContent = '💰 ' + tip;
+        updateCategoryMode(this.value);
       });
       renderSubcategories(categorySelect.value);
+      updateCategoryMode(categorySelect.value);
 
       document.getElementById('title').addEventListener('input', function () {
         document.getElementById('title-count').textContent = this.value.length;
@@ -1355,180 +1405,6 @@
       document.getElementById('description').addEventListener('input', function () {
         document.getElementById('desc-count').textContent = this.value.length;
       });
-
-      // AI 润色
-      var aiPolishBtn = document.getElementById('btn-ai-polish');
-      if (aiPolishBtn) {
-        aiPolishBtn.addEventListener('click', async function () {
-          var desc = document.getElementById('description');
-          var text = desc.value.trim();
-          if (!text) { alert('请先填写商品描述，AI 才能帮你润色'); return; }
-          aiPolishBtn.disabled = true;
-          var oldText = aiPolishBtn.textContent;
-          aiPolishBtn.textContent = '润色中…';
-          try {
-            var res = await fetch('/api/ai', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ text: text, action: 'polish' })
-            });
-            // 空响应体防护：先读文本再解析，避免 res.json() 对空 body 抛 "Unexpected end of JSON input"
-            var rawText = await res.text();
-            var data = null;
-            if (rawText) { try { data = JSON.parse(rawText); } catch (e) {} }
-            if (!res.ok || !data) {
-              var errDetail = (data && data.error) ? '（后端错误：' + data.error + '）' : '';
-              alert('AI 润色服务暂时不可用（HTTP ' + res.status + errDetail + '），请稍后重试');
-              return;
-            }
-            if (data.result) {
-              // 防 "[object Object]"：后端已消毒，这里再兜底一次——非字符串一律视为空
-              var polished = (typeof data.result === 'string') ? data.result : '';
-              if (!polished && data.result && typeof data.result === 'object') {
-                // 极少数情况下模型返回对象：尽力取常用字段
-                polished = String(data.result.text || data.result.content || data.result.value || '');
-              }
-              desc.value = polished;
-              document.getElementById('desc-count').textContent = desc.value.length;
-              if (!polished) alert('AI 润色未返回有效文本，请稍后重试');
-            } else {
-              alert((data && data.error) ? data.error : 'AI 润色失败，请稍后重试');
-            }
-          } catch (err) {
-            alert('AI 调用失败：' + (err && err.message ? err.message : '网络错误'));
-          } finally {
-            aiPolishBtn.disabled = false;
-            aiPolishBtn.textContent = oldText;
-          }
-        });
-      }
-
-      // AI 拍照识别：拍照/选图 → 压缩 → 识别物品 → 自动回填名称与描述
-      var aiRecognizeBtn = document.getElementById('btn-ai-recognize');
-      var recognizeInput = document.getElementById('recognize-input');
-      // 图片压缩：最长边缩到 maxSide px、转 JPEG quality，返回剥离 data URL 前缀的 base64
-      function compressImage(file, maxSide, quality) {
-        return new Promise(function (resolve, reject) {
-          var img = new Image();
-          var url = URL.createObjectURL(file);
-          img.onload = function () {
-            try {
-              var w = img.width, h = img.height;
-              var scale = Math.min(1, maxSide / Math.max(w, h));
-              var tw = Math.max(1, Math.round(w * scale));
-              var th = Math.max(1, Math.round(h * scale));
-              var canvas = document.createElement('canvas');
-              canvas.width = tw; canvas.height = th;
-              var ctx = canvas.getContext('2d');
-              ctx.drawImage(img, 0, 0, tw, th);
-              var dataUrl = canvas.toDataURL('image/jpeg', quality);
-              var base64 = dataUrl.split(',')[1] || '';
-              URL.revokeObjectURL(url);
-              resolve({ base64: base64, byteLength: Math.floor(base64.length * 3 / 4) });
-            } catch (err) {
-              URL.revokeObjectURL(url);
-              reject(err);
-            }
-          };
-          img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('图片加载失败，请更换图片重试')); };
-          img.src = url;
-        });
-      }
-      if (aiRecognizeBtn && recognizeInput) {
-        aiRecognizeBtn.addEventListener('click', function () {
-          recognizeInput.click();
-        });
-        recognizeInput.addEventListener('change', async function () {
-          var file = recognizeInput.files && recognizeInput.files[0];
-          if (!file) return;
-          if (file.size > 10 * 1024 * 1024) {
-            alert('图片超过 10MB，正在尝试压缩，如仍失败请更换更小的图片');
-          }
-          aiRecognizeBtn.disabled = true;
-          var oldText = aiRecognizeBtn.textContent;
-          aiRecognizeBtn.textContent = '识别中…';
-          var controller = new AbortController();
-          var timer = setTimeout(function () { controller.abort(); }, 60000);
-          try {
-            // 先压缩（最长边 1600px、JPEG 0.92，保证书脊等细字可辨），剥离 data URL 前缀
-            var compressed = await compressImage(file, 1600, 0.92);
-            if (compressed.byteLength > 10 * 1024 * 1024) {
-              alert('图片压缩后仍超过 10MB，请更换更小/更清晰的图片重试');
-              return;
-            }
-            var res = await fetch('/api/ai', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ image: compressed.base64, action: 'recognize' }),
-              signal: controller.signal
-            });
-            // 空响应体防护：先读文本再解析，避免 res.json() 对空 body 抛 "Unexpected end of JSON input"
-            var rawText = await res.text();
-            var data = null;
-            if (rawText) { try { data = JSON.parse(rawText); } catch (e) {} }
-            if (!res.ok || !data) {
-              var errDetail = (data && data.error) ? '（后端错误：' + data.error + '）' : '';
-              alert('AI 识别服务暂时不可用（HTTP ' + res.status + errDetail + '），请稍后重试，或直接手动填写名称和描述');
-              return;
-            }
-            if (data.name || data.description) {
-              var titleInput = document.getElementById('title');
-              var descInput = document.getElementById('description');
-              // 防 "[object Object]"：仅接受纯字符串，对象/数组/空值一律置空，交由后端消毒与用户手动修正
-              function safeStr(v) {
-                if (typeof v === 'string') return v;
-                return '';
-              }
-              if (titleInput && data.name) {
-                var curTitle = titleInput.value.trim();
-                var newName = safeStr(data.name).trim();
-                if (newName) {
-                  // 已有内容则用顿号追加，为空则直接填入
-                  titleInput.value = curTitle ? curTitle + '、' + newName : newName;
-                  var titleCountEl = document.getElementById('title-count');
-                  if (titleCountEl) titleCountEl.textContent = titleInput.value.length;
-                }
-              }
-              if (descInput && data.description) {
-                var curDesc = descInput.value.trim();
-                var newDesc = safeStr(data.description).trim();
-                if (newDesc) {
-                  // 已有内容则换行追加，为空则直接填入
-                  descInput.value = curDesc ? curDesc + '\n' + newDesc : newDesc;
-                  var descCountEl = document.getElementById('desc-count');
-                  if (descCountEl) descCountEl.textContent = descInput.value.length;
-                }
-              }
-              // 保留识别用的图片到商品图列表（受 MAX_IMAGES 上限约束）
-              if (uploadedImages.length < MAX_IMAGES) {
-                uploadImage(file).then(function (url) {
-                  uploadedImages.push(url);
-                  renderUploadGrid();
-                  updateProgress();
-                  showToast('识别完成' + (data.count ? '，识别到 ' + data.count + ' 项' : '') + '，图片已保留');
-                }).catch(function () {
-                  showToast('识别完成' + (data.count ? '，识别到 ' + data.count + ' 项' : '') + '，但图片上传失败未保留');
-                });
-              } else {
-                showToast('图片已满 ' + MAX_IMAGES + ' 张，识别图片未加入');
-              }
-            } else {
-              alert((data && data.error) ? data.error : 'AI 识别失败，请换张清晰图片重试');
-            }
-          } catch (err) {
-            if (err && err.name === 'AbortError') {
-              alert('识别超时，请尝试更换更小/更清晰的图片重试');
-            } else {
-              alert('AI 调用失败：' + (err && err.message ? err.message : '网络错误'));
-            }
-          } finally {
-            clearTimeout(timer);
-            aiRecognizeBtn.disabled = false;
-            aiRecognizeBtn.textContent = oldText;
-            recognizeInput.value = '';
-          }
-        });
-      }
 
       function updateProgress() {
         var dots = document.querySelectorAll('.step-dot');
@@ -1585,7 +1461,6 @@
           purchaseDate: isActivity ? '' : document.getElementById('purchase-date').value,
           activityTimeStart: isActivity ? document.getElementById('activity-time-start').value : '',
           activityTimeEnd: isActivity ? document.getElementById('activity-time-end').value : '',
-          school: document.getElementById('school').value,
           campus: document.getElementById('campus').value,
           negotiable: document.getElementById('negotiable').checked,
           description: document.getElementById('description').value.trim(),
@@ -1599,58 +1474,9 @@
         };
       }
 
-      // ===== 学校/校区联动配置 =====
-      var SCHOOL_CAMPUS = {
-        '杭州电子科技大学': ['下沙', '文一', '东岳', '下沙东', '绍兴', '青山湖'],
-        '浙江大学': ['紫金港', '玉泉', '西溪', '之江', '华家池', '海宁国际'],
-        '浙江工业大学': ['朝晖', '屏峰', '莫干山'],
-        '浙江理工大学': ['下沙', '临平'],
-        '浙江工商大学': ['下沙', '教工路'],
-        '杭州师范大学': ['仓前', '下沙', '玉皇山'],
-        '中国计量大学': ['下沙'],
-        '浙江财经大学': ['下沙', '文华', '长安'],
-        '浙江传媒学院': ['下沙', '桐乡'],
-        '其他': ['其他']
-      };
-      function updateCampuses() {
-        var schoolSel = document.getElementById('school');
-        var campSel = document.getElementById('campus');
-        if (!schoolSel || !campSel) return;
-        var school = schoolSel.value;
-        campSel.innerHTML = '';
-        var list = SCHOOL_CAMPUS[school] || [];
-        if (list.length === 0) {
-          var ph = document.createElement('option');
-          ph.value = '';
-          ph.textContent = '请先选择学校';
-          campSel.appendChild(ph);
-          return;
-        }
-        list.forEach(function (cs) {
-          var o = document.createElement('option');
-          o.value = cs;
-          o.textContent = cs;
-          campSel.appendChild(o);
-        });
-      }
-      function matchSchoolByCampus(campus) {
-        if (!campus) return '';
-        for (var s in SCHOOL_CAMPUS) {
-          if (Object.prototype.hasOwnProperty.call(SCHOOL_CAMPUS, s) && SCHOOL_CAMPUS[s].indexOf(campus) !== -1) {
-            return s;
-          }
-        }
-        return '';
-      }
-      var schoolSelect = document.getElementById('school');
-      if (schoolSelect) {
-        schoolSelect.addEventListener('change', updateCampuses);
-        updateCampuses();
-      }
-
       function validateForm(data) {
         var errors = [];
-        if (!data.school) errors.push('请选择所在学校');
+        if (!data.campus) errors.push('请选择校区');
         if (uploadedImages.length === 0) errors.push('请至少上传一张商品图片');
         if (!data.title) errors.push('请填写商品名称');
         if (!data.price || isNaN(parseFloat(data.price)) || parseFloat(data.price) <= 0) errors.push('请填写有效的价格');
@@ -1672,29 +1498,66 @@
         var grid = document.getElementById('confirm-grid');
         var rows = [
           { label: '商品名称', value: data.title },
-          { label: '分类', value: data.category + (data.subcategory ? ' / ' + data.subcategory : '') },
+          { label: '分类', value: data.category + (data.subcategory ? ' / ' + data.subcategory : '') }
         ];
         if (!data.isActivity) {
           rows.push({ label: '成色', value: data.condition });
         }
         rows.push({ label: '售价', value: '¥' + data.price });
         if (data.isActivity) {
-          if (data.activityTimeStart && data.activityTimeEnd) rows.push({ label: '活动时间', value: data.activityTimeStart + ' 至 ' + data.activityTimeEnd });
-        } else {
-          if (data.originalPrice && parseFloat(data.originalPrice) > 0) {
-            rows.push({ label: '原价', value: '¥' + data.originalPrice });
+          if (data.activityTimeStart && data.activityTimeEnd) {
+            rows.push({
+              label: '活动时间',
+              value: data.activityTimeStart.replace('T', ' ') + ' 至 ' + data.activityTimeEnd.replace('T', ' ')
+            });
           }
+        } else if (data.originalPrice && parseFloat(data.originalPrice) > 0) {
+          rows.push({ label: '原价', value: '¥' + data.originalPrice });
         }
-        if (data.school && data.campus) rows.push({ label: '学校/校区', value: data.school + ' · ' + data.campus });
-        else if (data.campus) rows.push({ label: '校区', value: data.campus });
+        if (data.campus) rows.push({ label: '校区', value: data.campus + '校区' });
+        if (data.negotiable) rows.push({ label: '交易方式', value: '可议价' });
+        if (data.description) {
+          var shortDescription = data.description.length > 180 ? data.description.slice(0, 180) + '…' : data.description;
+          rows.push({ label: '商品描述', value: shortDescription });
+        }
         if (data.reason) rows.push({ label: '出售原因', value: data.reason });
-        if (data.images.length > 0) {
-          var thumbHtml = data.images.length + ' 张 <img class="img-thumb" src="' + data.images[0] + '" alt="预览" />';
-          rows.push({ label: '图片', value: thumbHtml });
-        }
-        grid.innerHTML = rows.map(function (r) {
-          return '<div class="confirm-row"><span class="cl">' + esc(r.label) + '</span><span class="cv">' + esc(r.value) + '</span></div>';
-        }).join('');
+        if (data.contact) rows.push({ label: '联系方式', value: data.contact });
+        if (data.images.length > 0) rows.push({ label: '图片', type: 'images', value: data.images });
+
+        grid.textContent = '';
+        rows.forEach(function (item) {
+          var row = document.createElement('div');
+          row.className = 'confirm-row';
+          var label = document.createElement('span');
+          label.className = 'cl';
+          label.textContent = item.label;
+          var value = document.createElement('span');
+          value.className = 'cv';
+
+          if (item.type === 'images') {
+            var imageGroup = document.createElement('span');
+            imageGroup.className = 'confirm-images';
+            var count = document.createElement('span');
+            count.className = 'confirm-image-count';
+            count.textContent = item.value.length + ' 张';
+            imageGroup.appendChild(count);
+            item.value.slice(0, 3).forEach(function (url, index) {
+              var image = document.createElement('img');
+              image.className = 'img-thumb';
+              image.src = url;
+              image.alt = '商品图片 ' + (index + 1);
+              image.loading = 'lazy';
+              imageGroup.appendChild(image);
+            });
+            value.appendChild(imageGroup);
+          } else {
+            value.textContent = item.value;
+          }
+
+          row.appendChild(label);
+          row.appendChild(value);
+          grid.appendChild(row);
+        });
         overlay.classList.add('show');
       }
 
@@ -1727,7 +1590,25 @@
       document.getElementById('confirm-cancel').addEventListener('click', function () {
         document.getElementById('confirm-overlay').classList.remove('show');
       });
-      function showPublishResult(success, itemId, isEdit) {
+      function publishErrorMessage(error, editing) {
+        var message = error && error.message ? String(error.message) : '操作失败，请稍后重试';
+        var status = error && error.status;
+        if (status === 401 || status === 403) {
+          return editing
+            ? '身份校验失败，或当前设备无权修改该商品，请返回“我的发布”后重试'
+            : '身份校验失败，请刷新页面后重新发布';
+        }
+        if (status === 404) {
+          return editing
+            ? '商品不存在、已删除，或不属于当前设备'
+            : '发布服务未生效，请确认 _worker.js 已上传并重新部署';
+        }
+        if (status >= 500 && /SUPABASE_SERVICE_KEY/.test(message)) return '服务器未配置数据库写入密钥，请联系网站管理员';
+        if (status >= 500) return '发布服务暂时不可用（HTTP ' + status + '），请稍后重试';
+        return message;
+      }
+
+      function showPublishResult(success, itemId, isEdit, errorMessage) {
         var overlay = document.getElementById('result-overlay');
         var icon = document.getElementById('result-icon');
         var title = document.getElementById('result-title');
@@ -1738,20 +1619,20 @@
           icon.className = 'result-icon success';
           icon.textContent = '✓';
           title.textContent = isEdit ? '修改成功！' : '发布成功！';
-          desc.textContent = isEdit ? '商品信息已更新' : '你的商品已成功发布，马上到市场看看吧';
-          link.href = 'item.html?id=' + itemId;
+          desc.textContent = isEdit ? '商品信息已更新，原浏览与成交状态已保留。' : '商品已发布并公开，可返回市场查看。';
+          link.href = isEdit ? 'app.html?view=my-items' : 'app.html';
+          link.textContent = isEdit ? '返回我的发布' : '返回商品市场';
           link.style.display = '';
         } else {
           icon.className = 'result-icon fail';
           icon.textContent = '✕';
           title.textContent = isEdit ? '修改失败' : '发布失败';
-          desc.textContent = '请检查网络后重试';
+          desc.textContent = errorMessage || '发布失败，请稍后重试';
           link.style.display = 'none';
         }
         overlay.classList.add('show');
-        if (success) {
-          setTimeout(function () { window.location.href = 'index.html'; }, 1800);
-        }
+        // Keep the result visible so the user can read the publish status.
+
       }
 
       document.getElementById('confirm-ok').addEventListener('click', async function () {
@@ -1759,6 +1640,8 @@
           showToast('请先阅读并同意免责声明');
           return;
         }
+        // 写操作前必须完成签名 token 升级，避免首次打开页面立即操作时被 Worker 拒绝。
+        await upgradeDeviceToken();
         var userId = getUserId();
         // 黑名单检查
         try {
@@ -1773,36 +1656,53 @@
             }
           }
         } catch (_) {}
-        // 获取 IP
-        var ipAddress = '';
-        try {
-          var ipRes = await fetch('https://api.ipify.org?format=json');
-          if (ipRes.ok) {
-            var ipData = await ipRes.json();
-            ipAddress = ipData.ip || '';
-          }
-        } catch (_) {}
         var data = collectFormData();
-        var descObj = {
+        var baseDesc = {};
+        if (isEditMode && editItemRaw && editItemRaw.description) {
+          try {
+            var parsedBaseDesc = JSON.parse(editItemRaw.description);
+            if (parsedBaseDesc && typeof parsedBaseDesc === 'object' && !Array.isArray(parsedBaseDesc)) {
+              baseDesc = parsedBaseDesc;
+            }
+          } catch (_) {}
+        }
+        var ipAddress = '';
+        if (!isEditMode) {
+          try {
+            var ipRes = await fetch('https://api.ipify.org?format=json');
+            if (ipRes.ok) {
+              var ipData = await ipRes.json();
+              ipAddress = ipData.ip || '';
+            }
+          } catch (_) {}
+        }
+        // 编辑时以原元数据为底，保留成交状态、浏览数、发布时间等未被表单覆盖的字段。
+        var descObj = Object.assign({}, baseDesc, {
           description: data.description,
           subcategory: data.subcategory,
-          school: data.school,
           reason: data.reason,
           phone: data.phone,
           hidePhone: data.hidePhone,
           wechat: data.wechat,
           qq: data.qq,
-          ip: ipAddress,
-          device_fingerprint: await getDeviceFingerprint(),
-          published_at: new Date().toISOString()
-        };
+          published_at: baseDesc.published_at || new Date().toISOString()
+        });
         if (data.isActivity) {
+          delete descObj.condition;
+          delete descObj.originalPrice;
+          delete descObj.purchaseDate;
           descObj.activity_time_start = data.activityTimeStart;
           descObj.activity_time_end = data.activityTimeEnd;
         } else {
+          delete descObj.activity_time_start;
+          delete descObj.activity_time_end;
           descObj.condition = data.condition;
           descObj.originalPrice = parseFloat(data.originalPrice) || null;
           descObj.purchaseDate = data.purchaseDate || '';
+        }
+        if (!isEditMode) {
+          descObj.ip = ipAddress;
+          descObj.device_fingerprint = await getDeviceFingerprint();
         }
         var payload = {
           name: data.title,
@@ -1816,26 +1716,26 @@
         };
 
         if (isEditMode) {
-          // 编辑模式：PATCH 更新
           try {
-            await supabaseRequest('PATCH', '/rest/v1/items?id=eq.' + editId, payload);
+            var updated = await ownerItemRequest('PATCH', editId, payload);
+            editItemRaw = updated.item || editItemRaw;
             localStorage.removeItem(draftKey);
             showPublishResult(true, editId, true);
-          } catch (_) {
-            showPublishResult(false, null, true);
+          } catch (error) {
+            showPublishResult(false, null, true, publishErrorMessage(error, true));
           }
-        } else {
-          // 新建模式：POST
-          payload.user_id = userId;
-          payload.ip_address = ipAddress;
-          payload.created_at = new Date().toISOString();
-          try {
-            var result = await supabaseRequest('POST', '/rest/v1/items', payload);
-            localStorage.removeItem(draftKey);
-            showPublishResult(true, result[0].id, false);
-          } catch (_) {
-            showPublishResult(false, null, false);
-          }
+          return;
+        }
+
+        payload.user_id = userId;
+        payload.ip_address = ipAddress;
+        payload.created_at = new Date().toISOString();
+        try {
+          var result = await supabaseRequest('POST', '/rest/v1/items', payload);
+          localStorage.removeItem(draftKey);
+          showPublishResult(true, result[0].id, false);
+        } catch (error) {
+          showPublishResult(false, null, false, publishErrorMessage(error, false));
         }
       });
 
@@ -1853,7 +1753,7 @@
           return;
         }
         try {
-          localStorage.setItem(draftKey, JSON.stringify({ images: uploadedImages, title: data.title, category: data.category, subcategory: data.subcategory, condition: data.condition, price: data.price, originalPrice: data.originalPrice, purchaseDate: data.purchaseDate, school: data.school, campus: data.campus, negotiable: data.negotiable, description: data.description, reason: selectedReason, wechat: data.wechat, phone: data.phone, hidePhone: data.hidePhone, qq: data.qq }));
+          localStorage.setItem(draftKey, JSON.stringify({ images: uploadedImages, title: data.title, category: data.category, subcategory: data.subcategory, condition: data.condition, price: data.price, originalPrice: data.originalPrice, purchaseDate: data.purchaseDate, campus: data.campus, negotiable: data.negotiable, description: data.description, reason: selectedReason, wechat: data.wechat, phone: data.phone, hidePhone: data.hidePhone, qq: data.qq }));
           showToast('草稿已保存 ✓');
         } catch (_) {
           showToast('保存失败，请重试');
@@ -1899,10 +1799,6 @@
           if (draft.price) document.getElementById('price').value = draft.price;
           if (draft.originalPrice) document.getElementById('original-price').value = draft.originalPrice;
           if (draft.purchaseDate) document.getElementById('purchase-date').value = draft.purchaseDate;
-          if (draft.school) {
-            document.getElementById('school').value = draft.school;
-            updateCampuses();
-          }
           if (draft.campus) document.getElementById('campus').value = draft.campus;
           document.getElementById('negotiable').checked = draft.negotiable !== false;
           if (draft.description) { document.getElementById('description').value = draft.description; document.getElementById('desc-count').textContent = draft.description.length; }
@@ -1924,14 +1820,18 @@
         } catch (_) {}
       }
 
-      (function checkDraft() {
-        try {
-          var draft = JSON.parse(localStorage.getItem(draftKey));
-          if (draft && (draft.title || (draft.images && draft.images.length > 0))) {
-            document.getElementById('draft-banner').classList.add('show');
-          }
-        } catch (_) {}
-      })();
+      if (isEditMode) {
+        document.getElementById('draft-banner').classList.remove('show');
+      } else {
+        (function checkDraft() {
+          try {
+            var draft = JSON.parse(localStorage.getItem(draftKey));
+            if (draft && (draft.title || (draft.images && draft.images.length > 0))) {
+              document.getElementById('draft-banner').classList.add('show');
+            }
+          } catch (_) {}
+        })();
+      }
 
       document.getElementById('draft-restore').addEventListener('click', restoreDraft);
       document.getElementById('draft-discard').addEventListener('click', function () {
@@ -1951,7 +1851,32 @@
 
       bindUploadEvents();
       updateProgress();
-      upgradeDeviceToken();
+
+      (async function bootPage() {
+        if (!isEditMode) {
+          await upgradeDeviceToken();
+          return;
+        }
+
+        var submitBtn = document.getElementById('btn-submit');
+        document.getElementById('form-title').textContent = '编辑商品';
+        document.getElementById('form-subtitle').textContent = '修改商品信息后保存，原浏览与成交状态会保留';
+        document.getElementById('btn-draft').style.display = 'none';
+        submitBtn.textContent = '加载中…';
+        submitBtn.disabled = true;
+
+        try {
+          var item = await loadItemForEdit(editId);
+          prefillForm(item);
+          submitBtn.textContent = '保存修改';
+          submitBtn.disabled = false;
+        } catch (error) {
+          document.getElementById('form-title').textContent = '无法编辑商品';
+          document.getElementById('form-subtitle').textContent = (error && error.message) || '商品加载失败，请返回“我的发布”后重试';
+          submitBtn.textContent = '暂不可编辑';
+          showToast((error && error.message) || '商品加载失败，请稍后重试');
+        }
+      })();
     })();
   </script>
   <footer style="text-align:center;padding:20px 16px 28px;">

@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://laqliecldqfjfhsooyey.supabase.co blob:; connect-src 'self' https://laqliecldqfjfhsooyey.supabase.co; font-src 'self';" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>商品详情 — 大学生信息资源共享平台</title>
+  <title>商品详情 · 寻应</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/xunying-app-icon.svg" />
   <style>
     :root {
       --bg:      oklch(98% 0.004 240);
@@ -14,8 +15,8 @@
       --border:  oklch(90% 0.006 240);
       --accent:  oklch(56% 0.12 170);
       --accent-dark: oklch(42% 0.10 170);
-      --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
-      --font-body:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+      --font-display: 'Noto Sans SC', 'HarmonyOS Sans SC', 'MiSans', 'PingFang SC', 'Microsoft YaHei UI', 'Microsoft YaHei', system-ui, sans-serif;
+      --font-body:    'Noto Sans SC', 'HarmonyOS Sans SC', 'MiSans', 'PingFang SC', 'Microsoft YaHei UI', 'Microsoft YaHei', system-ui, sans-serif;
       --radius-card: 14px;
       --radius-sm: 8px;
     }
@@ -259,6 +260,17 @@
       padding: 80px 24px;
       color: var(--muted);
     }
+    .demo-badge { display:inline-flex; align-items:center; gap:6px; margin-bottom:12px; padding:5px 9px; border-radius:999px; background:#fff8e6; color:#7a4d00; font-size:12px; font-weight:600; }
+    .detail-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 18px; margin-top:4px; }
+    .detail-field { display:grid; gap:2px; font-size:14px; }
+    .detail-field dt { color:var(--muted); font-size:12px; }
+    .detail-field dd { color:var(--fg); word-break:break-word; }
+    .security-note { border:1px solid #d9ebe4; background:#f5fbf8; }
+    .security-note p { font-size:13px; color:var(--muted); }
+    .intent-preview { border:1px solid #eadfbf; background:#fffaf0; }
+    .intent-preview .preview-status { color:#7a4d00; font-weight:600; }
+    .intent-preview .preview-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+    @media (max-width: 520px) { .detail-fields { grid-template-columns:1fr; } }
     @media (max-width: 700px) {
       .top-nav { padding: 12px 16px; }
       .detail-container { padding: 16px 16px 48px; }
@@ -272,15 +284,46 @@
     .report-evidence-wrap { position:relative; }
     .report-evidence-wrap .remove-img-btn { position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#e74c3c;color:#fff;border:0;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center; }
   </style>
+  <link rel="stylesheet" href="assets/ui/theme.css" />
+  <script>
+    (function () {
+      var storageKey = 'xunying:item-page-flip-at';
+      var startedAt = 0;
+      try {
+        startedAt = Number(sessionStorage.getItem(storageKey) || 0);
+        sessionStorage.removeItem(storageKey);
+      } catch (_) {}
+      if (!startedAt || Date.now() - startedAt > 3000) return;
+
+      var root = document.documentElement;
+      root.classList.add('page-flip-arrive');
+      function clearFlip() {
+        root.classList.remove('page-flip-arrive');
+      }
+      document.addEventListener('animationend', function (event) {
+        if (event.animationName === 'xunying-page-flip-in') clearFlip();
+      });
+      window.addEventListener('pageshow', function (event) {
+        if (event.persisted) clearFlip();
+      });
+      window.setTimeout(clearFlip, 1600);
+    })();
+  </script>
 </head>
-<body>
+<body class="ui-detail">
   <nav class="top-nav" data-od-id="detail-top-nav">
-    <a href="index.html" id="back-link" class="back-btn" data-od-id="back-btn">
+    <a href="app.html" id="back-link" class="back-btn" data-od-id="back-btn">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       返回
     </a>
-    <a href="index.html" class="logo">杭电信息<span>资源共享平台</span></a>
-    <a href="guide.html" class="nav-guide">新生指南</a>
+    <a href="app.html" class="logo brand-link" aria-label="寻应首页">
+      <img class="brand-mark" src="assets/brand/xunying-mark.svg" alt="寻应标志" />
+      <span class="brand-copy">
+        <span class="brand-name">寻应</span>
+        <span class="brand-sub">校园资源互助</span>
+      </span>
+    </a>
+    <a href="guide.html" class="nav-guide">使用指南</a>
   </nav>
 
   <!-- 举报弹窗 -->
@@ -329,6 +372,8 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
+  <script src="auth.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4/dist/fp.min.js"></script>
   <script>
     // 如果从管理后台跳转过来，返回按钮指向 admin.html
@@ -336,6 +381,8 @@
       var params = new URLSearchParams(window.location.search);
       if (params.get('ref') === 'admin') {
         document.getElementById('back-link').href = 'admin.html';
+      } else if (params.get('from') === 'my-items') {
+        document.getElementById('back-link').href = 'app.html?view=my-items';
       }
     })();
   </script>
@@ -347,6 +394,16 @@
       function esc(str) {
         if (!str) return '';
         return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+      }
+
+      function safeImageUrl(value) {
+        if (typeof value !== 'string' || !value.trim()) return null;
+        try {
+          var url = new URL(value, window.location.href);
+          if (url.protocol === 'http:' || url.protocol === 'https:') return url.href;
+          if (url.protocol === 'data:' && /^data:image\/(png|jpe?g|gif|webp);/i.test(value)) return value;
+        } catch (_) {}
+        return null;
       }
 
       async function supabaseRequest(method, path, body) {
@@ -412,11 +469,33 @@
 
       var container = document.getElementById('detail-container');
       var p = new URLSearchParams(window.location.search);
-      var itemId = p.get('id') ? parseInt(p.get('id'), 10) : null;
+      var itemIdParam = p.get('id') || '';
+      var itemId = /^\d+$/.test(itemIdParam) ? parseInt(itemIdParam, 10) : null;
+      var isDemoItem = /^(?:seed-item|demo-item)-[A-Za-z0-9_-]+$/.test(itemIdParam);
+      var matchContext = (function () {
+        if (p.get('from') !== 'matches') return null;
+        var reasons = [];
+        try { reasons = JSON.parse(p.get('matchReasons') || '[]'); } catch (_) {}
+        if (!Array.isArray(reasons)) reasons = [];
+        reasons = reasons.filter(function (reason) { return typeof reason === 'string' && reason.trim(); }).slice(0, 12);
+        var score = p.get('matchScore');
+        return { reasons: reasons, score: score !== null && /^-?\d+(\.\d+)?$/.test(score) ? score : null };
+      })();
+
+      async function getDemoItem(id) {
+        var response = await fetch('public-demo-resources.json', { cache: 'no-store' });
+        if (!response.ok) throw new Error('演示商品数据加载失败（HTTP ' + response.status + '）');
+        var records = await response.json();
+        if (!Array.isArray(records)) throw new Error('演示商品数据格式无法识别');
+        var record = records.find(function (candidate) { return candidate && candidate.id === id; });
+        if (!record) return null;
+        return Object.assign({}, record, { isDemo: true });
+      }
 
       async function getItems() {
         try {
-          var result = await supabaseRequest('GET', '/rest/v1/items?select=id,name,price,description,category,campus,contact,image,is_negotiable,user_id&order=created_at.desc');
+          // 公开详情只读取公开视图；视图未创建时不回退到基础 items 表。
+          var result = await supabaseRequest('GET', '/rest/v1/public_items?select=id,name,price,description,category,campus,image,is_negotiable,created_at&order=created_at.desc');
           return (result || []).map(function (item) {
             var rawDesc = item.description || '{}';
             var descMeta = {};
@@ -440,8 +519,6 @@
               })(),
               negotiable: item.is_negotiable,
               is_negotiable: item.is_negotiable,
-              user_id: item.user_id,
-              contact: item.contact || '',
               views: descMeta.viewCount || 0,
               activityTimeStart: descMeta.activity_time_start || '',
               activityTimeEnd: descMeta.activity_time_end || '',
@@ -453,6 +530,74 @@
         }
       }
 
+      async function ownerItemRequest(method, id, body) {
+        await upgradeDeviceToken();
+        var token = getDeviceToken();
+        var headers = { 'x-device-token': token };
+        var options = { method: method, headers: headers, cache: 'no-store' };
+        if (body !== undefined) {
+          headers['Content-Type'] = 'application/json';
+          options.body = JSON.stringify(body);
+        }
+        var response = await fetch('/api/my-item?id=' + encodeURIComponent(String(id)), options);
+        var text = await response.text();
+        var data = null;
+        if (text) {
+          try { data = JSON.parse(text); } catch (_) {}
+        }
+        if (!response.ok) {
+          var error = new Error((data && data.error) || ('商品管理请求失败（HTTP ' + response.status + '）'));
+          error.status = response.status;
+          throw error;
+        }
+        return data || {};
+      }
+
+      function mapOwnerItem(item) {
+        var rawDesc = item.description || '{}';
+        var descMeta = {};
+        try { descMeta = JSON.parse(rawDesc); } catch (_) { descMeta = {}; }
+        var images = [];
+        try {
+          var parsedImages = JSON.parse(item.image);
+          if (Array.isArray(parsedImages)) images = parsedImages;
+        } catch (_) {}
+        return {
+          id: item.id,
+          title: item.name || '',
+          name: item.name || '',
+          price: item.price,
+          category: item.category,
+          campus: item.campus,
+          contact: item.contact || '',
+          description: descMeta.description || '',
+          _rawDescription: rawDesc,
+          subcategory: descMeta.subcategory || '',
+          condition: descMeta.condition || '',
+          reason: descMeta.reason || '',
+          originalPrice: descMeta.originalPrice || null,
+          image: item.image,
+          images: images,
+          negotiable: item.is_negotiable,
+          is_negotiable: item.is_negotiable,
+          views: descMeta.viewCount || 0,
+          activityTimeStart: descMeta.activity_time_start || '',
+          activityTimeEnd: descMeta.activity_time_end || '',
+          status: descMeta.status || 'active',
+          public_visible: item.public_visible !== false,
+          publicVisible: item.public_visible !== false,
+          createdAt: item.created_at || '',
+          isOwner: true,
+          time: ''
+        };
+      }
+
+      async function getOwnerItem(id) {
+        var data = await ownerItemRequest('GET', id);
+        if (!data.item) throw new Error('商品数据格式异常');
+        return mapOwnerItem(data.item);
+      }
+
       function getFavs() {
         try { return JSON.parse(localStorage.getItem('fav_items') || '[]'); }
         catch (_) { return []; }
@@ -462,12 +607,249 @@
       }
 
       async function init() {
-        if (!itemId) { showNotFound('无效的商品链接'); return; }
+        if (!itemIdParam || (!itemId && !isDemoItem)) { showNotFound('商品 ID 无效，请从推荐结果重新打开。'); return; }
+        if (isDemoItem) {
+          try {
+            var demoItem = await getDemoItem(itemIdParam);
+            if (!demoItem) { showNotFound('未找到对应的演示商品，可能是 ID 不存在或数据已更新。'); return; }
+            renderDemoDetail(demoItem);
+          } catch (e) {
+            showNotFound(e.message || '演示商品数据暂时无法读取，请稍后重试。');
+          }
+          return;
+        }
+
+        await upgradeDeviceToken();
+        var ownerError = null;
+        try {
+          var ownerItem = await getOwnerItem(itemId);
+          renderDetail(ownerItem, true);
+          return;
+        } catch (error) {
+          ownerError = error;
+        }
+
         var items = await getItems();
         var item = items.find(function (i) { return i.id === itemId; });
-        if (!item) { showNotFound('商品不存在或已下架'); return; }
+        if (!item) {
+          var fallbackMessage = p.get('from') === 'my-items'
+            ? ((ownerError && ownerError.message) || '商品不存在、已下架，或不属于当前设备')
+            : '商品不存在或已下架';
+          showNotFound(fallbackMessage);
+          return;
+        }
         incrementViews(item);
-        renderDetail(item);
+        renderDetail(item, false);
+      }
+
+      function appendField(parent, label, value) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'detail-field';
+        var dt = document.createElement('dt');
+        dt.textContent = label;
+        var dd = document.createElement('dd');
+        dd.textContent = value === null || value === undefined || value === '' ? '未提供' : String(value);
+        wrapper.appendChild(dt);
+        wrapper.appendChild(dd);
+        parent.appendChild(wrapper);
+      }
+
+      function appendDemoTextCard(parent, title, text, className) {
+        var card = document.createElement('section');
+        card.className = 'desc-card' + (className ? ' ' + className : '');
+        var heading = document.createElement('h3');
+        heading.textContent = title;
+        var body = document.createElement('p');
+        body.textContent = text || '未提供';
+        card.appendChild(heading);
+        card.appendChild(body);
+        parent.appendChild(card);
+        return card;
+      }
+
+      function renderMatchContext(parent) {
+        if (!matchContext || (!matchContext.reasons.length && matchContext.score === null)) return;
+        var card = document.createElement('section');
+        card.className = 'desc-card';
+        var heading = document.createElement('h3');
+        heading.textContent = '本次推荐信息';
+        card.appendChild(heading);
+        if (matchContext.score !== null) {
+          var score = document.createElement('p');
+          score.textContent = '匹配分：' + matchContext.score;
+          card.appendChild(score);
+        }
+        if (matchContext.reasons.length) {
+          var list = document.createElement('ul');
+          list.style.cssText = 'padding-left:20px;color:var(--muted);font-size:14px;';
+          matchContext.reasons.forEach(function (reason) {
+            var li = document.createElement('li');
+            li.textContent = reason.replace(/（[+-]?\d+）$/, '');
+            list.appendChild(li);
+          });
+          card.appendChild(list);
+        }
+        var note = document.createElement('p');
+        note.style.cssText = 'margin-top:8px;font-size:12px;color:var(--muted);';
+        note.textContent = '以上为进入详情前已经生成的推荐信息，详情页不会重新调用 AI 或计算匹配分。';
+        card.appendChild(note);
+        parent.appendChild(card);
+      }
+
+      function renderDemoDetail(item) {
+        var imgs = Array.isArray(item.images) ? item.images.filter(function (src) { return typeof src === 'string' && src.trim(); }) : [];
+        container.textContent = '';
+        var imageScroller = document.createElement('div');
+        imageScroller.className = 'image-scroller';
+        if (!imgs.length) {
+          var emptyImage = document.createElement('div');
+          emptyImage.className = 'slide no-img';
+          emptyImage.textContent = '暂无商品图片';
+          imageScroller.appendChild(emptyImage);
+        } else {
+          imgs.forEach(function (src) {
+            var slide = document.createElement('div');
+            slide.className = 'slide';
+            var image = document.createElement('img');
+            image.src = src;
+            image.alt = item.title + '商品图片';
+            slide.appendChild(image);
+            imageScroller.appendChild(slide);
+          });
+        }
+        container.appendChild(imageScroller);
+        if (item.imageNote) {
+          var imageNote = document.createElement('p');
+          imageNote.className = 'demo-image-note';
+          imageNote.textContent = item.imageNote;
+          imageNote.style.cssText = 'margin:8px 0 14px;padding:8px 12px;border-radius:8px;background:#fff8e8;color:#805a19;font-size:13px;line-height:1.5;';
+          container.appendChild(imageNote);
+        }
+        var info = document.createElement('section');
+        info.className = 'info-card';
+        var badge = document.createElement('div');
+        badge.className = 'demo-badge';
+        badge.textContent = '演示数据 · 示例内容，不代表当前真实在售';
+        info.appendChild(badge);
+        var title = document.createElement('div');
+        title.className = 'title';
+        title.textContent = item.title || '未命名商品';
+        info.appendChild(title);
+        var priceRow = document.createElement('div');
+        priceRow.className = 'price-row';
+        var price = document.createElement('span');
+        price.className = 'price';
+        price.textContent = item.price === null || item.price === undefined ? '价格待确认' : '¥' + item.price;
+        priceRow.appendChild(price);
+        if (item.isNegotiable === true) {
+          var negotiable = document.createElement('span');
+          negotiable.className = 'negotiable-badge';
+          negotiable.textContent = '可议价';
+          priceRow.appendChild(negotiable);
+        }
+        info.appendChild(priceRow);
+        var fields = document.createElement('dl');
+        fields.className = 'detail-fields';
+        appendField(fields, '类别', item.category);
+        appendField(fields, '校区', item.campus);
+        info.appendChild(fields);
+        container.appendChild(info);
+        appendDemoTextCard(container, '商品描述', item.description);
+        renderMatchContext(container);
+        appendDemoTextCard(container, '联系方式', '演示商品无真实联系方式。', 'security-note');
+        var actionCard = document.createElement('section');
+        actionCard.className = 'desc-card';
+        var action = document.createElement('div');
+        action.className = 'action-row';
+        var back = document.createElement('a');
+        back.className = 'btn';
+        back.href = p.get('from') === 'my-items' ? 'app.html?view=my-items' : 'app.html';
+        back.textContent = '返回推荐结果';
+        action.appendChild(back);
+        actionCard.appendChild(action);
+        container.appendChild(actionCard);
+      }
+
+      async function renderSellerContact(item, isOwner) {
+        var card = document.getElementById('seller-contact-card');
+        if (!card) return;
+        card.textContent = '';
+        var heading = document.createElement('h3');
+        heading.textContent = '联系方式';
+        card.appendChild(heading);
+        if (isOwner) {
+          var contactText = typeof item.contact === 'string' ? item.contact.trim() : '';
+          if (!contactText) {
+            var noContact = document.createElement('p');
+            noContact.textContent = '这件商品没有填写联系方式。';
+            card.appendChild(noContact);
+            return;
+          }
+          contactText.split(/\s*\|\s*/).filter(Boolean).forEach(function(part) {
+            var line = document.createElement('p');
+            line.style.marginTop = '8px';
+            line.textContent = part;
+            card.appendChild(line);
+          });
+          return;
+        }
+        var status = document.createElement('p');
+        status.textContent = '正在检查登录状态…';
+        card.appendChild(status);
+        try {
+          if (!window.XunyingAuth) throw new Error('认证功能暂不可用，请稍后重试。');
+          var session = await window.XunyingAuth.restoreSession();
+          if (!session || !session.access_token) {
+            status.textContent = '登录后可查看发布者提供的联系方式。';
+            var loginLink = document.createElement('a');
+            loginLink.className = 'btn btn-primary';
+            loginLink.href = 'login.html?returnTo=' + encodeURIComponent(window.location.pathname + window.location.search);
+            loginLink.textContent = '登录后查看';
+            loginLink.style.marginTop = '10px';
+            card.appendChild(loginLink);
+            return;
+          }
+          status.textContent = '正在加载联系方式…';
+          var response = await fetch('/api/item-contact?id=' + encodeURIComponent(item.id), {
+            method: 'GET',
+            headers: { Authorization: 'Bearer ' + session.access_token },
+            cache: 'no-store'
+          });
+          var data = {};
+          try { data = await response.json(); } catch (_) {}
+          if (response.status === 401) {
+            status.textContent = '登录状态已失效，请重新登录后查看。';
+            var retryLink = document.createElement('a');
+            retryLink.href = 'login.html?returnTo=' + encodeURIComponent(window.location.pathname + window.location.search);
+            retryLink.textContent = '前往登录';
+            card.appendChild(retryLink);
+            return;
+          }
+          if (!response.ok) throw new Error(data.error || '联系方式暂时无法读取。');
+          var contact = typeof data.contact === 'string' ? data.contact.trim() : '';
+          if (!contact) {
+            status.textContent = '发布者暂未提供可公开的联系方式。';
+            return;
+          }
+          status.textContent = '';
+          contact.split(/\s*\|\s*/).filter(Boolean).forEach(function (part) {
+            var line = document.createElement('p');
+            line.style.marginTop = '8px';
+            var phone = part.match(/^(?:电话|手机号)\s*[:：]\s*(\+?[0-9][0-9\s()\-]{5,20})$/);
+            if (phone) {
+              var digits = phone[1].replace(/[^0-9+]/g, '');
+              var phoneLink = document.createElement('a');
+              phoneLink.href = 'tel:' + digits;
+              phoneLink.textContent = part;
+              line.appendChild(phoneLink);
+            } else {
+              line.textContent = part;
+            }
+            card.appendChild(line);
+          });
+        } catch (error) {
+          status.textContent = error && error.message ? error.message : '联系方式暂时无法读取。';
+        }
       }
 
       async function incrementViews(item) {
@@ -480,24 +862,22 @@
         item.views = descMeta.viewCount;
       }
 
-      function renderDetail(item) {
-        var isOwner = item.user_id === getUserId();
+      function renderDetail(item, ownerVerified) {
+        var isOwner = ownerVerified === true;
         var favs = getFavs();
         var isFavd = favs.indexOf(item.id) !== -1;
-        var imgs = item.images || (item.image ? [item.image] : []);
-        var rtDescMeta = {};
-        try { rtDescMeta = JSON.parse(item._rawDescription || item.description || '{}'); } catch (_) {}
+        var imgs = (item.images || (item.image ? [item.image] : [])).map(safeImageUrl).filter(Boolean);
         var slidesHtml;
         if (imgs.length > 0) {
           slidesHtml = imgs.map(function (src) {
-            return '<div class="slide"><img src="' + src + '" alt="' + item.title + '" /></div>';
+            return '<div class="slide"><img src="' + esc(src) + '" alt="' + esc(item.title) + '" /></div>';
           }).join('');
         } else {
           slidesHtml = '<div class="slide no-img">暂无图片</div>';
         }
-        var conditionTag = item.condition ? '<span class="tag condition">' + item.condition + '</span>' : '';
-        var reasonTag = item.reason ? '<span class="tag reason">出闲置理由：' + item.reason + '</span>' : '';
-        var originalPriceHtml = item.originalPrice ? '<span class="original-price">¥' + item.originalPrice + '</span>' : '';
+        var conditionTag = item.condition ? '<span class="tag condition">' + esc(item.condition) + '</span>' : '';
+        var reasonTag = item.reason ? '<span class="tag reason">出闲置理由：' + esc(item.reason) + '</span>' : '';
+        var originalPriceHtml = item.originalPrice ? '<span class="original-price">¥' + esc(item.originalPrice) + '</span>' : '';
         var negotiableHtml = item.negotiable !== false ? '<span class="negotiable-badge">可议价</span>' : '';
 
         var actionHtml = '<div class="action-row">' +
@@ -509,7 +889,10 @@
           '</button>';
         if (isOwner) {
           actionHtml +=
-            '<a class="btn" href="publish.html?id=' + item.id + '" data-od-id="edit-btn">编辑</a>' +
+            '<a class="btn" href="publish.html?id=' + item.id + '&from=my-items" data-od-id="edit-btn">编辑</a>' +
+            '<button class="btn" id="visibility-btn" data-od-id="visibility-btn" style="border-color:var(--accent);color:var(--accent);">' +
+              (item.public_visible === false ? '重新公开' : '下架') +
+            '</button>' +
             '<button class="btn" id="sold-btn" data-od-id="sold-btn" style="border-color:var(--success);color:var(--success);">已成交</button>' +
             '<button class="btn btn-danger" id="del-btn" data-od-id="del-btn">删除</button>';
         }
@@ -524,20 +907,23 @@
             '<div class="tag-row">' + conditionTag + reasonTag + '</div>' +
             '<div class="meta-block">' +
               '<span class="meta-item">浏览 ' + (item.views || 0) + '</span>' +
-              '<span class="meta-item">' + esc((rtDescMeta.school ? rtDescMeta.school + ' · ' : '') + (item.campus || '')) + '</span>' +
-              '<span class="meta-item">' + esc(item.time || '') + '</span>' +
+              '<span class="meta-item">' + esc(item.campus || '') + '</span>' +
+              (isOwner ? '<span class="meta-item" style="font-weight:600;color:' + (item.public_visible === false ? '#5f6b7a' : 'var(--accent)') + ';">' + (item.status === 'sold' ? '已成交' : item.public_visible === false ? '已下架' : '公开中') + '</span>' : '') +
             '</div>' +
           '</div>' +
           ((item.activityTimeStart && item.activityTimeEnd) ? '<div class="desc-card" style="background:#f0faf7;"><h3>活动时间</h3><p>' + esc(item.activityTimeStart) + ' 至 ' + esc(item.activityTimeEnd) + '</p></div>' : '') +
           (item.description ? '<div class="desc-card"><h3>描述</h3><p>' + esc(item.description) + '</p></div>' : '') +
-          (item.contact ? '<div class="desc-card"><h3>联系方式</h3><p>' + esc(item.contact) + '</p></div>' : '') +
+          '<div class="desc-card security-note" id="seller-contact-card"><h3>联系方式</h3><p>正在检查登录状态…</p></div>' +
+          (isOwner ? '' :
           '<div class="desc-card" style="margin-top:12px;border:1px dashed #ddd;background:#fafafa;">' +
             '<h3 style="display:flex;align-items:center;gap:6px;">' +
               '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>遇到问题？' +
             '</h3>' +
             '<button class="btn btn-outline" id="report-btn" style="margin-top:8px;width:100%;">举报此商品</button>' +
-          '</div>' +
+          '</div>') +
           actionHtml;
+
+        renderSellerContact(item, isOwner);
 
         var favBtn = document.getElementById('fav-btn');
         if (favBtn) {
@@ -559,12 +945,31 @@
           delBtn.addEventListener('click', async function () {
             if (!confirm('确定要删除「' + item.title + '」吗？此操作不可恢复。')) return;
             try {
-              await supabaseRequest('DELETE', '/rest/v1/items?id=eq.' + item.id);
+              await ownerItemRequest('DELETE', item.id);
             } catch (e) {
               alert('删除失败: ' + (e.message || '未知错误'));
               return;
             }
-            window.location.href = 'index.html';
+            window.location.href = 'app.html?view=my-items';
+          });
+        }
+
+
+        var visibilityBtn = document.getElementById('visibility-btn');
+        if (visibilityBtn) {
+          visibilityBtn.addEventListener('click', async function () {
+            var makePublic = item.public_visible === false;
+            if (!confirm(makePublic ? '确认重新公开这件商品？' : '确认下架这件商品？下架后普通访客将无法看到。')) return;
+            visibilityBtn.disabled = true;
+            try {
+              var result = await ownerItemRequest('PATCH', item.id, { public_visible: makePublic });
+              item.public_visible = result.item ? result.item.public_visible : makePublic;
+              alert(makePublic ? '商品已重新公开！' : '商品已下架！');
+              window.location.href = 'app.html?view=my-items';
+            } catch (e) {
+              visibilityBtn.disabled = false;
+              alert('操作失败: ' + (e.message || '未知错误'));
+            }
           });
         }
 
@@ -574,11 +979,11 @@
             if (!confirm('确认标记为已成交？成交后商品将不再公开展示。')) return;
             try {
               var descObj = {};
-              try { descObj = JSON.parse(item.description || '{}'); } catch (_) {}
+              try { descObj = JSON.parse(item._rawDescription || '{}'); } catch (_) {}
               descObj.status = 'sold';
-              await supabaseRequest('PATCH', '/rest/v1/items?id=eq.' + item.id, { description: JSON.stringify(descObj) });
+              await ownerItemRequest('PATCH', item.id, { description: JSON.stringify(descObj) });
               alert('已标记为成交！');
-              window.location.href = 'index.html';
+              window.location.href = 'app.html?view=my-items';
             } catch (e) {
               alert('操作失败: ' + (e.message || '未知错误'));
             }
@@ -616,12 +1021,27 @@
       }
 
       function showNotFound(msg) {
-        container.innerHTML =
-          '<div class="not-found">' +
-          '<div class="icon-wrap"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>' +
-          '<h2>找不到商品</h2>' +
-          '<p>' + msg + '</p>' +
-          '</div>';
+        container.textContent = '';
+        var state = document.createElement('div');
+        state.className = 'not-found';
+        var icon = document.createElement('div');
+        icon.className = 'icon-wrap';
+        icon.textContent = '？';
+        icon.style.fontSize = '42px';
+        state.appendChild(icon);
+        var heading = document.createElement('h2');
+        heading.textContent = '找不到商品';
+        state.appendChild(heading);
+        var message = document.createElement('p');
+        message.textContent = msg;
+        state.appendChild(message);
+        var back = document.createElement('a');
+        back.className = 'btn';
+        back.href = 'app.html';
+        back.style.cssText = 'display:inline-flex;margin-top:18px;text-decoration:none;';
+        back.textContent = '返回推荐结果';
+        state.appendChild(back);
+        container.appendChild(state);
       }
 
       // 举报功能
@@ -691,7 +1111,7 @@
         if (!reason) { alert('请选择举报原因'); return; }
         if (!reporterName) { alert('请填写您的姓名'); return; }
         if (!reporterContact) { alert('请填写联系方式（手机号/QQ/微信）'); return; }
-        
+
         var reporterId = await getDeviceFingerprint();
 
         // 上传证据图片到 Supabase Storage，返回公开 URL
@@ -729,7 +1149,7 @@
             }
           } catch (_) {}
         }
-        
+
         try {
           await supabaseRequest('POST', '/rest/v1/reports', {
             item_id: itemId,
@@ -752,7 +1172,6 @@
       });
 
       renderReportEvidence();
-      upgradeDeviceToken();
       init();
     })();
   </script>
